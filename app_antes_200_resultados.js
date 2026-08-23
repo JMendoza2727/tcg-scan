@@ -1,5 +1,5 @@
 const API = "https://api.tcgdex.net/v2";
-const PAGE = 200;
+const PAGE = 30;
 
 const el = id => document.getElementById(id);
 const langEl = el("lang");

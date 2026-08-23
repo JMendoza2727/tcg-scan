@@ -24,3 +24,4 @@ self.addEventListener("fetch", event => {
     }))
   );
 });
+// PokEX interfaz v2 - 200 resultados

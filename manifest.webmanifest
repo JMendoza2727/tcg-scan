@@ -1,6 +1,6 @@
 {
-  "name": "TCG Scan - Pokémon Cards",
-  "short_name": "TCG Scan",
+  "name": "PokEX",
+  "short_name": "PokEX",
   "description": "Busca e identifica cartas Pokémon TCG y consulta precios de mercado.",
   "start_url": "./",
   "display": "standalone",
