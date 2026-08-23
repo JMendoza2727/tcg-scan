@@ -1,0 +1,138 @@
+
+/* El escáner antiguo no vuelve a mostrarse */
+#visualScanner {
+  display: none !important;
+}
+
+/* Overlay independiente de toda la app */
+#cv11Overlay {
+  position: fixed !important;
+  inset: 0 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  z-index: 2147483000 !important;
+
+  background: #000 !important;
+
+  overflow: hidden !important;
+
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+#cv11Overlay.cv11-hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+/* Nuevo iframe: sin ningún CSS antiguo */
+#cv11Frame {
+  position: absolute !important;
+  inset: 0 !important;
+
+  display: block !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  max-width: none !important;
+  max-height: none !important;
+
+  border: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+
+  background: #000 !important;
+}
+
+/* Botón cerrar */
+#cv11Close {
+  position: absolute !important;
+
+  top: calc(env(safe-area-inset-top) + 12px) !important;
+  left: 14px !important;
+
+  z-index: 2147483640 !important;
+
+  width: 52px !important;
+  height: 52px !important;
+  min-height: 52px !important;
+
+  padding: 0 !important;
+
+  border-radius: 50% !important;
+
+  background: rgba(8,12,24,.82) !important;
+  color: white !important;
+
+  border: 1px solid rgba(255,255,255,.15) !important;
+
+  font-size: 27px !important;
+
+  backdrop-filter: blur(15px);
+
+  box-shadow: 0 8px 30px rgba(0,0,0,.4) !important;
+}
+
+
+/* Carga bonita en TCG Scan */
+
+#cv11Preparing {
+  margin-top: 14px;
+
+  padding: 13px 14px;
+
+  border-radius: 14px;
+
+  background: rgba(255,255,255,.04);
+
+  border: 1px solid rgba(255,255,255,.07);
+}
+
+.cv11-loading-head {
+  display: flex;
+  justify-content: space-between;
+
+  margin-bottom: 9px;
+
+  color: #a7b1c6;
+
+  font-size: 13px;
+}
+
+.cv11-bar {
+  height: 8px;
+
+  background: rgba(255,255,255,.07);
+
+  border-radius: 999px;
+
+  overflow: hidden;
+}
+
+#cv11Fill {
+  height: 100%;
+  width: 0%;
+
+  background: linear-gradient(
+    90deg,
+    #ffe675,
+    #f7c928
+  );
+
+  border-radius: inherit;
+
+  transition: width .2s ease;
+}
+
+body.cv11-camera-open {
+  overflow: hidden !important;
+}
+

@@ -1,0 +1,208 @@
+:root {
+  color-scheme: dark;
+  --bg: #0b1020;
+  --panel: #151c2e;
+  --panel2: #20293d;
+  --text: #f8fafc;
+  --muted: #9aa6bb;
+  --line: #2d3952;
+  --accent: #f7c928;
+  --danger: #ff7c7c;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  min-height: 100%;
+}
+.top {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: calc(22px + env(safe-area-inset-top)) 18px 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+}
+.top h1 { margin: 0; font-size: 30px; }
+.top p { margin: 4px 0 0; color: var(--muted); }
+.badge {
+  font-size: 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 7px 10px;
+  color: var(--muted);
+}
+.wrap {
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 8px 16px calc(30px + env(safe-area-inset-bottom));
+}
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 16px;
+  margin: 12px 0;
+}
+.label {
+  display: block;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+select, input[type="search"] {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--line);
+  background: #0e1526;
+  color: var(--text);
+  border-radius: 13px;
+  padding: 0 14px;
+  font-size: 17px;
+}
+.searchRow { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
+button, .camera {
+  min-height: 48px;
+  border: 0;
+  border-radius: 13px;
+  padding: 0 18px;
+  background: var(--accent);
+  color: #171717;
+  font-weight: 850;
+  font-size: 16px;
+  cursor: pointer;
+}
+button:disabled, .camera.disabled { opacity: .42; cursor: default; }
+.camera {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+.camera input { display: none; }
+.muted {
+  margin: 9px 0 0;
+  color: var(--muted);
+  line-height: 1.4;
+  font-size: 13px;
+}
+.preview {
+  display: block;
+  width: min(230px, 70%);
+  margin: 14px auto 0;
+  border-radius: 14px;
+  border: 1px solid var(--line);
+}
+.hidden { display: none !important; }
+.message {
+  border: 1px solid var(--line);
+  background: var(--panel);
+  border-radius: 16px;
+  padding: 14px 16px;
+  margin: 12px 0;
+  line-height: 1.45;
+}
+.message.error { border-color: #643638; color: #ffd0d0; }
+.progressHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.bar {
+  height: 10px;
+  background: #0e1526;
+  border-radius: 999px;
+  overflow: hidden;
+}
+#barFill {
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  transition: width .2s ease;
+}
+.listHead {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  margin: 18px 2px 12px;
+}
+.secondary {
+  background: var(--panel2);
+  color: var(--text);
+  border: 1px solid var(--line);
+  min-height: 42px;
+}
+.cards {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0,1fr));
+  gap: 12px;
+}
+.cardTile {
+  min-width: 0;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 10px;
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+}
+.cardTile img, .placeholder {
+  width: 100%;
+  aspect-ratio: 2.5 / 3.5;
+  object-fit: contain;
+  background: var(--panel2);
+  border-radius: 11px;
+}
+.placeholder {
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  font-size: 12px;
+}
+.cardTile strong {
+  display: block;
+  margin-top: 8px;
+  overflow-wrap: anywhere;
+}
+.small { color: var(--muted); font-size: 12px; }
+.detail {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  padding: 16px;
+  margin: 14px 0;
+}
+.detailGrid { display: grid; gap: 18px; }
+.detailImg {
+  width: min(330px, 100%);
+  margin: auto;
+  display: block;
+  border-radius: 14px;
+  background: var(--panel2);
+}
+.detail h2 { margin: 0 0 8px; font-size: 28px; }
+.meta { color: var(--muted); margin: 4px 0; }
+.priceGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  margin-top: 15px;
+}
+.price {
+  background: var(--panel2);
+  border-radius: 13px;
+  padding: 12px;
+}
+.price span { display: block; color: var(--muted); font-size: 12px; }
+.price strong { display: block; margin-top: 4px; font-size: 20px; }
+.price.main strong { color: var(--accent); font-size: 25px; }
+.candidateTitle { margin: 18px 2px 10px; }
+@media (min-width: 700px) {
+  .cards { grid-template-columns: repeat(4, minmax(0,1fr)); }
+  .detailGrid { grid-template-columns: 320px 1fr; align-items: start; }
+}

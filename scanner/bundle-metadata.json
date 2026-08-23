@@ -1,0 +1,39 @@
+{
+  "bundle_version": "milo1-scryfall-mtg-2026-07-09",
+  "catalog_key": "hf://HanClinto/milo/scryfall-mtg",
+  "catalog_fingerprint": "milo1-scryfall-mtg-2026-07-09.npz",
+  "catalog_rows": 109711,
+  "catalog_dims": 128,
+  "models": {
+    "detector": "sha256:650da3cc3e9ac778c6951de631f824ec1e63bdabf3aaa39a35d7435af625612e",
+    "milo": "sha256:bd13d8d60383c69da04dce261f32e93fdaeaa8fd618fbc991e7385f71b3d45df"
+  },
+  "model_sizes": {
+    "detector": 4407545,
+    "milo": 5191100
+  },
+  "model_ids": {
+    "detector": "cornelius-2.12",
+    "milo": "milo-1.0.0"
+  },
+  "model_versions": {
+    "detector": "2.12",
+    "milo": "1.0.0"
+  },
+  "vendor": {
+    "onnxruntime_web": "1.24.3"
+  },
+  "assets": {
+    "manifest": "sha256:0553b607ce88747ac3619cd534a26894aae9a03db0421f1770b9ef133ce89d72",
+    "embeddings": "sha256:50db45bb77ca753357b48ae715edf3209016a0f28ab2f4506f302258c4fde800",
+    "card_ids": "sha256:48b26f73e6f65d0591e18ea0b335091eed28d219f26ae097428f9a3dc77d0f22",
+    "oracle_ids": "sha256:b2fb9a1c70a4f4a372758c5fb10d3733beb50625f5c4dc7cb49c1d3bd2a865d8"
+  },
+  "asset_sizes": {
+    "manifest": 1244,
+    "embeddings": 28086016,
+    "card_ids": 4408130,
+    "oracle_ids": 4388440
+  },
+  "generated_at": "2026-07-14T00:36:05.380758+00:00"
+}

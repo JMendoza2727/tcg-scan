@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#111827">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TCG Scan">
+  <link rel="manifest" href="./manifest.webmanifest">
+  <link rel="apple-touch-icon" href="./icon-192.png">
+  <link rel="stylesheet" href="./styles.css">
+  <title>TCG Scan</title>
+
+
+<link rel="stylesheet" href="./pokedex-v1.css?v=1">
+
+<link rel="stylesheet"
+      href="./scanner-v11.css?v=11">
+</head>
+
+
+<body>
+  <header class="top">
+    <div>
+      <h1>⚡ TCG Scan</h1>
+      <p>Pokémon TCG · buscador · cámara · precios</p>
+    </div>
+    <span id="netBadge" class="badge">Online</span>
+  </header>
+
+  <main class="wrap">
+    <section class="panel">
+      <label class="label" for="lang">1. Idioma de la carta</label>
+      <select id="lang">
+        <option value="">Selecciona idioma…</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="en">🇬🇧 English</option>
+        <option value="ja">🇯🇵 日本語</option>
+      </select>
+      <p id="catalogStatus" class="muted">El catálogo se descargará una vez y quedará guardado en el iPhone.</p>
+    </section>
+
+    <section class="panel">
+      <label class="label" for="query">2. Buscar</label>
+      <div class="searchRow">
+        <input id="query" type="search" autocomplete="off" placeholder="Primero elige idioma" disabled>
+        <button id="searchBtn" disabled>Buscar</button>
+      </div>
+      <p class="muted">Tolera errores: por ejemplo, <b>charizar</b>.</p>
+    </section>
+
+    <section class="panel hidden">
+      <div class="label">3. O haz una foto</div>
+      <label id="cameraBtn" class="camera disabled">
+        <span>📷 Escanear carta</span>
+        <input id="photo" type="file" accept="image/*" capture="environment" disabled>
+      </label>
+      <p class="muted">El OCR se ejecuta en el iPhone. La primera vez puede tardar mientras descarga el modelo del idioma.</p>
+      <img id="preview" class="preview hidden" alt="Foto de la carta">
+    </section>
+
+    
+<section class="panel">
+  <div class="label">3. 📷 Escanear carta</div>
+
+  <button id="visualScanBtn" type="button">
+    ⚡ Escanear carta
+  </button>
+
+  <div id="visualScanner" class="hidden" style="margin-top:14px">
+    <iframe
+      id="scannerFrame"
+      allow="camera"
+      style="
+        width:100%;
+        height:650px;
+        border:0;
+        border-radius:18px;
+        background:#000;
+      ">
+    </iframe>
+
+    <button
+      id="closeScannerBtn"
+      type="button"
+      class="secondary"
+      style="width:100%;margin-top:10px">
+      Cerrar cámara
+    </button>
+  </div>
+</section>
+
+<section id="progressBox" class="panel hidden" aria-live="polite">
+      <div class="progressHead">
+        <strong id="progressText">Preparando…</strong>
+        <span id="progressPct">0%</span>
+      </div>
+      <div class="bar"><div id="barFill"></div></div>
+    </section>
+
+    <section id="message" class="message hidden" aria-live="polite"></section>
+
+    <section id="resultBox" class="hidden"></section>
+
+    <section id="listBox" class="hidden">
+      <div class="listHead">
+        <strong id="countText"></strong>
+        <button id="moreBtn" class="secondary hidden">Cargar más</button>
+      </div>
+      <div id="cards" class="cards"></div>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <script src="./app.js"></script>
+
+
+<script src="./pokedex-v1.js?v=1"></script>
+
+<script src="./scanner-v11.js?v=12"></script>
+</body>
+
+
+</html>
