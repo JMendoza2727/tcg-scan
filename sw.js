@@ -25,3 +25,4 @@ self.addEventListener("fetch", event => {
   );
 });
 // PokEX interfaz v2 - 200 resultados
+// PokEX update - 3 idiomas
