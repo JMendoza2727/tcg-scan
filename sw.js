@@ -28,3 +28,4 @@ self.addEventListener("fetch", event => {
 // PokEX update - 3 idiomas
 // PokEX animated background
 // PokEX glass background v2
+// PokEX glass particles v3

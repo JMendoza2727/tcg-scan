@@ -143,3 +143,35 @@ body {
   background: transparent !important;
 }
 
+
+
+/* =====================================
+   PokEX - cristal más transparente
+   para ver las partículas detrás
+   ===================================== */
+
+.wrap > .card,
+.wrap > .panel,
+.wrap > section {
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(13, 25, 55, 0.34),
+      rgba(5, 13, 37, 0.24)
+    ) !important;
+
+  -webkit-backdrop-filter:
+    blur(6px) saturate(120%) !important;
+
+  backdrop-filter:
+    blur(6px) saturate(120%) !important;
+
+  border:
+    1px solid rgba(160, 185, 240, 0.22) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.045),
+    0 14px 40px rgba(0,0,0,.10) !important;
+}
+
