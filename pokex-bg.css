@@ -86,3 +86,60 @@ main, .app-shell, .container {
   position: relative;
   z-index: 1;
 }
+
+
+/* =====================================
+   PokEX - fondo continuo + cristal
+   ===================================== */
+
+/* Quitar el bloque rectangular que corta el fondo */
+html,
+body,
+.wrap,
+main,
+.container,
+.app-shell {
+  background-color: transparent !important;
+}
+
+html {
+  background: #03081f !important;
+}
+
+/* El fondo animado cubre siempre toda la pantalla */
+body {
+  min-height: 100dvh !important;
+  background-attachment: fixed !important;
+}
+
+
+/* SOLO los bloques principales de Idioma y Buscar */
+.wrap > .card,
+.wrap > .panel,
+.wrap > section {
+  background: rgba(13, 23, 48, 0.55) !important;
+
+  -webkit-backdrop-filter: blur(16px) saturate(125%);
+  backdrop-filter: blur(16px) saturate(125%);
+
+  border: 1px solid rgba(150, 175, 230, 0.20) !important;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.035),
+    0 12px 35px rgba(0,0,0,.12) !important;
+}
+
+
+/* Mi Pokédex la dejamos como estaba */
+.pokedex-nav {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+
+/* Evitar que cualquier capa interior vuelva a crear
+   un rectángulo sólido grande */
+#pokexParticles {
+  background: transparent !important;
+}
+

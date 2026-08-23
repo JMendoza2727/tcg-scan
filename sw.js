@@ -27,3 +27,4 @@ self.addEventListener("fetch", event => {
 // PokEX interfaz v2 - 200 resultados
 // PokEX update - 3 idiomas
 // PokEX animated background
+// PokEX glass background v2
