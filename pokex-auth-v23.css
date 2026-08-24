@@ -1,0 +1,269 @@
+
+.pokex-v23-home{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:9px;
+  margin:10px 0 14px;
+}
+
+.pokex-v23-home button{
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:14px;
+  padding:11px 12px;
+  background:rgba(255,255,255,.07);
+  color:#fff;
+  font:inherit;
+  font-weight:750;
+  cursor:pointer;
+}
+
+.v23-overlay{
+  position:fixed;
+  inset:0;
+  z-index:999990;
+  background:rgba(3,8,22,.88);
+  backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:16px;
+}
+
+.v23-overlay.hidden{
+  display:none;
+}
+
+.v23-window{
+  width:min(540px,100%);
+  max-height:92vh;
+  overflow:auto;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:22px;
+  padding:18px;
+  background:rgba(9,20,48,.97);
+  box-shadow:0 24px 70px rgba(0,0,0,.45);
+  color:#fff;
+}
+
+.v23-header{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-bottom:15px;
+}
+
+.v23-header strong{
+  font-size:19px;
+}
+
+.v23-close{
+  margin-left:auto;
+  width:38px;
+  height:38px;
+  border:0;
+  border-radius:11px;
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  font-size:20px;
+  cursor:pointer;
+}
+
+.v23-field{
+  display:grid;
+  gap:5px;
+  margin:10px 0;
+}
+
+.v23-field span{
+  font-size:12px;
+  opacity:.72;
+}
+
+.v23-field input{
+  box-sizing:border-box;
+  width:100%;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:12px;
+  padding:12px;
+  background:rgba(0,0,0,.20);
+  color:#fff;
+  font:inherit;
+}
+
+.v23-primary,
+.v23-secondary,
+.v23-danger{
+  box-sizing:border-box;
+  width:100%;
+  border:0;
+  border-radius:12px;
+  padding:12px;
+  margin:5px 0;
+  font:inherit;
+  font-weight:800;
+  cursor:pointer;
+}
+
+.v23-primary{
+  background:#facc15;
+  color:#171717;
+}
+
+.v23-secondary{
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.11);
+  color:#fff;
+}
+
+.v23-danger{
+  background:rgba(255,80,80,.12);
+  border:1px solid rgba(255,80,80,.25);
+  color:#ffaaaa;
+}
+
+.v23-note{
+  margin:10px 0;
+  font-size:12px;
+  line-height:1.45;
+  opacity:.7;
+}
+
+.v23-message{
+  margin:10px 0;
+  min-height:18px;
+  font-size:12px;
+}
+
+.v23-card{
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:15px;
+  padding:13px;
+  margin:9px 0;
+  background:rgba(255,255,255,.05);
+}
+
+.v23-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+}
+
+.v23-row button{
+  width:auto;
+  padding:7px 10px;
+  margin:0;
+}
+
+.v23-tabs{
+  display:flex;
+  gap:6px;
+  overflow:auto;
+  margin:10px 0 15px;
+}
+
+.v23-tab{
+  flex:0 0 auto;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:999px;
+  padding:8px 11px;
+  background:rgba(255,255,255,.06);
+  color:#fff;
+  cursor:pointer;
+}
+
+.v23-tab.active{
+  background:#facc15;
+  color:#151515;
+}
+
+.v23-stat-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:8px;
+  margin:10px 0;
+}
+
+.v23-stat{
+  border-radius:13px;
+  padding:12px;
+  background:rgba(255,255,255,.055);
+}
+
+.v23-stat span{
+  display:block;
+  font-size:11px;
+  opacity:.65;
+}
+
+.v23-stat strong{
+  display:block;
+  margin-top:4px;
+  font-size:19px;
+}
+
+.v23-welcome{
+  text-align:center;
+}
+
+.v23-welcome-icon{
+  font-size:50px;
+  margin:8px 0;
+}
+
+.v23-welcome h2{
+  margin-bottom:7px;
+}
+
+.v23-changes{
+  text-align:left;
+  border-radius:14px;
+  padding:12px 16px;
+  margin:14px 0;
+  background:rgba(255,255,255,.05);
+}
+
+.v23-sync{
+  display:flex;
+  align-items:center;
+  gap:7px;
+  font-size:12px;
+  opacity:.7;
+  margin:8px 0;
+}
+
+.v23-dot{
+  width:8px;
+  height:8px;
+  border-radius:999px;
+  background:#facc15;
+}
+
+.v23-friend-collection{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:8px;
+  margin-top:12px;
+}
+
+.v23-mini-card{
+  border-radius:11px;
+  padding:6px;
+  background:rgba(255,255,255,.05);
+  font-size:10px;
+}
+
+.v23-mini-card img{
+  display:block;
+  width:100%;
+  aspect-ratio:.716;
+  object-fit:contain;
+  border-radius:7px;
+}
+
+@media(max-width:520px){
+  .pokex-v23-home{
+    grid-template-columns:1fr 1fr;
+  }
+}
