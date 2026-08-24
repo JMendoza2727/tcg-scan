@@ -7,16 +7,15 @@ service cloud.firestore {
       return request.auth != null;
     }
 
-    function isMe(uid) {
+    function me(uid) {
       return signedIn() && request.auth.uid == uid;
     }
 
     function blockedEither(a, b) {
-      return exists(
-        /databases/$(database)/documents/blocks/$(a + "__" + b)
-      ) || exists(
-        /databases/$(database)/documents/blocks/$(b + "__" + a)
-      );
+      return
+        exists(/databases/$(database)/documents/blocks/$(a + "__" + b))
+        ||
+        exists(/databases/$(database)/documents/blocks/$(b + "__" + a));
     }
 
     function friendWith(uid) {
@@ -29,18 +28,12 @@ service cloud.firestore {
     match /users/{uid} {
       allow read: if signedIn();
 
-      allow create:
-        if isMe(uid);
-
-      allow update:
-        if isMe(uid);
-
-      allow delete:
-        if isMe(uid);
+      allow create, update, delete:
+        if me(uid);
 
       match /cards/{cardId} {
         allow create, update, delete:
-          if isMe(uid);
+          if me(uid);
 
         allow read:
           if signedIn() && (
@@ -67,8 +60,7 @@ service cloud.firestore {
       allow update:
         if signedIn()
         && resource.data.uid == request.auth.uid
-        && request.resource.data.uid == request.auth.uid
-        && request.resource.data.usernameLower == usernameLower;
+        && request.resource.data.uid == request.auth.uid;
 
       allow delete:
         if signedIn()
@@ -131,7 +123,11 @@ service cloud.firestore {
           request.auth.uid == request.resource.data.ownerUid
           ||
           request.auth.uid == request.resource.data.friendUid
-        );
+        )
+        && linkId ==
+          request.resource.data.ownerUid
+          + "__"
+          + request.resource.data.friendUid;
 
       allow update: if false;
 
