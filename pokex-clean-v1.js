@@ -11,9 +11,7 @@
 
     /* Nombre principal */
     document.querySelectorAll("h1").forEach(el => {
-      if (/TCG\s*Scan/i.test(el.textContent)) {
-        el.innerHTML = '⚡ PokEX Beta <span class="pokex-version">v2.2</span>';
-      }
+      el.innerHTML = '⚡ PokEX Beta <span class="pokex-version">v2.2</span>';
     });
 
     /* Quitar textos secundarios */
