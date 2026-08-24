@@ -1,0 +1,184 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function self(uid) {
+      return signedIn() && request.auth.uid == uid;
+    }
+
+    function blockedEither(a, b) {
+      return
+        exists(
+          /databases/$(database)/documents/blocks/$(a + "__" + b)
+        )
+        ||
+        exists(
+          /databases/$(database)/documents/blocks/$(b + "__" + a)
+        );
+    }
+
+    function friendWith(uid) {
+      return signedIn()
+        && exists(
+          /databases/$(database)/documents/friendLinks/$(uid + "__" + request.auth.uid)
+        );
+    }
+
+    match /users/{uid} {
+      allow read: if signedIn();
+
+      allow create, update, delete:
+        if self(uid);
+
+      match /cards/{cardId} {
+        allow create, update, delete:
+          if self(uid);
+
+        allow read:
+          if signedIn() && (
+            request.auth.uid == uid
+            ||
+            get(
+              /databases/$(database)/documents/users/$(uid)
+            ).data.publicCollection == true
+            ||
+            friendWith(uid)
+          );
+      }
+    }
+
+    match /usernames/{usernameLower} {
+      allow read:
+        if signedIn();
+
+      allow create:
+        if signedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.usernameLower == usernameLower;
+
+      allow update:
+        if false;
+
+      allow delete:
+        if signedIn()
+        && resource.data.uid == request.auth.uid;
+    }
+
+    match /friendRequests/{requestId} {
+      allow read:
+        if signedIn()
+        && (
+          resource.data.fromUid == request.auth.uid
+          ||
+          resource.data.toUid == request.auth.uid
+        );
+
+      allow create:
+        if signedIn()
+        && request.resource.data.fromUid == request.auth.uid
+        && request.resource.data.toUid != request.auth.uid
+        && request.resource.data.status == "pending"
+        && requestId ==
+          request.resource.data.fromUid
+          + "__"
+          + request.resource.data.toUid
+        && !blockedEither(
+          request.resource.data.fromUid,
+          request.resource.data.toUid
+        );
+
+      allow update:
+        if signedIn()
+        && resource.data.toUid == request.auth.uid
+        && resource.data.status == "pending"
+        && request.resource.data.fromUid == resource.data.fromUid
+        && request.resource.data.toUid == resource.data.toUid
+        && request.resource.data.status == "accepted"
+        && !blockedEither(
+          resource.data.fromUid,
+          resource.data.toUid
+        );
+
+      allow delete:
+        if signedIn()
+        && (
+          resource.data.fromUid == request.auth.uid
+          ||
+          resource.data.toUid == request.auth.uid
+        );
+    }
+
+    match /friendLinks/{linkId} {
+      allow read:
+        if signedIn()
+        && (
+          resource.data.ownerUid == request.auth.uid
+          ||
+          resource.data.friendUid == request.auth.uid
+        );
+
+      allow create:
+        if signedIn()
+        && request.resource.data.ownerUid
+           != request.resource.data.friendUid
+        && (
+          request.auth.uid == request.resource.data.ownerUid
+          ||
+          request.auth.uid == request.resource.data.friendUid
+        )
+        && linkId ==
+          request.resource.data.ownerUid
+          + "__"
+          + request.resource.data.friendUid
+        && !blockedEither(
+          request.resource.data.ownerUid,
+          request.resource.data.friendUid
+        )
+        && request.resource.data.requestId is string
+        && existsAfter(
+          /databases/$(database)/documents/friendRequests/$(request.resource.data.requestId)
+        )
+        && getAfter(
+          /databases/$(database)/documents/friendRequests/$(request.resource.data.requestId)
+        ).data.status == "accepted";
+
+      allow update:
+        if false;
+
+      allow delete:
+        if signedIn()
+        && (
+          resource.data.ownerUid == request.auth.uid
+          ||
+          resource.data.friendUid == request.auth.uid
+        );
+    }
+
+    match /blocks/{blockId} {
+      allow read:
+        if signedIn()
+        && resource.data.blockerUid == request.auth.uid;
+
+      allow create:
+        if signedIn()
+        && request.resource.data.blockerUid == request.auth.uid
+        && request.resource.data.blockedUid != request.auth.uid
+        && blockId ==
+          request.resource.data.blockerUid
+          + "__"
+          + request.resource.data.blockedUid;
+
+      allow update:
+        if false;
+
+      allow delete:
+        if signedIn()
+        && resource.data.blockerUid == request.auth.uid;
+    }
+  }
+}
