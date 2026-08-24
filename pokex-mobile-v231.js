@@ -253,20 +253,29 @@ function setMasterVolume(value){
       Number(value) / 100;
 
     musicGain.gain.setTargetAtTime(
-      0.08 * volume,
+      0.16 * volume,
       musicContext.currentTime,
       0.04
     );
   }
 }
 
-function playTone(freq,duration=0.42,offset=0){
+function chipTone(
+  freq,
+  duration = 0.12,
+  offset = 0,
+  type = "square",
+  level = 0.10,
+  detune = 0
+){
   if(
     !musicContext
     ||
     !musicGain
     ||
     musicContext.state !== "running"
+    ||
+    !freq
   ){
     return;
   }
@@ -280,8 +289,16 @@ function playTone(freq,duration=0.42,offset=0){
   const gain =
     musicContext.createGain();
 
-  osc.type = "triangle";
-  osc.frequency.value = freq;
+  osc.type = type;
+  osc.frequency.setValueAtTime(
+    freq,
+    now
+  );
+
+  osc.detune.setValueAtTime(
+    detune,
+    now
+  );
 
   gain.gain.setValueAtTime(
     0.0001,
@@ -289,8 +306,8 @@ function playTone(freq,duration=0.42,offset=0){
   );
 
   gain.gain.exponentialRampToValueAtTime(
-    0.22,
-    now + 0.025
+    level,
+    now + 0.008
   );
 
   gain.gain.exponentialRampToValueAtTime(
@@ -302,55 +319,153 @@ function playTone(freq,duration=0.42,offset=0){
   gain.connect(musicGain);
 
   osc.start(now);
-  osc.stop(now + duration + 0.05);
+  osc.stop(
+    now + duration + 0.025
+  );
 }
 
+const POKEX_NOTES = {
+  C3:130.81,
+  D3:146.83,
+  E3:164.81,
+  F3:174.61,
+  G3:196.00,
+  A3:220.00,
+  B3:246.94,
+
+  C4:261.63,
+  D4:293.66,
+  E4:329.63,
+  F4:349.23,
+  G4:392.00,
+  A4:440.00,
+  B4:493.88,
+
+  C5:523.25,
+  D5:587.33,
+  E5:659.25,
+  F5:698.46,
+  G5:783.99,
+  A5:880.00
+};
+
+/*
+  PokEX Route Theme
+  Melodía original inspirada en RPG portátiles de 8 bits.
+*/
+
+const POKEX_LEAD = [
+  "E5", null, "G5", null,
+  "A5", "G5", "E5", "D5",
+
+  "E5", null, "D5", "C5",
+  "D5", null, "G4", null,
+
+  "C5", "D5", "E5", null,
+  "G5", "E5", "D5", null,
+
+  "A4", "C5", "D5", "E5",
+  "D5", null, "G4", null,
+
+  "E5", "G5", "A5", null,
+  "G5", "E5", "D5", "E5",
+
+  "C5", null, "D5", "E5",
+  "G5", null, "E5", null,
+
+  "A4", "C5", "E5", "D5",
+  "C5", "A4", "G4", null,
+
+  "C5", "D5", "E5", "G5",
+  "E5", "D5", "C5", null
+];
+
+const POKEX_ARP = [
+  ["C4","E4","G4","E4"],
+  ["A3","C4","E4","C4"],
+  ["F3","A3","C4","A3"],
+  ["G3","B3","D4","B3"]
+];
+
+const POKEX_BASS = [
+  "C3",
+  "A3",
+  "F3",
+  "G3"
+];
+
 function musicTick(){
-  const melody = [
-    261.63,
-    329.63,
-    392.00,
-    329.63,
-    293.66,
-    349.23,
-    440.00,
-    349.23,
-    246.94,
-    293.66,
-    392.00,
-    293.66,
-    220.00,
-    277.18,
-    329.63,
-    277.18
-  ];
 
-  const bass = [
-    130.81,
-    146.83,
-    123.47,
-    110.00
-  ];
+  const step =
+    musicStep % POKEX_LEAD.length;
 
-  const note =
-    melody[
-      musicStep % melody.length
-    ];
+  const section =
+    Math.floor(step / 16) % 4;
 
-  playTone(
-    note,
-    0.34
+  const beat =
+    step % 4;
+
+  const leadName =
+    POKEX_LEAD[step];
+
+  if(leadName){
+    chipTone(
+      POKEX_NOTES[leadName],
+      0.145,
+      0,
+      "square",
+      0.105
+    );
+
+    chipTone(
+      POKEX_NOTES[leadName],
+      0.10,
+      0.008,
+      "square",
+      0.025,
+      7
+    );
+  }
+
+  const arpName =
+    POKEX_ARP[section][beat];
+
+  chipTone(
+    POKEX_NOTES[arpName],
+    0.085,
+    0.015,
+    "square",
+    0.038
   );
 
-  if(musicStep % 4 === 0){
-    playTone(
-      bass[
-        Math.floor(
-          musicStep / 4
-        ) % bass.length
+  if(step % 4 === 0){
+
+    chipTone(
+      POKEX_NOTES[
+        POKEX_BASS[section]
       ],
-      0.55,
-      0.03
+      0.27,
+      0,
+      "triangle",
+      0.12
+    );
+
+    chipTone(
+      95,
+      0.035,
+      0,
+      "square",
+      0.045
+    );
+  }
+
+  if(step % 4 === 2){
+    chipTone(
+      1500,
+      0.018,
+      0,
+      "square",
+      0.018
     );
   }
 
@@ -394,7 +509,7 @@ async function startMusic(){
     musicTimer =
       setInterval(
         musicTick,
-        620
+        185
       );
   }
 
