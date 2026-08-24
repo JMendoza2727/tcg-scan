@@ -416,3 +416,14 @@
 #v23-friends-home {
   display: none !important;
 }
+
+
+/* PokEX v2.3.3 — Cuenta sin módulo Amigos */
+.v23-home-actions{
+  grid-template-columns:1fr !important;
+}
+
+#v23-friends-home{
+  display:none !important;
+}
+

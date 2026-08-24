@@ -2771,7 +2771,7 @@ if (!configured) {
   window.PokEXAccount = {
     configured: true,
     openAccount,
-    openFriends,
+
     syncNow,
     auth,
     db

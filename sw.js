@@ -1,4 +1,4 @@
-const CACHE = "pokex-shell-v2330-no-friends";
+const CACHE = "pokex-shell-v2330-account-only";
 const SHELL = ["./", "./index.html", "./styles.css", "./app.js", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", event => {

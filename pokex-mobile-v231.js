@@ -21,7 +21,7 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-const VERSION = "2.3.2";
+const VERSION = "2.3.3";
 
 const config =
   window.POKEX_FIREBASE_CONFIG || null;
@@ -220,42 +220,6 @@ function watchRequests(){
     requestUnsubscribe();
     requestUnsubscribe = null;
   }
-
-  setRequestBadge(0);
-
-  if(!currentUser){
-    return;
-  }
-
-  const q =
-    query(
-      collection(db,"friendRequests"),
-      where("toUid","==",currentUser.uid)
-    );
-
-  requestUnsubscribe =
-    onSnapshot(
-      q,
-      snap=>{
-        let count = 0;
-
-        snap.forEach(d=>{
-          if(
-            d.data()?.status === "pending"
-          ){
-            count++;
-          }
-        });
-
-        setRequestBadge(count);
-      },
-      error=>{
-        console.warn(
-          "PokEX badge solicitudes:",
-          error
-        );
-      }
-    );
 }
 
 function musicEnabled(){

@@ -7,7 +7,7 @@
   ];
 
   const desiredTitle =
-    '⚡ PokEX Beta <span class="pokex-version">v2.3.2</span>';
+    '⚡ PokEX Beta <span class="pokex-version">v2.3.3</span>';
 
   function cleanPokEX() {
     const title = document.querySelector("h1");
