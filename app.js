@@ -614,6 +614,20 @@ async function doSearch() {
           jpExtra
         );
     }
+    /*
+     * PokEX V2.1:
+     * completamos imágenes inglesas faltantes
+     * sin modificar el catálogo ni los resultados.
+     */
+    if (
+      langEl.value === "en" &&
+      window.PokEXENImages
+    ) {
+
+      await window.PokEXENImages
+        .apply(results);
+    }
+
     showSearchResults(results);
   } catch (e) {
     setProgress(false);
@@ -680,6 +694,16 @@ async function openCard(id) {
     const r = await fetch(`${API}/${langEl.value}/cards/${encodeURIComponent(id)}`);
     if (!r.ok) throw new Error("No se pudo cargar la carta.");
     const card = await r.json();
+
+    if (
+      langEl.value === "en" &&
+      window.PokEXENImages
+    ) {
+
+      await window.PokEXENImages
+        .applyOne(card);
+    }
+
     setProgress(false);
     preview.classList.add("hidden");
     renderDetail(card);
