@@ -586,6 +586,34 @@ async function doSearch() {
     ) {
       results = searchLocal(q);
     }
+
+
+    /*
+     * PokEX V2.1
+     * ==============================
+     * En japonés consultamos SIEMPRE:
+     *
+     * 1. TCGdex
+     * 2. PokEX JP
+     *
+     * y fusionamos ambas bibliotecas.
+     */
+    if (
+      langEl.value === "ja" &&
+      window.PokEXJP
+    ) {
+
+      const jpExtra =
+        await window.PokEXJP.search(
+          translatedQ || q
+        );
+
+      results =
+        window.PokEXJP.merge(
+          results,
+          jpExtra
+        );
+    }
     showSearchResults(results);
   } catch (e) {
     setProgress(false);
@@ -594,6 +622,58 @@ async function doSearch() {
 }
 
 async function openCard(id) {
+
+  /*
+   * Carta procedente exclusivamente
+   * del catálogo japonés ampliado.
+   */
+  if (
+    String(id).startsWith("pokexjp:") &&
+    window.PokEXJP
+  ) {
+
+    resetContent();
+
+    setProgress(
+      true,
+      "Cargando carta japonesa…",
+      40
+    );
+
+    try {
+
+      const card =
+        await window.PokEXJP.getCard(id);
+
+      if (!card)
+        throw new Error(
+          "No se pudo cargar la carta japonesa."
+        );
+
+      setProgress(false);
+
+      preview.classList.add(
+        "hidden"
+      );
+
+      renderDetail(card);
+
+      return;
+
+    } catch (e) {
+
+      setProgress(false);
+
+      showMessage(
+        e.message ||
+        "Error cargando carta japonesa.",
+        true
+      );
+
+      return;
+    }
+  }
+
   resetContent();
   setProgress(true, "Cargando ficha y precios…", 35);
   try {
