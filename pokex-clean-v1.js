@@ -10,9 +10,16 @@
   function cleanPokEX() {
 
     /* Nombre principal */
-    document.querySelectorAll("h1").forEach(el => {
-      el.innerHTML = '⚡ PokEX Beta <span class="pokex-version">v2.2</span>';
-    });
+    const title = document.querySelector("h1");
+    const desiredTitle =
+      '⚡ PokEX Beta <span class="pokex-version">v2.2</span>';
+
+    if (
+      title &&
+      title.innerHTML !== desiredTitle
+    ) {
+      title.innerHTML = desiredTitle;
+    }
 
     /* Quitar textos secundarios */
     document.querySelectorAll("body *").forEach(el => {
