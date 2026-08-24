@@ -655,6 +655,7 @@ async function createAccount(
           {
             uid: user.uid,
             username,
+            usernameLower,
             createdAt:
               Date.now()
           }

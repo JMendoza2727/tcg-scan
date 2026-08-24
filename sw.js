@@ -1,4 +1,4 @@
-const CACHE = "pokex-shell-v2311";
+const CACHE = "pokex-shell-v2312-register-fix";
 const SHELL = ["./", "./index.html", "./styles.css", "./app.js", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png"];
 
 self.addEventListener("install", event => {
