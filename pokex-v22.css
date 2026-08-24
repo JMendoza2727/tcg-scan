@@ -1,0 +1,115 @@
+
+.v22-tabs{
+  display:flex;
+  gap:7px;
+  overflow-x:auto;
+  margin:10px 0 14px;
+  padding-bottom:4px
+}
+.v22-tab{
+  flex:0 0 auto;
+  padding:9px 12px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.07);
+  color:#fff;
+  font:inherit;
+  font-size:13px;
+  font-weight:700;
+  cursor:pointer
+}
+.v22-tab.active{
+  background:#facc15;
+  color:#151515;
+  border-color:#facc15
+}
+.v22-panel{display:none}
+.v22-panel.active{display:block}
+.v22-note{
+  padding:13px;
+  border-radius:13px;
+  background:rgba(255,255,255,.055);
+  font-size:13px;
+  line-height:1.45
+}
+.v22-stats{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px
+}
+.v22-stat{
+  padding:14px;
+  border-radius:15px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(255,255,255,.055)
+}
+.v22-stat span{
+  display:block;
+  font-size:12px;
+  opacity:.65
+}
+.v22-stat strong{
+  display:block;
+  margin-top:5px;
+  font-size:21px
+}
+.v22-row{
+  display:flex;
+  justify-content:space-between;
+  gap:10px;
+  margin:7px 0;
+  padding:10px;
+  border-radius:11px;
+  background:rgba(255,255,255,.055)
+}
+.v22-title{margin:18px 0 8px}
+.v22-set{
+  width:100%;
+  margin:7px 0;
+  padding:13px;
+  border:1px solid rgba(255,255,255,.1);
+  border-radius:14px;
+  background:rgba(255,255,255,.055);
+  color:#fff;
+  text-align:left;
+  cursor:pointer
+}
+.v22-set-head{
+  display:flex;
+  justify-content:space-between;
+  gap:10px
+}
+.v22-progress{
+  height:7px;
+  margin-top:9px;
+  overflow:hidden;
+  border-radius:999px;
+  background:rgba(255,255,255,.10)
+}
+.v22-progress div{
+  height:100%;
+  background:#facc15
+}
+.v22-action{
+  width:100%;
+  margin:5px 0;
+  padding:12px;
+  border:0;
+  border-radius:12px;
+  background:#facc15;
+  color:#151515;
+  font:inherit;
+  font-weight:800;
+  cursor:pointer
+}
+.v22-action.secondary{
+  color:#fff;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.11)
+}
+@media(max-width:520px){
+  .v22-tab{
+    padding:8px 9px;
+    font-size:12px
+  }
+}
