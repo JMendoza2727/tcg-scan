@@ -267,3 +267,14 @@
     grid-template-columns:1fr 1fr;
   }
 }
+
+
+/* PokEX v2.3.3 — solo Cuenta */
+.pokex-v23-home{
+  grid-template-columns:1fr !important;
+}
+
+#v23FriendsButton{
+  display:none !important;
+}
+

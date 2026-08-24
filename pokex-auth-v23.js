@@ -29,7 +29,7 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-const CURRENT_VERSION = "2.3";
+const CURRENT_VERSION = "2.3.3";
 const SEEN_KEY = "pokex_seen_version";
 
 const cfg =
@@ -2391,12 +2391,6 @@ function installHomeButtons() {
   nav.innerHTML = `
     <button
       type="button"
-      id="v23FriendsButton">
-      👥 Amigos
-    </button>
-
-    <button
-      type="button"
       id="v23AccountButton">
       👤 Cuenta
     </button>
@@ -2406,13 +2400,6 @@ function installHomeButtons() {
     "afterend",
     nav
   );
-
-  nav
-    .querySelector(
-      "#v23FriendsButton"
-    )
-    .onclick =
-      openFriends;
 
   nav
     .querySelector(
@@ -2474,10 +2461,6 @@ function welcomeHTML(
           👤 Cuentas PokEX
           <br>
           ☁️ Colección sincronizada
-          <br>
-          👥 Amigos y solicitudes
-          <br>
-          🏆 Ranking
           <br>
           🔄 Sincronización entre dispositivos
         </p>
@@ -2779,5 +2762,5 @@ if (!configured) {
 }
 
 console.log(
-  "✅ PokEX Beta v2.3 · Cuenta y Amigos cargados"
+  "✅ PokEX Beta v2.3.3 · Cuenta cargada"
 );
