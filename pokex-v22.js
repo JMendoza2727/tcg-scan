@@ -105,7 +105,6 @@ tabs.innerHTML=`
   <button class="v22-tab" data-tab="sets">📦 Sets</button>
   <button class="v22-tab" data-tab="stats">📊 Estadísticas</button>
   <button class="v22-tab" data-tab="backup">💾 Backup</button>
-  <button class="v22-tab" data-tab="account">☁️ Cuenta</button>
 `;
 
 content.insertBefore(tabs,content.firstChild);
