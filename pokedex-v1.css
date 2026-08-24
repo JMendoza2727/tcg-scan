@@ -251,3 +251,78 @@ body.pokedex-open {
       repeat(4,1fr);
   }
 }
+
+
+/* =========================================================
+   PokEX · Actualizar Mi Pokédex
+   ========================================================= */
+
+.pokedex-update-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+
+  border: 1px solid rgba(255,255,255,.16);
+  border-radius: 12px;
+
+  padding: 9px 13px;
+
+  background: rgba(255,255,255,.08);
+  color: #fff;
+
+  font: inherit;
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+.pokedex-update-btn:hover {
+  background: rgba(255,255,255,.13);
+}
+
+.pokedex-update-btn:disabled {
+  opacity: .55;
+  cursor: default;
+}
+
+.pokedex-update-status {
+  margin: 10px 0 6px;
+  padding: 10px 12px;
+
+  border-radius: 11px;
+
+  background: rgba(255,255,255,.07);
+
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.pokedex-update-status.success {
+  background: rgba(80,200,120,.12);
+}
+
+.pokedex-update-status.warning {
+  background: rgba(255,190,70,.12);
+}
+
+.pokedex-last-update {
+  min-height: 18px;
+
+  margin: 2px 2px 8px;
+
+  opacity: .65;
+
+  font-size: 11px;
+}
+
+@media (max-width: 520px) {
+
+  .pokedex-update-btn {
+    padding: 8px 9px;
+    font-size: 12px;
+  }
+}
+

@@ -86,34 +86,191 @@
 
 
   async function addOne(card) {
-    const key = keyFor(card);
+
+    const key =
+      keyFor(card);
+
 
     const existing =
       await getCard(key);
 
-    const cm =
-      card.pricing?.cardmarket || {};
 
-    const item = existing || {
-      key,
-      id: card.id,
-      lang: window.langEl?.value || "en",
-      name: card.name,
-      localId: card.localId,
-      rarity: card.rarity || "",
-      setName: card.set?.name || "",
-      image: card.image || "",
-      quantity: 0,
-      addedAt: Date.now()
-    };
+    /*
+     * Obtiene:
+     *
+     * Cardmarket → EUR
+     *
+     * o
+     *
+     * TCGplayer USD
+     *     ↓
+     * cambio ECB
+     *     ↓
+     * EUR
+     */
+    const pricing =
+      window.PokEXPricing
+        ?.getStoredPrice
+        ? await window.PokEXPricing
+            .getStoredPrice(card)
+        : null;
+
+
+    const item =
+      existing || {
+
+        key,
+
+        id:
+          card.id,
+
+        lang:
+          window.langEl?.value ||
+          "en",
+
+        name:
+          card.name,
+
+        localId:
+          card.localId,
+
+        rarity:
+          card.rarity || "",
+
+        setName:
+          card.set?.name || "",
+
+        image:
+          card.image || "",
+
+        quantity:
+          0,
+
+        addedAt:
+          Date.now()
+      };
+
+
+    /*
+     * Refrescamos datos básicos
+     * cada vez que añadimos.
+     */
+    item.name =
+      card.name ||
+      item.name;
+
+
+    item.localId =
+      card.localId ??
+      item.localId;
+
+
+    item.rarity =
+      card.rarity ||
+      item.rarity ||
+      "";
+
+
+    item.setName =
+      card.set?.name ||
+      item.setName ||
+      "";
+
+
+    item.image =
+      card.image ||
+      item.image ||
+      "";
+
 
     item.quantity += 1;
 
-    item.lastTrend =
-      cm.trend ?? item.lastTrend ?? null;
 
-    item.priceUpdated =
-      cm.updated ?? item.priceUpdated ?? null;
+    if (
+      pricing &&
+      typeof pricing.value ===
+        "number" &&
+      Number.isFinite(
+        pricing.value
+      ) &&
+      pricing.currency ===
+        "EUR"
+    ) {
+
+      /*
+       * Campo nuevo.
+       */
+      item.lastPrice =
+        pricing.value;
+
+      item.priceCurrency =
+        "EUR";
+
+      item.priceSource =
+        pricing.source;
+
+      item.priceVariant =
+        pricing.variantLabel ||
+        null;
+
+      item.priceUpdated =
+        pricing.updated ??
+        item.priceUpdated ??
+        null;
+
+
+      /*
+       * Compatibilidad total con
+       * Mi Pokédex V1.
+       *
+       * Aunque el nombre histórico
+       * sea lastTrend, aquí guardamos
+       * el valor orientativo final
+       * SIEMPRE en euros.
+       */
+      item.lastTrend =
+        pricing.value;
+
+
+      /*
+       * Conservamos el precio original
+       * cuando venía de TCGplayer.
+       */
+      if (
+        pricing.originalCurrency ===
+        "USD"
+      ) {
+
+        item.originalPrice =
+          pricing.originalValue;
+
+        item.originalCurrency =
+          "USD";
+
+        item.fxRate =
+          pricing.fxRate ??
+          null;
+
+        item.fxDate =
+          pricing.fxDate ??
+          null;
+
+      } else {
+
+        item.originalPrice =
+          null;
+
+        item.originalCurrency =
+          null;
+
+        item.fxRate =
+          null;
+
+        item.fxDate =
+          null;
+      }
+    }
+
 
     await saveCard(item);
 
@@ -147,13 +304,88 @@
   }
 
 
-  function money(v) {
-    if (
-      typeof v !== "number" ||
-      !Number.isFinite(v)
-    ) return "—";
+  function moneyCurrency(
+    value,
+    currency = "EUR"
+  ) {
 
-    return v.toFixed(2) + " €";
+    if (
+      typeof value !== "number" ||
+      !Number.isFinite(value)
+    ) {
+      return "—";
+    }
+
+    if (currency === "USD") {
+      return `$${value.toFixed(2)}`;
+    }
+
+    return `${value.toFixed(2)} €`;
+  }
+
+
+  function money(v) {
+    return moneyCurrency(
+      v,
+      "EUR"
+    );
+  }
+
+
+  function getItemPrice(item) {
+
+    if (
+      typeof item.lastPrice ===
+        "number" &&
+      Number.isFinite(
+        item.lastPrice
+      )
+    ) {
+      return {
+        value:
+          item.lastPrice,
+
+        currency:
+          item.priceCurrency ||
+          "EUR"
+      };
+    }
+
+    /*
+     * Cartas guardadas antes
+     * de este cambio.
+     */
+    if (
+      typeof item.lastTrend ===
+        "number" &&
+      Number.isFinite(
+        item.lastTrend
+      )
+    ) {
+      return {
+        value:
+          item.lastTrend,
+
+        currency: "EUR"
+      };
+    }
+
+    return null;
+  }
+
+
+  function moneyItem(item) {
+
+    const price =
+      getItemPrice(item);
+
+    if (!price)
+      return "—";
+
+    return moneyCurrency(
+      price.value,
+      price.currency
+    );
   }
 
 
@@ -208,6 +440,12 @@
         </span>
       </div>
 
+      <button id="updatePokedex"
+              class="pokedex-update-btn"
+              type="button">
+        ⟳ Actualizar
+      </button>
+
     </div>
 
     <div class="pokedex-content">
@@ -216,6 +454,15 @@
              class="pokedex-search"
              type="search"
              placeholder="Buscar en mi colección…">
+
+      <div id="pokedexUpdateStatus"
+           class="pokedex-update-status"
+           hidden>
+      </div>
+
+      <div id="pokedexLastUpdate"
+           class="pokedex-last-update">
+      </div>
 
       <div id="pokedexValue"
            class="pokedex-value">
@@ -290,29 +537,73 @@
         0
       );
 
-    const totalValue =
-      items.reduce(
-        (sum, x) =>
-          sum +
-          (
-            typeof x.lastTrend === "number"
-              ? x.lastTrend * x.quantity
-              : 0
-          ),
-        0
-      );
+    const totals = {
+      EUR: 0,
+      USD: 0
+    };
+
+    for (const item of items) {
+
+      const price =
+        getItemPrice(item);
+
+      if (!price)
+        continue;
+
+      const currency =
+        price.currency === "USD"
+          ? "USD"
+          : "EUR";
+
+      totals[currency] +=
+        price.value *
+        item.quantity;
+    }
+
 
     document.getElementById(
       "pokedexStats"
     ).textContent =
       `${items.length} distintas · ${totalCards} cartas`;
 
+
+    const totalParts = [];
+
+    if (totals.EUR > 0) {
+      totalParts.push(
+        moneyCurrency(
+          totals.EUR,
+          "EUR"
+        )
+      );
+    }
+
+    if (totals.USD > 0) {
+      totalParts.push(
+        moneyCurrency(
+          totals.USD,
+          "USD"
+        )
+      );
+    }
+
+
     document.getElementById(
       "pokedexValue"
     ).innerHTML = `
-      <span>Valor orientativo de la colección</span>
-      <strong>${money(totalValue)}</strong>
-      <small>Según el último precio consultado de cada carta</small>
+      <span>
+        Valor orientativo de la colección
+      </span>
+
+      <strong>
+        ${totalParts.length
+          ? totalParts.join(" · ")
+          : "—"}
+      </strong>
+
+      <small>
+
+      </small>
     `;
 
 
@@ -375,7 +666,7 @@
         </small>
 
         <b>
-          ${money(item.lastTrend)}
+          ${moneyItem(item)}
         </b>
       `;
 
@@ -574,5 +865,597 @@
 
 
   refreshCounter();
+
+
+
+  /* =========================================================
+     ACTUALIZAR MI POKÉDEX
+     ========================================================= */
+
+  const POKEDEX_TCGDEX_API =
+    "https://api.tcgdex.net/v2";
+
+  const POKEDEX_LAST_UPDATE =
+    "pokex-pokedex-last-update-v21";
+
+
+  function sleep(ms) {
+    return new Promise(
+      resolve => setTimeout(resolve, ms)
+    );
+  }
+
+
+  function formatLastUpdate(value) {
+
+    if (!value)
+      return "";
+
+    const date =
+      new Date(Number(value));
+
+    if (
+      Number.isNaN(
+        date.getTime()
+      )
+    ) {
+      return "";
+    }
+
+    return (
+      "Última actualización: " +
+      date.toLocaleString()
+    );
+  }
+
+
+  function renderLastUpdate() {
+
+    const el =
+      document.getElementById(
+        "pokedexLastUpdate"
+      );
+
+    if (!el)
+      return;
+
+    let value = null;
+
+    try {
+      value =
+        localStorage.getItem(
+          POKEDEX_LAST_UPDATE
+        );
+    } catch (_) {}
+
+    el.textContent =
+      formatLastUpdate(value);
+  }
+
+
+  function setUpdateStatus(
+    text,
+    type = ""
+  ) {
+
+    const el =
+      document.getElementById(
+        "pokedexUpdateStatus"
+      );
+
+    if (!el)
+      return;
+
+    if (!text) {
+      el.hidden = true;
+      el.textContent = "";
+      el.className =
+        "pokedex-update-status";
+      return;
+    }
+
+    el.hidden = false;
+
+    el.className =
+      "pokedex-update-status" +
+      (
+        type
+          ? ` ${type}`
+          : ""
+      );
+
+    el.textContent = text;
+  }
+
+
+  async function loadFreshPokedexCard(
+    item
+  ) {
+
+    /*
+     * Cartas japonesas que solo existen
+     * en nuestro catálogo complementario.
+     */
+    if (
+      String(item.id || "")
+        .startsWith("pokexjp:")
+    ) {
+
+      if (
+        !window.PokEXJP ||
+        typeof window.PokEXJP.getCard !==
+          "function"
+      ) {
+        throw new Error(
+          "Catálogo japonés no disponible"
+        );
+      }
+
+      return await window.PokEXJP
+        .getCard(item.id);
+    }
+
+
+    const lang =
+      item.lang || "en";
+
+    const response =
+      await fetch(
+        `${POKEDEX_TCGDEX_API}/` +
+        `${encodeURIComponent(lang)}/cards/` +
+        `${encodeURIComponent(item.id)}`,
+        {
+          cache: "no-store"
+        }
+      );
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        `TCGdex ${response.status}`
+      );
+    }
+
+
+    const card =
+      await response.json();
+
+
+    /*
+     * Recuperador de imágenes EN
+     * que ya usamos en PokEX.
+     */
+    if (
+      lang === "en" &&
+      window.PokEXENImages &&
+      typeof window.PokEXENImages
+        .applyOne === "function"
+    ) {
+
+      try {
+
+        await window.PokEXENImages
+          .applyOne(card);
+
+      } catch (_) {}
+    }
+
+
+    return card;
+  }
+
+
+  async function updateEntirePokedex() {
+
+    const button =
+      document.getElementById(
+        "updatePokedex"
+      );
+
+    if (!button)
+      return;
+
+
+    const items =
+      await getAll();
+
+
+    if (!items.length) {
+
+      setUpdateStatus(
+        "No tienes cartas para actualizar."
+      );
+
+      return;
+    }
+
+
+    button.disabled = true;
+    button.textContent =
+      "⟳ Actualizando…";
+
+
+    let updatedPrices = 0;
+    let recoveredImages = 0;
+    let changedImages = 0;
+    let metadataChanges = 0;
+    let withoutPrice = 0;
+    let errors = 0;
+
+
+    const total =
+      items.length;
+
+
+    for (
+      let i = 0;
+      i < items.length;
+      i++
+    ) {
+
+      const item =
+        items[i];
+
+
+      setUpdateStatus(
+        `Actualizando ${i + 1} / ${total} · ${item.name || "Carta"}`
+      );
+
+
+      try {
+
+        const card =
+          await loadFreshPokedexCard(
+            item
+          );
+
+
+        if (!card) {
+          throw new Error(
+            "Carta no encontrada"
+          );
+        }
+
+
+        /*
+         * --------------------------
+         * PRECIO
+         * --------------------------
+         */
+
+        const oldPrice =
+          typeof item.lastPrice ===
+            "number"
+            ? item.lastPrice
+            : (
+                typeof item.lastTrend ===
+                  "number"
+                  ? item.lastTrend
+                  : null
+              );
+
+
+        let pricing = null;
+
+
+        if (
+          window.PokEXPricing &&
+          typeof window.PokEXPricing
+            .getStoredPrice ===
+            "function"
+        ) {
+
+          pricing =
+            await window.PokEXPricing
+              .getStoredPrice(card);
+        }
+
+
+        if (
+          pricing &&
+          pricing.currency === "EUR" &&
+          typeof pricing.value ===
+            "number" &&
+          Number.isFinite(
+            pricing.value
+          )
+        ) {
+
+          const newPrice =
+            pricing.value;
+
+
+          if (
+            oldPrice === null ||
+            Math.abs(
+              oldPrice - newPrice
+            ) >= 0.005
+          ) {
+            updatedPrices += 1;
+          }
+
+
+          item.lastPrice =
+            newPrice;
+
+          /*
+           * Compatibilidad con V1.
+           */
+          item.lastTrend =
+            newPrice;
+
+          item.priceCurrency =
+            "EUR";
+
+          item.priceSource =
+            pricing.source ||
+            null;
+
+          item.priceVariant =
+            pricing.variantLabel ||
+            null;
+
+          item.priceUpdated =
+            pricing.updated ||
+            Date.now();
+
+
+          if (
+            pricing.originalCurrency ===
+            "USD"
+          ) {
+
+            item.originalPrice =
+              pricing.originalValue;
+
+            item.originalCurrency =
+              "USD";
+
+            item.fxRate =
+              pricing.fxRate ??
+              null;
+
+            item.fxDate =
+              pricing.fxDate ??
+              null;
+
+          } else {
+
+            item.originalPrice =
+              null;
+
+            item.originalCurrency =
+              null;
+
+            item.fxRate =
+              null;
+
+            item.fxDate =
+              null;
+          }
+
+        } else {
+
+          /*
+           * No eliminamos el último precio
+           * conocido si hoy la fuente no
+           * devuelve precio.
+           */
+          withoutPrice += 1;
+        }
+
+
+        /*
+         * --------------------------
+         * IMAGEN
+         * --------------------------
+         */
+
+        const oldImage =
+          item.image || "";
+
+        const newImage =
+          card.image || "";
+
+
+        if (
+          newImage &&
+          newImage !== oldImage
+        ) {
+
+          if (!oldImage) {
+            recoveredImages += 1;
+          } else {
+            changedImages += 1;
+          }
+
+          item.image =
+            newImage;
+        }
+
+
+        /*
+         * --------------------------
+         * METADATOS
+         * --------------------------
+         */
+
+        const beforeMeta =
+          JSON.stringify([
+            item.name || "",
+            item.localId || "",
+            item.rarity || "",
+            item.setName || ""
+          ]);
+
+
+        item.name =
+          card.name ||
+          item.name ||
+          "";
+
+        item.localId =
+          card.localId ??
+          item.localId ??
+          "";
+
+        item.rarity =
+          card.rarity ||
+          item.rarity ||
+          "";
+
+        item.setName =
+          card.set?.name ||
+          item.setName ||
+          "";
+
+
+        const afterMeta =
+          JSON.stringify([
+            item.name || "",
+            item.localId || "",
+            item.rarity || "",
+            item.setName || ""
+          ]);
+
+
+        if (
+          beforeMeta !== afterMeta
+        ) {
+          metadataChanges += 1;
+        }
+
+
+        item.lastCheckedAt =
+          Date.now();
+
+
+        /*
+         * Cantidad NO se toca.
+         */
+        await saveCard(item);
+
+
+      } catch (error) {
+
+        errors += 1;
+
+        console.warn(
+          "PokEX update:",
+          item?.name,
+          error
+        );
+      }
+
+
+      /*
+       * Pequeña pausa para no disparar
+       * cientos de peticiones seguidas.
+       */
+      if (
+        i < items.length - 1
+      ) {
+        await sleep(120);
+      }
+    }
+
+
+    const now =
+      Date.now();
+
+
+    try {
+
+      localStorage.setItem(
+        POKEDEX_LAST_UPDATE,
+        String(now)
+      );
+
+    } catch (_) {}
+
+
+    renderLastUpdate();
+
+    await refreshCounter();
+
+
+    const search =
+      document.getElementById(
+        "pokedexSearch"
+      );
+
+
+    await renderPokedex(
+      search?.value || ""
+    );
+
+
+    const parts = [
+      `${updatedPrices} precios`,
+      `${recoveredImages} imágenes recuperadas`
+    ];
+
+
+    if (changedImages) {
+      parts.push(
+        `${changedImages} imágenes renovadas`
+      );
+    }
+
+
+    if (metadataChanges) {
+      parts.push(
+        `${metadataChanges} fichas actualizadas`
+      );
+    }
+
+
+    if (withoutPrice) {
+      parts.push(
+        `${withoutPrice} sin precio nuevo`
+      );
+    }
+
+
+    if (errors) {
+      parts.push(
+        `${errors} errores`
+      );
+    }
+
+
+    setUpdateStatus(
+      `✅ Actualización terminada · ${parts.join(" · ")}`,
+      errors
+        ? "warning"
+        : "success"
+    );
+
+
+    button.disabled = false;
+    button.textContent =
+      "⟳ Actualizar";
+  }
+
+
+  const updatePokedexButton =
+    document.getElementById(
+      "updatePokedex"
+    );
+
+
+  if (updatePokedexButton) {
+
+    updatePokedexButton
+      .addEventListener(
+        "click",
+        updateEntirePokedex
+      );
+  }
+
+
+  renderLastUpdate();
+
 
 })();
