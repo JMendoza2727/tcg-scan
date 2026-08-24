@@ -337,7 +337,12 @@
 
       const image =
         item.image
-          ? `${item.image}/low.webp`
+          ? (
+              /\.(?:jpe?g|png|webp)(?:\?.*)?$/i
+                .test(item.image)
+                ? item.image
+                : `${item.image}/low.webp`
+            )
           : "";
 
       div.innerHTML = `

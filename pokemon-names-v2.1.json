@@ -1,0 +1,6152 @@
+[
+    {
+        "id":  1,
+        "es":  "Bulbasaur",
+        "en":  "Bulbasaur",
+        "ja":  "フシギダネ"
+    },
+    {
+        "id":  2,
+        "es":  "Ivysaur",
+        "en":  "Ivysaur",
+        "ja":  "フシギソウ"
+    },
+    {
+        "id":  3,
+        "es":  "Venusaur",
+        "en":  "Venusaur",
+        "ja":  "フシギバナ"
+    },
+    {
+        "id":  4,
+        "es":  "Charmander",
+        "en":  "Charmander",
+        "ja":  "ヒトカゲ"
+    },
+    {
+        "id":  5,
+        "es":  "Charmeleon",
+        "en":  "Charmeleon",
+        "ja":  "リザード"
+    },
+    {
+        "id":  6,
+        "es":  "Charizard",
+        "en":  "Charizard",
+        "ja":  "リザードン"
+    },
+    {
+        "id":  7,
+        "es":  "Squirtle",
+        "en":  "Squirtle",
+        "ja":  "ゼニガメ"
+    },
+    {
+        "id":  8,
+        "es":  "Wartortle",
+        "en":  "Wartortle",
+        "ja":  "カメール"
+    },
+    {
+        "id":  9,
+        "es":  "Blastoise",
+        "en":  "Blastoise",
+        "ja":  "カメックス"
+    },
+    {
+        "id":  10,
+        "es":  "Caterpie",
+        "en":  "Caterpie",
+        "ja":  "キャタピー"
+    },
+    {
+        "id":  11,
+        "es":  "Metapod",
+        "en":  "Metapod",
+        "ja":  "トランセル"
+    },
+    {
+        "id":  12,
+        "es":  "Butterfree",
+        "en":  "Butterfree",
+        "ja":  "バタフリー"
+    },
+    {
+        "id":  13,
+        "es":  "Weedle",
+        "en":  "Weedle",
+        "ja":  "ビードル"
+    },
+    {
+        "id":  14,
+        "es":  "Kakuna",
+        "en":  "Kakuna",
+        "ja":  "コクーン"
+    },
+    {
+        "id":  15,
+        "es":  "Beedrill",
+        "en":  "Beedrill",
+        "ja":  "スピアー"
+    },
+    {
+        "id":  16,
+        "es":  "Pidgey",
+        "en":  "Pidgey",
+        "ja":  "ポッポ"
+    },
+    {
+        "id":  17,
+        "es":  "Pidgeotto",
+        "en":  "Pidgeotto",
+        "ja":  "ピジョン"
+    },
+    {
+        "id":  18,
+        "es":  "Pidgeot",
+        "en":  "Pidgeot",
+        "ja":  "ピジョット"
+    },
+    {
+        "id":  19,
+        "es":  "Rattata",
+        "en":  "Rattata",
+        "ja":  "コラッタ"
+    },
+    {
+        "id":  20,
+        "es":  "Raticate",
+        "en":  "Raticate",
+        "ja":  "ラッタ"
+    },
+    {
+        "id":  21,
+        "es":  "Spearow",
+        "en":  "Spearow",
+        "ja":  "オニスズメ"
+    },
+    {
+        "id":  22,
+        "es":  "Fearow",
+        "en":  "Fearow",
+        "ja":  "オニドリル"
+    },
+    {
+        "id":  23,
+        "es":  "Ekans",
+        "en":  "Ekans",
+        "ja":  "アーボ"
+    },
+    {
+        "id":  24,
+        "es":  "Arbok",
+        "en":  "Arbok",
+        "ja":  "アーボック"
+    },
+    {
+        "id":  25,
+        "es":  "Pikachu",
+        "en":  "Pikachu",
+        "ja":  "ピカチュウ"
+    },
+    {
+        "id":  26,
+        "es":  "Raichu",
+        "en":  "Raichu",
+        "ja":  "ライチュウ"
+    },
+    {
+        "id":  27,
+        "es":  "Sandshrew",
+        "en":  "Sandshrew",
+        "ja":  "サンド"
+    },
+    {
+        "id":  28,
+        "es":  "Sandslash",
+        "en":  "Sandslash",
+        "ja":  "サンドパン"
+    },
+    {
+        "id":  29,
+        "es":  "Nidoran♀",
+        "en":  "Nidoran♀",
+        "ja":  "ニドラン♀"
+    },
+    {
+        "id":  30,
+        "es":  "Nidorina",
+        "en":  "Nidorina",
+        "ja":  "ニドリーナ"
+    },
+    {
+        "id":  31,
+        "es":  "Nidoqueen",
+        "en":  "Nidoqueen",
+        "ja":  "ニドクイン"
+    },
+    {
+        "id":  32,
+        "es":  "Nidoran♂",
+        "en":  "Nidoran♂",
+        "ja":  "ニドラン♂"
+    },
+    {
+        "id":  33,
+        "es":  "Nidorino",
+        "en":  "Nidorino",
+        "ja":  "ニドリーノ"
+    },
+    {
+        "id":  34,
+        "es":  "Nidoking",
+        "en":  "Nidoking",
+        "ja":  "ニドキング"
+    },
+    {
+        "id":  35,
+        "es":  "Clefairy",
+        "en":  "Clefairy",
+        "ja":  "ピッピ"
+    },
+    {
+        "id":  36,
+        "es":  "Clefable",
+        "en":  "Clefable",
+        "ja":  "ピクシー"
+    },
+    {
+        "id":  37,
+        "es":  "Vulpix",
+        "en":  "Vulpix",
+        "ja":  "ロコン"
+    },
+    {
+        "id":  38,
+        "es":  "Ninetales",
+        "en":  "Ninetales",
+        "ja":  "キュウコン"
+    },
+    {
+        "id":  39,
+        "es":  "Jigglypuff",
+        "en":  "Jigglypuff",
+        "ja":  "プリン"
+    },
+    {
+        "id":  40,
+        "es":  "Wigglytuff",
+        "en":  "Wigglytuff",
+        "ja":  "プクリン"
+    },
+    {
+        "id":  41,
+        "es":  "Zubat",
+        "en":  "Zubat",
+        "ja":  "ズバット"
+    },
+    {
+        "id":  42,
+        "es":  "Golbat",
+        "en":  "Golbat",
+        "ja":  "ゴルバット"
+    },
+    {
+        "id":  43,
+        "es":  "Oddish",
+        "en":  "Oddish",
+        "ja":  "ナゾノクサ"
+    },
+    {
+        "id":  44,
+        "es":  "Gloom",
+        "en":  "Gloom",
+        "ja":  "クサイハナ"
+    },
+    {
+        "id":  45,
+        "es":  "Vileplume",
+        "en":  "Vileplume",
+        "ja":  "ラフレシア"
+    },
+    {
+        "id":  46,
+        "es":  "Paras",
+        "en":  "Paras",
+        "ja":  "パラス"
+    },
+    {
+        "id":  47,
+        "es":  "Parasect",
+        "en":  "Parasect",
+        "ja":  "パラセクト"
+    },
+    {
+        "id":  48,
+        "es":  "Venonat",
+        "en":  "Venonat",
+        "ja":  "コンパン"
+    },
+    {
+        "id":  49,
+        "es":  "Venomoth",
+        "en":  "Venomoth",
+        "ja":  "モルフォン"
+    },
+    {
+        "id":  50,
+        "es":  "Diglett",
+        "en":  "Diglett",
+        "ja":  "ディグダ"
+    },
+    {
+        "id":  51,
+        "es":  "Dugtrio",
+        "en":  "Dugtrio",
+        "ja":  "ダグトリオ"
+    },
+    {
+        "id":  52,
+        "es":  "Meowth",
+        "en":  "Meowth",
+        "ja":  "ニャース"
+    },
+    {
+        "id":  53,
+        "es":  "Persian",
+        "en":  "Persian",
+        "ja":  "ペルシアン"
+    },
+    {
+        "id":  54,
+        "es":  "Psyduck",
+        "en":  "Psyduck",
+        "ja":  "コダック"
+    },
+    {
+        "id":  55,
+        "es":  "Golduck",
+        "en":  "Golduck",
+        "ja":  "ゴルダック"
+    },
+    {
+        "id":  56,
+        "es":  "Mankey",
+        "en":  "Mankey",
+        "ja":  "マンキー"
+    },
+    {
+        "id":  57,
+        "es":  "Primeape",
+        "en":  "Primeape",
+        "ja":  "オコリザル"
+    },
+    {
+        "id":  58,
+        "es":  "Growlithe",
+        "en":  "Growlithe",
+        "ja":  "ガーディ"
+    },
+    {
+        "id":  59,
+        "es":  "Arcanine",
+        "en":  "Arcanine",
+        "ja":  "ウインディ"
+    },
+    {
+        "id":  60,
+        "es":  "Poliwag",
+        "en":  "Poliwag",
+        "ja":  "ニョロモ"
+    },
+    {
+        "id":  61,
+        "es":  "Poliwhirl",
+        "en":  "Poliwhirl",
+        "ja":  "ニョロゾ"
+    },
+    {
+        "id":  62,
+        "es":  "Poliwrath",
+        "en":  "Poliwrath",
+        "ja":  "ニョロボン"
+    },
+    {
+        "id":  63,
+        "es":  "Abra",
+        "en":  "Abra",
+        "ja":  "ケーシィ"
+    },
+    {
+        "id":  64,
+        "es":  "Kadabra",
+        "en":  "Kadabra",
+        "ja":  "ユンゲラー"
+    },
+    {
+        "id":  65,
+        "es":  "Alakazam",
+        "en":  "Alakazam",
+        "ja":  "フーディン"
+    },
+    {
+        "id":  66,
+        "es":  "Machop",
+        "en":  "Machop",
+        "ja":  "ワンリキー"
+    },
+    {
+        "id":  67,
+        "es":  "Machoke",
+        "en":  "Machoke",
+        "ja":  "ゴーリキー"
+    },
+    {
+        "id":  68,
+        "es":  "Machamp",
+        "en":  "Machamp",
+        "ja":  "カイリキー"
+    },
+    {
+        "id":  69,
+        "es":  "Bellsprout",
+        "en":  "Bellsprout",
+        "ja":  "マダツボミ"
+    },
+    {
+        "id":  70,
+        "es":  "Weepinbell",
+        "en":  "Weepinbell",
+        "ja":  "ウツドン"
+    },
+    {
+        "id":  71,
+        "es":  "Victreebel",
+        "en":  "Victreebel",
+        "ja":  "ウツボット"
+    },
+    {
+        "id":  72,
+        "es":  "Tentacool",
+        "en":  "Tentacool",
+        "ja":  "メノクラゲ"
+    },
+    {
+        "id":  73,
+        "es":  "Tentacruel",
+        "en":  "Tentacruel",
+        "ja":  "ドククラゲ"
+    },
+    {
+        "id":  74,
+        "es":  "Geodude",
+        "en":  "Geodude",
+        "ja":  "イシツブテ"
+    },
+    {
+        "id":  75,
+        "es":  "Graveler",
+        "en":  "Graveler",
+        "ja":  "ゴローン"
+    },
+    {
+        "id":  76,
+        "es":  "Golem",
+        "en":  "Golem",
+        "ja":  "ゴローニャ"
+    },
+    {
+        "id":  77,
+        "es":  "Ponyta",
+        "en":  "Ponyta",
+        "ja":  "ポニータ"
+    },
+    {
+        "id":  78,
+        "es":  "Rapidash",
+        "en":  "Rapidash",
+        "ja":  "ギャロップ"
+    },
+    {
+        "id":  79,
+        "es":  "Slowpoke",
+        "en":  "Slowpoke",
+        "ja":  "ヤドン"
+    },
+    {
+        "id":  80,
+        "es":  "Slowbro",
+        "en":  "Slowbro",
+        "ja":  "ヤドラン"
+    },
+    {
+        "id":  81,
+        "es":  "Magnemite",
+        "en":  "Magnemite",
+        "ja":  "コイル"
+    },
+    {
+        "id":  82,
+        "es":  "Magneton",
+        "en":  "Magneton",
+        "ja":  "レアコイル"
+    },
+    {
+        "id":  83,
+        "es":  "Farfetch’d",
+        "en":  "Farfetch’d",
+        "ja":  "カモネギ"
+    },
+    {
+        "id":  84,
+        "es":  "Doduo",
+        "en":  "Doduo",
+        "ja":  "ドードー"
+    },
+    {
+        "id":  85,
+        "es":  "Dodrio",
+        "en":  "Dodrio",
+        "ja":  "ドードリオ"
+    },
+    {
+        "id":  86,
+        "es":  "Seel",
+        "en":  "Seel",
+        "ja":  "パウワウ"
+    },
+    {
+        "id":  87,
+        "es":  "Dewgong",
+        "en":  "Dewgong",
+        "ja":  "ジュゴン"
+    },
+    {
+        "id":  88,
+        "es":  "Grimer",
+        "en":  "Grimer",
+        "ja":  "ベトベター"
+    },
+    {
+        "id":  89,
+        "es":  "Muk",
+        "en":  "Muk",
+        "ja":  "ベトベトン"
+    },
+    {
+        "id":  90,
+        "es":  "Shellder",
+        "en":  "Shellder",
+        "ja":  "シェルダー"
+    },
+    {
+        "id":  91,
+        "es":  "Cloyster",
+        "en":  "Cloyster",
+        "ja":  "パルシェン"
+    },
+    {
+        "id":  92,
+        "es":  "Gastly",
+        "en":  "Gastly",
+        "ja":  "ゴース"
+    },
+    {
+        "id":  93,
+        "es":  "Haunter",
+        "en":  "Haunter",
+        "ja":  "ゴースト"
+    },
+    {
+        "id":  94,
+        "es":  "Gengar",
+        "en":  "Gengar",
+        "ja":  "ゲンガー"
+    },
+    {
+        "id":  95,
+        "es":  "Onix",
+        "en":  "Onix",
+        "ja":  "イワーク"
+    },
+    {
+        "id":  96,
+        "es":  "Drowzee",
+        "en":  "Drowzee",
+        "ja":  "スリープ"
+    },
+    {
+        "id":  97,
+        "es":  "Hypno",
+        "en":  "Hypno",
+        "ja":  "スリーパー"
+    },
+    {
+        "id":  98,
+        "es":  "Krabby",
+        "en":  "Krabby",
+        "ja":  "クラブ"
+    },
+    {
+        "id":  99,
+        "es":  "Kingler",
+        "en":  "Kingler",
+        "ja":  "キングラー"
+    },
+    {
+        "id":  100,
+        "es":  "Voltorb",
+        "en":  "Voltorb",
+        "ja":  "ビリリダマ"
+    },
+    {
+        "id":  101,
+        "es":  "Electrode",
+        "en":  "Electrode",
+        "ja":  "マルマイン"
+    },
+    {
+        "id":  102,
+        "es":  "Exeggcute",
+        "en":  "Exeggcute",
+        "ja":  "タマタマ"
+    },
+    {
+        "id":  103,
+        "es":  "Exeggutor",
+        "en":  "Exeggutor",
+        "ja":  "ナッシー"
+    },
+    {
+        "id":  104,
+        "es":  "Cubone",
+        "en":  "Cubone",
+        "ja":  "カラカラ"
+    },
+    {
+        "id":  105,
+        "es":  "Marowak",
+        "en":  "Marowak",
+        "ja":  "ガラガラ"
+    },
+    {
+        "id":  106,
+        "es":  "Hitmonlee",
+        "en":  "Hitmonlee",
+        "ja":  "サワムラー"
+    },
+    {
+        "id":  107,
+        "es":  "Hitmonchan",
+        "en":  "Hitmonchan",
+        "ja":  "エビワラー"
+    },
+    {
+        "id":  108,
+        "es":  "Lickitung",
+        "en":  "Lickitung",
+        "ja":  "ベロリンガ"
+    },
+    {
+        "id":  109,
+        "es":  "Koffing",
+        "en":  "Koffing",
+        "ja":  "ドガース"
+    },
+    {
+        "id":  110,
+        "es":  "Weezing",
+        "en":  "Weezing",
+        "ja":  "マタドガス"
+    },
+    {
+        "id":  111,
+        "es":  "Rhyhorn",
+        "en":  "Rhyhorn",
+        "ja":  "サイホーン"
+    },
+    {
+        "id":  112,
+        "es":  "Rhydon",
+        "en":  "Rhydon",
+        "ja":  "サイドン"
+    },
+    {
+        "id":  113,
+        "es":  "Chansey",
+        "en":  "Chansey",
+        "ja":  "ラッキー"
+    },
+    {
+        "id":  114,
+        "es":  "Tangela",
+        "en":  "Tangela",
+        "ja":  "モンジャラ"
+    },
+    {
+        "id":  115,
+        "es":  "Kangaskhan",
+        "en":  "Kangaskhan",
+        "ja":  "ガルーラ"
+    },
+    {
+        "id":  116,
+        "es":  "Horsea",
+        "en":  "Horsea",
+        "ja":  "タッツー"
+    },
+    {
+        "id":  117,
+        "es":  "Seadra",
+        "en":  "Seadra",
+        "ja":  "シードラ"
+    },
+    {
+        "id":  118,
+        "es":  "Goldeen",
+        "en":  "Goldeen",
+        "ja":  "トサキント"
+    },
+    {
+        "id":  119,
+        "es":  "Seaking",
+        "en":  "Seaking",
+        "ja":  "アズマオウ"
+    },
+    {
+        "id":  120,
+        "es":  "Staryu",
+        "en":  "Staryu",
+        "ja":  "ヒトデマン"
+    },
+    {
+        "id":  121,
+        "es":  "Starmie",
+        "en":  "Starmie",
+        "ja":  "スターミー"
+    },
+    {
+        "id":  122,
+        "es":  "Mr. Mime",
+        "en":  "Mr. Mime",
+        "ja":  "バリヤード"
+    },
+    {
+        "id":  123,
+        "es":  "Scyther",
+        "en":  "Scyther",
+        "ja":  "ストライク"
+    },
+    {
+        "id":  124,
+        "es":  "Jynx",
+        "en":  "Jynx",
+        "ja":  "ルージュラ"
+    },
+    {
+        "id":  125,
+        "es":  "Electabuzz",
+        "en":  "Electabuzz",
+        "ja":  "エレブー"
+    },
+    {
+        "id":  126,
+        "es":  "Magmar",
+        "en":  "Magmar",
+        "ja":  "ブーバー"
+    },
+    {
+        "id":  127,
+        "es":  "Pinsir",
+        "en":  "Pinsir",
+        "ja":  "カイロス"
+    },
+    {
+        "id":  128,
+        "es":  "Tauros",
+        "en":  "Tauros",
+        "ja":  "ケンタロス"
+    },
+    {
+        "id":  129,
+        "es":  "Magikarp",
+        "en":  "Magikarp",
+        "ja":  "コイキング"
+    },
+    {
+        "id":  130,
+        "es":  "Gyarados",
+        "en":  "Gyarados",
+        "ja":  "ギャラドス"
+    },
+    {
+        "id":  131,
+        "es":  "Lapras",
+        "en":  "Lapras",
+        "ja":  "ラプラス"
+    },
+    {
+        "id":  132,
+        "es":  "Ditto",
+        "en":  "Ditto",
+        "ja":  "メタモン"
+    },
+    {
+        "id":  133,
+        "es":  "Eevee",
+        "en":  "Eevee",
+        "ja":  "イーブイ"
+    },
+    {
+        "id":  134,
+        "es":  "Vaporeon",
+        "en":  "Vaporeon",
+        "ja":  "シャワーズ"
+    },
+    {
+        "id":  135,
+        "es":  "Jolteon",
+        "en":  "Jolteon",
+        "ja":  "サンダース"
+    },
+    {
+        "id":  136,
+        "es":  "Flareon",
+        "en":  "Flareon",
+        "ja":  "ブースター"
+    },
+    {
+        "id":  137,
+        "es":  "Porygon",
+        "en":  "Porygon",
+        "ja":  "ポリゴン"
+    },
+    {
+        "id":  138,
+        "es":  "Omanyte",
+        "en":  "Omanyte",
+        "ja":  "オムナイト"
+    },
+    {
+        "id":  139,
+        "es":  "Omastar",
+        "en":  "Omastar",
+        "ja":  "オムスター"
+    },
+    {
+        "id":  140,
+        "es":  "Kabuto",
+        "en":  "Kabuto",
+        "ja":  "カブト"
+    },
+    {
+        "id":  141,
+        "es":  "Kabutops",
+        "en":  "Kabutops",
+        "ja":  "カブトプス"
+    },
+    {
+        "id":  142,
+        "es":  "Aerodactyl",
+        "en":  "Aerodactyl",
+        "ja":  "プテラ"
+    },
+    {
+        "id":  143,
+        "es":  "Snorlax",
+        "en":  "Snorlax",
+        "ja":  "カビゴン"
+    },
+    {
+        "id":  144,
+        "es":  "Articuno",
+        "en":  "Articuno",
+        "ja":  "フリーザー"
+    },
+    {
+        "id":  145,
+        "es":  "Zapdos",
+        "en":  "Zapdos",
+        "ja":  "サンダー"
+    },
+    {
+        "id":  146,
+        "es":  "Moltres",
+        "en":  "Moltres",
+        "ja":  "ファイヤー"
+    },
+    {
+        "id":  147,
+        "es":  "Dratini",
+        "en":  "Dratini",
+        "ja":  "ミニリュウ"
+    },
+    {
+        "id":  148,
+        "es":  "Dragonair",
+        "en":  "Dragonair",
+        "ja":  "ハクリュー"
+    },
+    {
+        "id":  149,
+        "es":  "Dragonite",
+        "en":  "Dragonite",
+        "ja":  "カイリュー"
+    },
+    {
+        "id":  150,
+        "es":  "Mewtwo",
+        "en":  "Mewtwo",
+        "ja":  "ミュウツー"
+    },
+    {
+        "id":  151,
+        "es":  "Mew",
+        "en":  "Mew",
+        "ja":  "ミュウ"
+    },
+    {
+        "id":  152,
+        "es":  "Chikorita",
+        "en":  "Chikorita",
+        "ja":  "チコリータ"
+    },
+    {
+        "id":  153,
+        "es":  "Bayleef",
+        "en":  "Bayleef",
+        "ja":  "ベイリーフ"
+    },
+    {
+        "id":  154,
+        "es":  "Meganium",
+        "en":  "Meganium",
+        "ja":  "メガニウム"
+    },
+    {
+        "id":  155,
+        "es":  "Cyndaquil",
+        "en":  "Cyndaquil",
+        "ja":  "ヒノアラシ"
+    },
+    {
+        "id":  156,
+        "es":  "Quilava",
+        "en":  "Quilava",
+        "ja":  "マグマラシ"
+    },
+    {
+        "id":  157,
+        "es":  "Typhlosion",
+        "en":  "Typhlosion",
+        "ja":  "バクフーン"
+    },
+    {
+        "id":  158,
+        "es":  "Totodile",
+        "en":  "Totodile",
+        "ja":  "ワニノコ"
+    },
+    {
+        "id":  159,
+        "es":  "Croconaw",
+        "en":  "Croconaw",
+        "ja":  "アリゲイツ"
+    },
+    {
+        "id":  160,
+        "es":  "Feraligatr",
+        "en":  "Feraligatr",
+        "ja":  "オーダイル"
+    },
+    {
+        "id":  161,
+        "es":  "Sentret",
+        "en":  "Sentret",
+        "ja":  "オタチ"
+    },
+    {
+        "id":  162,
+        "es":  "Furret",
+        "en":  "Furret",
+        "ja":  "オオタチ"
+    },
+    {
+        "id":  163,
+        "es":  "Hoothoot",
+        "en":  "Hoothoot",
+        "ja":  "ホーホー"
+    },
+    {
+        "id":  164,
+        "es":  "Noctowl",
+        "en":  "Noctowl",
+        "ja":  "ヨルノズク"
+    },
+    {
+        "id":  165,
+        "es":  "Ledyba",
+        "en":  "Ledyba",
+        "ja":  "レディバ"
+    },
+    {
+        "id":  166,
+        "es":  "Ledian",
+        "en":  "Ledian",
+        "ja":  "レディアン"
+    },
+    {
+        "id":  167,
+        "es":  "Spinarak",
+        "en":  "Spinarak",
+        "ja":  "イトマル"
+    },
+    {
+        "id":  168,
+        "es":  "Ariados",
+        "en":  "Ariados",
+        "ja":  "アリアドス"
+    },
+    {
+        "id":  169,
+        "es":  "Crobat",
+        "en":  "Crobat",
+        "ja":  "クロバット"
+    },
+    {
+        "id":  170,
+        "es":  "Chinchou",
+        "en":  "Chinchou",
+        "ja":  "チョンチー"
+    },
+    {
+        "id":  171,
+        "es":  "Lanturn",
+        "en":  "Lanturn",
+        "ja":  "ランターン"
+    },
+    {
+        "id":  172,
+        "es":  "Pichu",
+        "en":  "Pichu",
+        "ja":  "ピチュー"
+    },
+    {
+        "id":  173,
+        "es":  "Cleffa",
+        "en":  "Cleffa",
+        "ja":  "ピィ"
+    },
+    {
+        "id":  174,
+        "es":  "Igglybuff",
+        "en":  "Igglybuff",
+        "ja":  "ププリン"
+    },
+    {
+        "id":  175,
+        "es":  "Togepi",
+        "en":  "Togepi",
+        "ja":  "トゲピー"
+    },
+    {
+        "id":  176,
+        "es":  "Togetic",
+        "en":  "Togetic",
+        "ja":  "トゲチック"
+    },
+    {
+        "id":  177,
+        "es":  "Natu",
+        "en":  "Natu",
+        "ja":  "ネイティ"
+    },
+    {
+        "id":  178,
+        "es":  "Xatu",
+        "en":  "Xatu",
+        "ja":  "ネイティオ"
+    },
+    {
+        "id":  179,
+        "es":  "Mareep",
+        "en":  "Mareep",
+        "ja":  "メリープ"
+    },
+    {
+        "id":  180,
+        "es":  "Flaaffy",
+        "en":  "Flaaffy",
+        "ja":  "モココ"
+    },
+    {
+        "id":  181,
+        "es":  "Ampharos",
+        "en":  "Ampharos",
+        "ja":  "デンリュウ"
+    },
+    {
+        "id":  182,
+        "es":  "Bellossom",
+        "en":  "Bellossom",
+        "ja":  "キレイハナ"
+    },
+    {
+        "id":  183,
+        "es":  "Marill",
+        "en":  "Marill",
+        "ja":  "マリル"
+    },
+    {
+        "id":  184,
+        "es":  "Azumarill",
+        "en":  "Azumarill",
+        "ja":  "マリルリ"
+    },
+    {
+        "id":  185,
+        "es":  "Sudowoodo",
+        "en":  "Sudowoodo",
+        "ja":  "ウソッキー"
+    },
+    {
+        "id":  186,
+        "es":  "Politoed",
+        "en":  "Politoed",
+        "ja":  "ニョロトノ"
+    },
+    {
+        "id":  187,
+        "es":  "Hoppip",
+        "en":  "Hoppip",
+        "ja":  "ハネッコ"
+    },
+    {
+        "id":  188,
+        "es":  "Skiploom",
+        "en":  "Skiploom",
+        "ja":  "ポポッコ"
+    },
+    {
+        "id":  189,
+        "es":  "Jumpluff",
+        "en":  "Jumpluff",
+        "ja":  "ワタッコ"
+    },
+    {
+        "id":  190,
+        "es":  "Aipom",
+        "en":  "Aipom",
+        "ja":  "エイパム"
+    },
+    {
+        "id":  191,
+        "es":  "Sunkern",
+        "en":  "Sunkern",
+        "ja":  "ヒマナッツ"
+    },
+    {
+        "id":  192,
+        "es":  "Sunflora",
+        "en":  "Sunflora",
+        "ja":  "キマワリ"
+    },
+    {
+        "id":  193,
+        "es":  "Yanma",
+        "en":  "Yanma",
+        "ja":  "ヤンヤンマ"
+    },
+    {
+        "id":  194,
+        "es":  "Wooper",
+        "en":  "Wooper",
+        "ja":  "ウパー"
+    },
+    {
+        "id":  195,
+        "es":  "Quagsire",
+        "en":  "Quagsire",
+        "ja":  "ヌオー"
+    },
+    {
+        "id":  196,
+        "es":  "Espeon",
+        "en":  "Espeon",
+        "ja":  "エーフィ"
+    },
+    {
+        "id":  197,
+        "es":  "Umbreon",
+        "en":  "Umbreon",
+        "ja":  "ブラッキー"
+    },
+    {
+        "id":  198,
+        "es":  "Murkrow",
+        "en":  "Murkrow",
+        "ja":  "ヤミカラス"
+    },
+    {
+        "id":  199,
+        "es":  "Slowking",
+        "en":  "Slowking",
+        "ja":  "ヤドキング"
+    },
+    {
+        "id":  200,
+        "es":  "Misdreavus",
+        "en":  "Misdreavus",
+        "ja":  "ムウマ"
+    },
+    {
+        "id":  201,
+        "es":  "Unown",
+        "en":  "Unown",
+        "ja":  "アンノーン"
+    },
+    {
+        "id":  202,
+        "es":  "Wobbuffet",
+        "en":  "Wobbuffet",
+        "ja":  "ソーナンス"
+    },
+    {
+        "id":  203,
+        "es":  "Girafarig",
+        "en":  "Girafarig",
+        "ja":  "キリンリキ"
+    },
+    {
+        "id":  204,
+        "es":  "Pineco",
+        "en":  "Pineco",
+        "ja":  "クヌギダマ"
+    },
+    {
+        "id":  205,
+        "es":  "Forretress",
+        "en":  "Forretress",
+        "ja":  "フォレトス"
+    },
+    {
+        "id":  206,
+        "es":  "Dunsparce",
+        "en":  "Dunsparce",
+        "ja":  "ノコッチ"
+    },
+    {
+        "id":  207,
+        "es":  "Gligar",
+        "en":  "Gligar",
+        "ja":  "グライガー"
+    },
+    {
+        "id":  208,
+        "es":  "Steelix",
+        "en":  "Steelix",
+        "ja":  "ハガネール"
+    },
+    {
+        "id":  209,
+        "es":  "Snubbull",
+        "en":  "Snubbull",
+        "ja":  "ブルー"
+    },
+    {
+        "id":  210,
+        "es":  "Granbull",
+        "en":  "Granbull",
+        "ja":  "グランブル"
+    },
+    {
+        "id":  211,
+        "es":  "Qwilfish",
+        "en":  "Qwilfish",
+        "ja":  "ハリーセン"
+    },
+    {
+        "id":  212,
+        "es":  "Scizor",
+        "en":  "Scizor",
+        "ja":  "ハッサム"
+    },
+    {
+        "id":  213,
+        "es":  "Shuckle",
+        "en":  "Shuckle",
+        "ja":  "ツボツボ"
+    },
+    {
+        "id":  214,
+        "es":  "Heracross",
+        "en":  "Heracross",
+        "ja":  "ヘラクロス"
+    },
+    {
+        "id":  215,
+        "es":  "Sneasel",
+        "en":  "Sneasel",
+        "ja":  "ニューラ"
+    },
+    {
+        "id":  216,
+        "es":  "Teddiursa",
+        "en":  "Teddiursa",
+        "ja":  "ヒメグマ"
+    },
+    {
+        "id":  217,
+        "es":  "Ursaring",
+        "en":  "Ursaring",
+        "ja":  "リングマ"
+    },
+    {
+        "id":  218,
+        "es":  "Slugma",
+        "en":  "Slugma",
+        "ja":  "マグマッグ"
+    },
+    {
+        "id":  219,
+        "es":  "Magcargo",
+        "en":  "Magcargo",
+        "ja":  "マグカルゴ"
+    },
+    {
+        "id":  220,
+        "es":  "Swinub",
+        "en":  "Swinub",
+        "ja":  "ウリムー"
+    },
+    {
+        "id":  221,
+        "es":  "Piloswine",
+        "en":  "Piloswine",
+        "ja":  "イノムー"
+    },
+    {
+        "id":  222,
+        "es":  "Corsola",
+        "en":  "Corsola",
+        "ja":  "サニーゴ"
+    },
+    {
+        "id":  223,
+        "es":  "Remoraid",
+        "en":  "Remoraid",
+        "ja":  "テッポウオ"
+    },
+    {
+        "id":  224,
+        "es":  "Octillery",
+        "en":  "Octillery",
+        "ja":  "オクタン"
+    },
+    {
+        "id":  225,
+        "es":  "Delibird",
+        "en":  "Delibird",
+        "ja":  "デリバード"
+    },
+    {
+        "id":  226,
+        "es":  "Mantine",
+        "en":  "Mantine",
+        "ja":  "マンタイン"
+    },
+    {
+        "id":  227,
+        "es":  "Skarmory",
+        "en":  "Skarmory",
+        "ja":  "エアームド"
+    },
+    {
+        "id":  228,
+        "es":  "Houndour",
+        "en":  "Houndour",
+        "ja":  "デルビル"
+    },
+    {
+        "id":  229,
+        "es":  "Houndoom",
+        "en":  "Houndoom",
+        "ja":  "ヘルガー"
+    },
+    {
+        "id":  230,
+        "es":  "Kingdra",
+        "en":  "Kingdra",
+        "ja":  "キングドラ"
+    },
+    {
+        "id":  231,
+        "es":  "Phanpy",
+        "en":  "Phanpy",
+        "ja":  "ゴマゾウ"
+    },
+    {
+        "id":  232,
+        "es":  "Donphan",
+        "en":  "Donphan",
+        "ja":  "ドンファン"
+    },
+    {
+        "id":  233,
+        "es":  "Porygon2",
+        "en":  "Porygon2",
+        "ja":  "ポリゴン２"
+    },
+    {
+        "id":  234,
+        "es":  "Stantler",
+        "en":  "Stantler",
+        "ja":  "オドシシ"
+    },
+    {
+        "id":  235,
+        "es":  "Smeargle",
+        "en":  "Smeargle",
+        "ja":  "ドーブル"
+    },
+    {
+        "id":  236,
+        "es":  "Tyrogue",
+        "en":  "Tyrogue",
+        "ja":  "バルキー"
+    },
+    {
+        "id":  237,
+        "es":  "Hitmontop",
+        "en":  "Hitmontop",
+        "ja":  "カポエラー"
+    },
+    {
+        "id":  238,
+        "es":  "Smoochum",
+        "en":  "Smoochum",
+        "ja":  "ムチュール"
+    },
+    {
+        "id":  239,
+        "es":  "Elekid",
+        "en":  "Elekid",
+        "ja":  "エレキッド"
+    },
+    {
+        "id":  240,
+        "es":  "Magby",
+        "en":  "Magby",
+        "ja":  "ブビィ"
+    },
+    {
+        "id":  241,
+        "es":  "Miltank",
+        "en":  "Miltank",
+        "ja":  "ミルタンク"
+    },
+    {
+        "id":  242,
+        "es":  "Blissey",
+        "en":  "Blissey",
+        "ja":  "ハピナス"
+    },
+    {
+        "id":  243,
+        "es":  "Raikou",
+        "en":  "Raikou",
+        "ja":  "ライコウ"
+    },
+    {
+        "id":  244,
+        "es":  "Entei",
+        "en":  "Entei",
+        "ja":  "エンテイ"
+    },
+    {
+        "id":  245,
+        "es":  "Suicune",
+        "en":  "Suicune",
+        "ja":  "スイクン"
+    },
+    {
+        "id":  246,
+        "es":  "Larvitar",
+        "en":  "Larvitar",
+        "ja":  "ヨーギラス"
+    },
+    {
+        "id":  247,
+        "es":  "Pupitar",
+        "en":  "Pupitar",
+        "ja":  "サナギラス"
+    },
+    {
+        "id":  248,
+        "es":  "Tyranitar",
+        "en":  "Tyranitar",
+        "ja":  "バンギラス"
+    },
+    {
+        "id":  249,
+        "es":  "Lugia",
+        "en":  "Lugia",
+        "ja":  "ルギア"
+    },
+    {
+        "id":  250,
+        "es":  "Ho-Oh",
+        "en":  "Ho-Oh",
+        "ja":  "ホウオウ"
+    },
+    {
+        "id":  251,
+        "es":  "Celebi",
+        "en":  "Celebi",
+        "ja":  "セレビィ"
+    },
+    {
+        "id":  252,
+        "es":  "Treecko",
+        "en":  "Treecko",
+        "ja":  "キモリ"
+    },
+    {
+        "id":  253,
+        "es":  "Grovyle",
+        "en":  "Grovyle",
+        "ja":  "ジュプトル"
+    },
+    {
+        "id":  254,
+        "es":  "Sceptile",
+        "en":  "Sceptile",
+        "ja":  "ジュカイン"
+    },
+    {
+        "id":  255,
+        "es":  "Torchic",
+        "en":  "Torchic",
+        "ja":  "アチャモ"
+    },
+    {
+        "id":  256,
+        "es":  "Combusken",
+        "en":  "Combusken",
+        "ja":  "ワカシャモ"
+    },
+    {
+        "id":  257,
+        "es":  "Blaziken",
+        "en":  "Blaziken",
+        "ja":  "バシャーモ"
+    },
+    {
+        "id":  258,
+        "es":  "Mudkip",
+        "en":  "Mudkip",
+        "ja":  "ミズゴロウ"
+    },
+    {
+        "id":  259,
+        "es":  "Marshtomp",
+        "en":  "Marshtomp",
+        "ja":  "ヌマクロー"
+    },
+    {
+        "id":  260,
+        "es":  "Swampert",
+        "en":  "Swampert",
+        "ja":  "ラグラージ"
+    },
+    {
+        "id":  261,
+        "es":  "Poochyena",
+        "en":  "Poochyena",
+        "ja":  "ポチエナ"
+    },
+    {
+        "id":  262,
+        "es":  "Mightyena",
+        "en":  "Mightyena",
+        "ja":  "グラエナ"
+    },
+    {
+        "id":  263,
+        "es":  "Zigzagoon",
+        "en":  "Zigzagoon",
+        "ja":  "ジグザグマ"
+    },
+    {
+        "id":  264,
+        "es":  "Linoone",
+        "en":  "Linoone",
+        "ja":  "マッスグマ"
+    },
+    {
+        "id":  265,
+        "es":  "Wurmple",
+        "en":  "Wurmple",
+        "ja":  "ケムッソ"
+    },
+    {
+        "id":  266,
+        "es":  "Silcoon",
+        "en":  "Silcoon",
+        "ja":  "カラサリス"
+    },
+    {
+        "id":  267,
+        "es":  "Beautifly",
+        "en":  "Beautifly",
+        "ja":  "アゲハント"
+    },
+    {
+        "id":  268,
+        "es":  "Cascoon",
+        "en":  "Cascoon",
+        "ja":  "マユルド"
+    },
+    {
+        "id":  269,
+        "es":  "Dustox",
+        "en":  "Dustox",
+        "ja":  "ドクケイル"
+    },
+    {
+        "id":  270,
+        "es":  "Lotad",
+        "en":  "Lotad",
+        "ja":  "ハスボー"
+    },
+    {
+        "id":  271,
+        "es":  "Lombre",
+        "en":  "Lombre",
+        "ja":  "ハスブレロ"
+    },
+    {
+        "id":  272,
+        "es":  "Ludicolo",
+        "en":  "Ludicolo",
+        "ja":  "ルンパッパ"
+    },
+    {
+        "id":  273,
+        "es":  "Seedot",
+        "en":  "Seedot",
+        "ja":  "タネボー"
+    },
+    {
+        "id":  274,
+        "es":  "Nuzleaf",
+        "en":  "Nuzleaf",
+        "ja":  "コノハナ"
+    },
+    {
+        "id":  275,
+        "es":  "Shiftry",
+        "en":  "Shiftry",
+        "ja":  "ダーテング"
+    },
+    {
+        "id":  276,
+        "es":  "Taillow",
+        "en":  "Taillow",
+        "ja":  "スバメ"
+    },
+    {
+        "id":  277,
+        "es":  "Swellow",
+        "en":  "Swellow",
+        "ja":  "オオスバメ"
+    },
+    {
+        "id":  278,
+        "es":  "Wingull",
+        "en":  "Wingull",
+        "ja":  "キャモメ"
+    },
+    {
+        "id":  279,
+        "es":  "Pelipper",
+        "en":  "Pelipper",
+        "ja":  "ペリッパー"
+    },
+    {
+        "id":  280,
+        "es":  "Ralts",
+        "en":  "Ralts",
+        "ja":  "ラルトス"
+    },
+    {
+        "id":  281,
+        "es":  "Kirlia",
+        "en":  "Kirlia",
+        "ja":  "キルリア"
+    },
+    {
+        "id":  282,
+        "es":  "Gardevoir",
+        "en":  "Gardevoir",
+        "ja":  "サーナイト"
+    },
+    {
+        "id":  283,
+        "es":  "Surskit",
+        "en":  "Surskit",
+        "ja":  "アメタマ"
+    },
+    {
+        "id":  284,
+        "es":  "Masquerain",
+        "en":  "Masquerain",
+        "ja":  "アメモース"
+    },
+    {
+        "id":  285,
+        "es":  "Shroomish",
+        "en":  "Shroomish",
+        "ja":  "キノココ"
+    },
+    {
+        "id":  286,
+        "es":  "Breloom",
+        "en":  "Breloom",
+        "ja":  "キノガッサ"
+    },
+    {
+        "id":  287,
+        "es":  "Slakoth",
+        "en":  "Slakoth",
+        "ja":  "ナマケロ"
+    },
+    {
+        "id":  288,
+        "es":  "Vigoroth",
+        "en":  "Vigoroth",
+        "ja":  "ヤルキモノ"
+    },
+    {
+        "id":  289,
+        "es":  "Slaking",
+        "en":  "Slaking",
+        "ja":  "ケッキング"
+    },
+    {
+        "id":  290,
+        "es":  "Nincada",
+        "en":  "Nincada",
+        "ja":  "ツチニン"
+    },
+    {
+        "id":  291,
+        "es":  "Ninjask",
+        "en":  "Ninjask",
+        "ja":  "テッカニン"
+    },
+    {
+        "id":  292,
+        "es":  "Shedinja",
+        "en":  "Shedinja",
+        "ja":  "ヌケニン"
+    },
+    {
+        "id":  293,
+        "es":  "Whismur",
+        "en":  "Whismur",
+        "ja":  "ゴニョニョ"
+    },
+    {
+        "id":  294,
+        "es":  "Loudred",
+        "en":  "Loudred",
+        "ja":  "ドゴーム"
+    },
+    {
+        "id":  295,
+        "es":  "Exploud",
+        "en":  "Exploud",
+        "ja":  "バクオング"
+    },
+    {
+        "id":  296,
+        "es":  "Makuhita",
+        "en":  "Makuhita",
+        "ja":  "マクノシタ"
+    },
+    {
+        "id":  297,
+        "es":  "Hariyama",
+        "en":  "Hariyama",
+        "ja":  "ハリテヤマ"
+    },
+    {
+        "id":  298,
+        "es":  "Azurill",
+        "en":  "Azurill",
+        "ja":  "ルリリ"
+    },
+    {
+        "id":  299,
+        "es":  "Nosepass",
+        "en":  "Nosepass",
+        "ja":  "ノズパス"
+    },
+    {
+        "id":  300,
+        "es":  "Skitty",
+        "en":  "Skitty",
+        "ja":  "エネコ"
+    },
+    {
+        "id":  301,
+        "es":  "Delcatty",
+        "en":  "Delcatty",
+        "ja":  "エネコロロ"
+    },
+    {
+        "id":  302,
+        "es":  "Sableye",
+        "en":  "Sableye",
+        "ja":  "ヤミラミ"
+    },
+    {
+        "id":  303,
+        "es":  "Mawile",
+        "en":  "Mawile",
+        "ja":  "クチート"
+    },
+    {
+        "id":  304,
+        "es":  "Aron",
+        "en":  "Aron",
+        "ja":  "ココドラ"
+    },
+    {
+        "id":  305,
+        "es":  "Lairon",
+        "en":  "Lairon",
+        "ja":  "コドラ"
+    },
+    {
+        "id":  306,
+        "es":  "Aggron",
+        "en":  "Aggron",
+        "ja":  "ボスゴドラ"
+    },
+    {
+        "id":  307,
+        "es":  "Meditite",
+        "en":  "Meditite",
+        "ja":  "アサナン"
+    },
+    {
+        "id":  308,
+        "es":  "Medicham",
+        "en":  "Medicham",
+        "ja":  "チャーレム"
+    },
+    {
+        "id":  309,
+        "es":  "Electrike",
+        "en":  "Electrike",
+        "ja":  "ラクライ"
+    },
+    {
+        "id":  310,
+        "es":  "Manectric",
+        "en":  "Manectric",
+        "ja":  "ライボルト"
+    },
+    {
+        "id":  311,
+        "es":  "Plusle",
+        "en":  "Plusle",
+        "ja":  "プラスル"
+    },
+    {
+        "id":  312,
+        "es":  "Minun",
+        "en":  "Minun",
+        "ja":  "マイナン"
+    },
+    {
+        "id":  313,
+        "es":  "Volbeat",
+        "en":  "Volbeat",
+        "ja":  "バルビート"
+    },
+    {
+        "id":  314,
+        "es":  "Illumise",
+        "en":  "Illumise",
+        "ja":  "イルミーゼ"
+    },
+    {
+        "id":  315,
+        "es":  "Roselia",
+        "en":  "Roselia",
+        "ja":  "ロゼリア"
+    },
+    {
+        "id":  316,
+        "es":  "Gulpin",
+        "en":  "Gulpin",
+        "ja":  "ゴクリン"
+    },
+    {
+        "id":  317,
+        "es":  "Swalot",
+        "en":  "Swalot",
+        "ja":  "マルノーム"
+    },
+    {
+        "id":  318,
+        "es":  "Carvanha",
+        "en":  "Carvanha",
+        "ja":  "キバニア"
+    },
+    {
+        "id":  319,
+        "es":  "Sharpedo",
+        "en":  "Sharpedo",
+        "ja":  "サメハダー"
+    },
+    {
+        "id":  320,
+        "es":  "Wailmer",
+        "en":  "Wailmer",
+        "ja":  "ホエルコ"
+    },
+    {
+        "id":  321,
+        "es":  "Wailord",
+        "en":  "Wailord",
+        "ja":  "ホエルオー"
+    },
+    {
+        "id":  322,
+        "es":  "Numel",
+        "en":  "Numel",
+        "ja":  "ドンメル"
+    },
+    {
+        "id":  323,
+        "es":  "Camerupt",
+        "en":  "Camerupt",
+        "ja":  "バクーダ"
+    },
+    {
+        "id":  324,
+        "es":  "Torkoal",
+        "en":  "Torkoal",
+        "ja":  "コータス"
+    },
+    {
+        "id":  325,
+        "es":  "Spoink",
+        "en":  "Spoink",
+        "ja":  "バネブー"
+    },
+    {
+        "id":  326,
+        "es":  "Grumpig",
+        "en":  "Grumpig",
+        "ja":  "ブーピッグ"
+    },
+    {
+        "id":  327,
+        "es":  "Spinda",
+        "en":  "Spinda",
+        "ja":  "パッチール"
+    },
+    {
+        "id":  328,
+        "es":  "Trapinch",
+        "en":  "Trapinch",
+        "ja":  "ナックラー"
+    },
+    {
+        "id":  329,
+        "es":  "Vibrava",
+        "en":  "Vibrava",
+        "ja":  "ビブラーバ"
+    },
+    {
+        "id":  330,
+        "es":  "Flygon",
+        "en":  "Flygon",
+        "ja":  "フライゴン"
+    },
+    {
+        "id":  331,
+        "es":  "Cacnea",
+        "en":  "Cacnea",
+        "ja":  "サボネア"
+    },
+    {
+        "id":  332,
+        "es":  "Cacturne",
+        "en":  "Cacturne",
+        "ja":  "ノクタス"
+    },
+    {
+        "id":  333,
+        "es":  "Swablu",
+        "en":  "Swablu",
+        "ja":  "チルット"
+    },
+    {
+        "id":  334,
+        "es":  "Altaria",
+        "en":  "Altaria",
+        "ja":  "チルタリス"
+    },
+    {
+        "id":  335,
+        "es":  "Zangoose",
+        "en":  "Zangoose",
+        "ja":  "ザングース"
+    },
+    {
+        "id":  336,
+        "es":  "Seviper",
+        "en":  "Seviper",
+        "ja":  "ハブネーク"
+    },
+    {
+        "id":  337,
+        "es":  "Lunatone",
+        "en":  "Lunatone",
+        "ja":  "ルナトーン"
+    },
+    {
+        "id":  338,
+        "es":  "Solrock",
+        "en":  "Solrock",
+        "ja":  "ソルロック"
+    },
+    {
+        "id":  339,
+        "es":  "Barboach",
+        "en":  "Barboach",
+        "ja":  "ドジョッチ"
+    },
+    {
+        "id":  340,
+        "es":  "Whiscash",
+        "en":  "Whiscash",
+        "ja":  "ナマズン"
+    },
+    {
+        "id":  341,
+        "es":  "Corphish",
+        "en":  "Corphish",
+        "ja":  "ヘイガニ"
+    },
+    {
+        "id":  342,
+        "es":  "Crawdaunt",
+        "en":  "Crawdaunt",
+        "ja":  "シザリガー"
+    },
+    {
+        "id":  343,
+        "es":  "Baltoy",
+        "en":  "Baltoy",
+        "ja":  "ヤジロン"
+    },
+    {
+        "id":  344,
+        "es":  "Claydol",
+        "en":  "Claydol",
+        "ja":  "ネンドール"
+    },
+    {
+        "id":  345,
+        "es":  "Lileep",
+        "en":  "Lileep",
+        "ja":  "リリーラ"
+    },
+    {
+        "id":  346,
+        "es":  "Cradily",
+        "en":  "Cradily",
+        "ja":  "ユレイドル"
+    },
+    {
+        "id":  347,
+        "es":  "Anorith",
+        "en":  "Anorith",
+        "ja":  "アノプス"
+    },
+    {
+        "id":  348,
+        "es":  "Armaldo",
+        "en":  "Armaldo",
+        "ja":  "アーマルド"
+    },
+    {
+        "id":  349,
+        "es":  "Feebas",
+        "en":  "Feebas",
+        "ja":  "ヒンバス"
+    },
+    {
+        "id":  350,
+        "es":  "Milotic",
+        "en":  "Milotic",
+        "ja":  "ミロカロス"
+    },
+    {
+        "id":  351,
+        "es":  "Castform",
+        "en":  "Castform",
+        "ja":  "ポワルン"
+    },
+    {
+        "id":  352,
+        "es":  "Kecleon",
+        "en":  "Kecleon",
+        "ja":  "カクレオン"
+    },
+    {
+        "id":  353,
+        "es":  "Shuppet",
+        "en":  "Shuppet",
+        "ja":  "カゲボウズ"
+    },
+    {
+        "id":  354,
+        "es":  "Banette",
+        "en":  "Banette",
+        "ja":  "ジュペッタ"
+    },
+    {
+        "id":  355,
+        "es":  "Duskull",
+        "en":  "Duskull",
+        "ja":  "ヨマワル"
+    },
+    {
+        "id":  356,
+        "es":  "Dusclops",
+        "en":  "Dusclops",
+        "ja":  "サマヨール"
+    },
+    {
+        "id":  357,
+        "es":  "Tropius",
+        "en":  "Tropius",
+        "ja":  "トロピウス"
+    },
+    {
+        "id":  358,
+        "es":  "Chimecho",
+        "en":  "Chimecho",
+        "ja":  "チリーン"
+    },
+    {
+        "id":  359,
+        "es":  "Absol",
+        "en":  "Absol",
+        "ja":  "アブソル"
+    },
+    {
+        "id":  360,
+        "es":  "Wynaut",
+        "en":  "Wynaut",
+        "ja":  "ソーナノ"
+    },
+    {
+        "id":  361,
+        "es":  "Snorunt",
+        "en":  "Snorunt",
+        "ja":  "ユキワラシ"
+    },
+    {
+        "id":  362,
+        "es":  "Glalie",
+        "en":  "Glalie",
+        "ja":  "オニゴーリ"
+    },
+    {
+        "id":  363,
+        "es":  "Spheal",
+        "en":  "Spheal",
+        "ja":  "タマザラシ"
+    },
+    {
+        "id":  364,
+        "es":  "Sealeo",
+        "en":  "Sealeo",
+        "ja":  "トドグラー"
+    },
+    {
+        "id":  365,
+        "es":  "Walrein",
+        "en":  "Walrein",
+        "ja":  "トドゼルガ"
+    },
+    {
+        "id":  366,
+        "es":  "Clamperl",
+        "en":  "Clamperl",
+        "ja":  "パールル"
+    },
+    {
+        "id":  367,
+        "es":  "Huntail",
+        "en":  "Huntail",
+        "ja":  "ハンテール"
+    },
+    {
+        "id":  368,
+        "es":  "Gorebyss",
+        "en":  "Gorebyss",
+        "ja":  "サクラビス"
+    },
+    {
+        "id":  369,
+        "es":  "Relicanth",
+        "en":  "Relicanth",
+        "ja":  "ジーランス"
+    },
+    {
+        "id":  370,
+        "es":  "Luvdisc",
+        "en":  "Luvdisc",
+        "ja":  "ラブカス"
+    },
+    {
+        "id":  371,
+        "es":  "Bagon",
+        "en":  "Bagon",
+        "ja":  "タツベイ"
+    },
+    {
+        "id":  372,
+        "es":  "Shelgon",
+        "en":  "Shelgon",
+        "ja":  "コモルー"
+    },
+    {
+        "id":  373,
+        "es":  "Salamence",
+        "en":  "Salamence",
+        "ja":  "ボーマンダ"
+    },
+    {
+        "id":  374,
+        "es":  "Beldum",
+        "en":  "Beldum",
+        "ja":  "ダンバル"
+    },
+    {
+        "id":  375,
+        "es":  "Metang",
+        "en":  "Metang",
+        "ja":  "メタング"
+    },
+    {
+        "id":  376,
+        "es":  "Metagross",
+        "en":  "Metagross",
+        "ja":  "メタグロス"
+    },
+    {
+        "id":  377,
+        "es":  "Regirock",
+        "en":  "Regirock",
+        "ja":  "レジロック"
+    },
+    {
+        "id":  378,
+        "es":  "Regice",
+        "en":  "Regice",
+        "ja":  "レジアイス"
+    },
+    {
+        "id":  379,
+        "es":  "Registeel",
+        "en":  "Registeel",
+        "ja":  "レジスチル"
+    },
+    {
+        "id":  380,
+        "es":  "Latias",
+        "en":  "Latias",
+        "ja":  "ラティアス"
+    },
+    {
+        "id":  381,
+        "es":  "Latios",
+        "en":  "Latios",
+        "ja":  "ラティオス"
+    },
+    {
+        "id":  382,
+        "es":  "Kyogre",
+        "en":  "Kyogre",
+        "ja":  "カイオーガ"
+    },
+    {
+        "id":  383,
+        "es":  "Groudon",
+        "en":  "Groudon",
+        "ja":  "グラードン"
+    },
+    {
+        "id":  384,
+        "es":  "Rayquaza",
+        "en":  "Rayquaza",
+        "ja":  "レックウザ"
+    },
+    {
+        "id":  385,
+        "es":  "Jirachi",
+        "en":  "Jirachi",
+        "ja":  "ジラーチ"
+    },
+    {
+        "id":  386,
+        "es":  "Deoxys",
+        "en":  "Deoxys",
+        "ja":  "デオキシス"
+    },
+    {
+        "id":  387,
+        "es":  "Turtwig",
+        "en":  "Turtwig",
+        "ja":  "ナエトル"
+    },
+    {
+        "id":  388,
+        "es":  "Grotle",
+        "en":  "Grotle",
+        "ja":  "ハヤシガメ"
+    },
+    {
+        "id":  389,
+        "es":  "Torterra",
+        "en":  "Torterra",
+        "ja":  "ドダイトス"
+    },
+    {
+        "id":  390,
+        "es":  "Chimchar",
+        "en":  "Chimchar",
+        "ja":  "ヒコザル"
+    },
+    {
+        "id":  391,
+        "es":  "Monferno",
+        "en":  "Monferno",
+        "ja":  "モウカザル"
+    },
+    {
+        "id":  392,
+        "es":  "Infernape",
+        "en":  "Infernape",
+        "ja":  "ゴウカザル"
+    },
+    {
+        "id":  393,
+        "es":  "Piplup",
+        "en":  "Piplup",
+        "ja":  "ポッチャマ"
+    },
+    {
+        "id":  394,
+        "es":  "Prinplup",
+        "en":  "Prinplup",
+        "ja":  "ポッタイシ"
+    },
+    {
+        "id":  395,
+        "es":  "Empoleon",
+        "en":  "Empoleon",
+        "ja":  "エンペルト"
+    },
+    {
+        "id":  396,
+        "es":  "Starly",
+        "en":  "Starly",
+        "ja":  "ムックル"
+    },
+    {
+        "id":  397,
+        "es":  "Staravia",
+        "en":  "Staravia",
+        "ja":  "ムクバード"
+    },
+    {
+        "id":  398,
+        "es":  "Staraptor",
+        "en":  "Staraptor",
+        "ja":  "ムクホーク"
+    },
+    {
+        "id":  399,
+        "es":  "Bidoof",
+        "en":  "Bidoof",
+        "ja":  "ビッパ"
+    },
+    {
+        "id":  400,
+        "es":  "Bibarel",
+        "en":  "Bibarel",
+        "ja":  "ビーダル"
+    },
+    {
+        "id":  401,
+        "es":  "Kricketot",
+        "en":  "Kricketot",
+        "ja":  "コロボーシ"
+    },
+    {
+        "id":  402,
+        "es":  "Kricketune",
+        "en":  "Kricketune",
+        "ja":  "コロトック"
+    },
+    {
+        "id":  403,
+        "es":  "Shinx",
+        "en":  "Shinx",
+        "ja":  "コリンク"
+    },
+    {
+        "id":  404,
+        "es":  "Luxio",
+        "en":  "Luxio",
+        "ja":  "ルクシオ"
+    },
+    {
+        "id":  405,
+        "es":  "Luxray",
+        "en":  "Luxray",
+        "ja":  "レントラー"
+    },
+    {
+        "id":  406,
+        "es":  "Budew",
+        "en":  "Budew",
+        "ja":  "スボミー"
+    },
+    {
+        "id":  407,
+        "es":  "Roserade",
+        "en":  "Roserade",
+        "ja":  "ロズレイド"
+    },
+    {
+        "id":  408,
+        "es":  "Cranidos",
+        "en":  "Cranidos",
+        "ja":  "ズガイドス"
+    },
+    {
+        "id":  409,
+        "es":  "Rampardos",
+        "en":  "Rampardos",
+        "ja":  "ラムパルド"
+    },
+    {
+        "id":  410,
+        "es":  "Shieldon",
+        "en":  "Shieldon",
+        "ja":  "タテトプス"
+    },
+    {
+        "id":  411,
+        "es":  "Bastiodon",
+        "en":  "Bastiodon",
+        "ja":  "トリデプス"
+    },
+    {
+        "id":  412,
+        "es":  "Burmy",
+        "en":  "Burmy",
+        "ja":  "ミノムッチ"
+    },
+    {
+        "id":  413,
+        "es":  "Wormadam",
+        "en":  "Wormadam",
+        "ja":  "ミノマダム"
+    },
+    {
+        "id":  414,
+        "es":  "Mothim",
+        "en":  "Mothim",
+        "ja":  "ガーメイル"
+    },
+    {
+        "id":  415,
+        "es":  "Combee",
+        "en":  "Combee",
+        "ja":  "ミツハニー"
+    },
+    {
+        "id":  416,
+        "es":  "Vespiquen",
+        "en":  "Vespiquen",
+        "ja":  "ビークイン"
+    },
+    {
+        "id":  417,
+        "es":  "Pachirisu",
+        "en":  "Pachirisu",
+        "ja":  "パチリス"
+    },
+    {
+        "id":  418,
+        "es":  "Buizel",
+        "en":  "Buizel",
+        "ja":  "ブイゼル"
+    },
+    {
+        "id":  419,
+        "es":  "Floatzel",
+        "en":  "Floatzel",
+        "ja":  "フローゼル"
+    },
+    {
+        "id":  420,
+        "es":  "Cherubi",
+        "en":  "Cherubi",
+        "ja":  "チェリンボ"
+    },
+    {
+        "id":  421,
+        "es":  "Cherrim",
+        "en":  "Cherrim",
+        "ja":  "チェリム"
+    },
+    {
+        "id":  422,
+        "es":  "Shellos",
+        "en":  "Shellos",
+        "ja":  "カラナクシ"
+    },
+    {
+        "id":  423,
+        "es":  "Gastrodon",
+        "en":  "Gastrodon",
+        "ja":  "トリトドン"
+    },
+    {
+        "id":  424,
+        "es":  "Ambipom",
+        "en":  "Ambipom",
+        "ja":  "エテボース"
+    },
+    {
+        "id":  425,
+        "es":  "Drifloon",
+        "en":  "Drifloon",
+        "ja":  "フワンテ"
+    },
+    {
+        "id":  426,
+        "es":  "Drifblim",
+        "en":  "Drifblim",
+        "ja":  "フワライド"
+    },
+    {
+        "id":  427,
+        "es":  "Buneary",
+        "en":  "Buneary",
+        "ja":  "ミミロル"
+    },
+    {
+        "id":  428,
+        "es":  "Lopunny",
+        "en":  "Lopunny",
+        "ja":  "ミミロップ"
+    },
+    {
+        "id":  429,
+        "es":  "Mismagius",
+        "en":  "Mismagius",
+        "ja":  "ムウマージ"
+    },
+    {
+        "id":  430,
+        "es":  "Honchkrow",
+        "en":  "Honchkrow",
+        "ja":  "ドンカラス"
+    },
+    {
+        "id":  431,
+        "es":  "Glameow",
+        "en":  "Glameow",
+        "ja":  "ニャルマー"
+    },
+    {
+        "id":  432,
+        "es":  "Purugly",
+        "en":  "Purugly",
+        "ja":  "ブニャット"
+    },
+    {
+        "id":  433,
+        "es":  "Chingling",
+        "en":  "Chingling",
+        "ja":  "リーシャン"
+    },
+    {
+        "id":  434,
+        "es":  "Stunky",
+        "en":  "Stunky",
+        "ja":  "スカンプー"
+    },
+    {
+        "id":  435,
+        "es":  "Skuntank",
+        "en":  "Skuntank",
+        "ja":  "スカタンク"
+    },
+    {
+        "id":  436,
+        "es":  "Bronzor",
+        "en":  "Bronzor",
+        "ja":  "ドーミラー"
+    },
+    {
+        "id":  437,
+        "es":  "Bronzong",
+        "en":  "Bronzong",
+        "ja":  "ドータクン"
+    },
+    {
+        "id":  438,
+        "es":  "Bonsly",
+        "en":  "Bonsly",
+        "ja":  "ウソハチ"
+    },
+    {
+        "id":  439,
+        "es":  "Mime Jr.",
+        "en":  "Mime Jr.",
+        "ja":  "マネネ"
+    },
+    {
+        "id":  440,
+        "es":  "Happiny",
+        "en":  "Happiny",
+        "ja":  "ピンプク"
+    },
+    {
+        "id":  441,
+        "es":  "Chatot",
+        "en":  "Chatot",
+        "ja":  "ペラップ"
+    },
+    {
+        "id":  442,
+        "es":  "Spiritomb",
+        "en":  "Spiritomb",
+        "ja":  "ミカルゲ"
+    },
+    {
+        "id":  443,
+        "es":  "Gible",
+        "en":  "Gible",
+        "ja":  "フカマル"
+    },
+    {
+        "id":  444,
+        "es":  "Gabite",
+        "en":  "Gabite",
+        "ja":  "ガバイト"
+    },
+    {
+        "id":  445,
+        "es":  "Garchomp",
+        "en":  "Garchomp",
+        "ja":  "ガブリアス"
+    },
+    {
+        "id":  446,
+        "es":  "Munchlax",
+        "en":  "Munchlax",
+        "ja":  "ゴンベ"
+    },
+    {
+        "id":  447,
+        "es":  "Riolu",
+        "en":  "Riolu",
+        "ja":  "リオル"
+    },
+    {
+        "id":  448,
+        "es":  "Lucario",
+        "en":  "Lucario",
+        "ja":  "ルカリオ"
+    },
+    {
+        "id":  449,
+        "es":  "Hippopotas",
+        "en":  "Hippopotas",
+        "ja":  "ヒポポタス"
+    },
+    {
+        "id":  450,
+        "es":  "Hippowdon",
+        "en":  "Hippowdon",
+        "ja":  "カバルドン"
+    },
+    {
+        "id":  451,
+        "es":  "Skorupi",
+        "en":  "Skorupi",
+        "ja":  "スコルピ"
+    },
+    {
+        "id":  452,
+        "es":  "Drapion",
+        "en":  "Drapion",
+        "ja":  "ドラピオン"
+    },
+    {
+        "id":  453,
+        "es":  "Croagunk",
+        "en":  "Croagunk",
+        "ja":  "グレッグル"
+    },
+    {
+        "id":  454,
+        "es":  "Toxicroak",
+        "en":  "Toxicroak",
+        "ja":  "ドクロッグ"
+    },
+    {
+        "id":  455,
+        "es":  "Carnivine",
+        "en":  "Carnivine",
+        "ja":  "マスキッパ"
+    },
+    {
+        "id":  456,
+        "es":  "Finneon",
+        "en":  "Finneon",
+        "ja":  "ケイコウオ"
+    },
+    {
+        "id":  457,
+        "es":  "Lumineon",
+        "en":  "Lumineon",
+        "ja":  "ネオラント"
+    },
+    {
+        "id":  458,
+        "es":  "Mantyke",
+        "en":  "Mantyke",
+        "ja":  "タマンタ"
+    },
+    {
+        "id":  459,
+        "es":  "Snover",
+        "en":  "Snover",
+        "ja":  "ユキカブリ"
+    },
+    {
+        "id":  460,
+        "es":  "Abomasnow",
+        "en":  "Abomasnow",
+        "ja":  "ユキノオー"
+    },
+    {
+        "id":  461,
+        "es":  "Weavile",
+        "en":  "Weavile",
+        "ja":  "マニューラ"
+    },
+    {
+        "id":  462,
+        "es":  "Magnezone",
+        "en":  "Magnezone",
+        "ja":  "ジバコイル"
+    },
+    {
+        "id":  463,
+        "es":  "Lickilicky",
+        "en":  "Lickilicky",
+        "ja":  "ベロベルト"
+    },
+    {
+        "id":  464,
+        "es":  "Rhyperior",
+        "en":  "Rhyperior",
+        "ja":  "ドサイドン"
+    },
+    {
+        "id":  465,
+        "es":  "Tangrowth",
+        "en":  "Tangrowth",
+        "ja":  "モジャンボ"
+    },
+    {
+        "id":  466,
+        "es":  "Electivire",
+        "en":  "Electivire",
+        "ja":  "エレキブル"
+    },
+    {
+        "id":  467,
+        "es":  "Magmortar",
+        "en":  "Magmortar",
+        "ja":  "ブーバーン"
+    },
+    {
+        "id":  468,
+        "es":  "Togekiss",
+        "en":  "Togekiss",
+        "ja":  "トゲキッス"
+    },
+    {
+        "id":  469,
+        "es":  "Yanmega",
+        "en":  "Yanmega",
+        "ja":  "メガヤンマ"
+    },
+    {
+        "id":  470,
+        "es":  "Leafeon",
+        "en":  "Leafeon",
+        "ja":  "リーフィア"
+    },
+    {
+        "id":  471,
+        "es":  "Glaceon",
+        "en":  "Glaceon",
+        "ja":  "グレイシア"
+    },
+    {
+        "id":  472,
+        "es":  "Gliscor",
+        "en":  "Gliscor",
+        "ja":  "グライオン"
+    },
+    {
+        "id":  473,
+        "es":  "Mamoswine",
+        "en":  "Mamoswine",
+        "ja":  "マンムー"
+    },
+    {
+        "id":  474,
+        "es":  "Porygon-Z",
+        "en":  "Porygon-Z",
+        "ja":  "ポリゴンＺ"
+    },
+    {
+        "id":  475,
+        "es":  "Gallade",
+        "en":  "Gallade",
+        "ja":  "エルレイド"
+    },
+    {
+        "id":  476,
+        "es":  "Probopass",
+        "en":  "Probopass",
+        "ja":  "ダイノーズ"
+    },
+    {
+        "id":  477,
+        "es":  "Dusknoir",
+        "en":  "Dusknoir",
+        "ja":  "ヨノワール"
+    },
+    {
+        "id":  478,
+        "es":  "Froslass",
+        "en":  "Froslass",
+        "ja":  "ユキメノコ"
+    },
+    {
+        "id":  479,
+        "es":  "Rotom",
+        "en":  "Rotom",
+        "ja":  "ロトム"
+    },
+    {
+        "id":  480,
+        "es":  "Uxie",
+        "en":  "Uxie",
+        "ja":  "ユクシー"
+    },
+    {
+        "id":  481,
+        "es":  "Mesprit",
+        "en":  "Mesprit",
+        "ja":  "エムリット"
+    },
+    {
+        "id":  482,
+        "es":  "Azelf",
+        "en":  "Azelf",
+        "ja":  "アグノム"
+    },
+    {
+        "id":  483,
+        "es":  "Dialga",
+        "en":  "Dialga",
+        "ja":  "ディアルガ"
+    },
+    {
+        "id":  484,
+        "es":  "Palkia",
+        "en":  "Palkia",
+        "ja":  "パルキア"
+    },
+    {
+        "id":  485,
+        "es":  "Heatran",
+        "en":  "Heatran",
+        "ja":  "ヒードラン"
+    },
+    {
+        "id":  486,
+        "es":  "Regigigas",
+        "en":  "Regigigas",
+        "ja":  "レジギガス"
+    },
+    {
+        "id":  487,
+        "es":  "Giratina",
+        "en":  "Giratina",
+        "ja":  "ギラティナ"
+    },
+    {
+        "id":  488,
+        "es":  "Cresselia",
+        "en":  "Cresselia",
+        "ja":  "クレセリア"
+    },
+    {
+        "id":  489,
+        "es":  "Phione",
+        "en":  "Phione",
+        "ja":  "フィオネ"
+    },
+    {
+        "id":  490,
+        "es":  "Manaphy",
+        "en":  "Manaphy",
+        "ja":  "マナフィ"
+    },
+    {
+        "id":  491,
+        "es":  "Darkrai",
+        "en":  "Darkrai",
+        "ja":  "ダークライ"
+    },
+    {
+        "id":  492,
+        "es":  "Shaymin",
+        "en":  "Shaymin",
+        "ja":  "シェイミ"
+    },
+    {
+        "id":  493,
+        "es":  "Arceus",
+        "en":  "Arceus",
+        "ja":  "アルセウス"
+    },
+    {
+        "id":  494,
+        "es":  "Victini",
+        "en":  "Victini",
+        "ja":  "ビクティニ"
+    },
+    {
+        "id":  495,
+        "es":  "Snivy",
+        "en":  "Snivy",
+        "ja":  "ツタージャ"
+    },
+    {
+        "id":  496,
+        "es":  "Servine",
+        "en":  "Servine",
+        "ja":  "ジャノビー"
+    },
+    {
+        "id":  497,
+        "es":  "Serperior",
+        "en":  "Serperior",
+        "ja":  "ジャローダ"
+    },
+    {
+        "id":  498,
+        "es":  "Tepig",
+        "en":  "Tepig",
+        "ja":  "ポカブ"
+    },
+    {
+        "id":  499,
+        "es":  "Pignite",
+        "en":  "Pignite",
+        "ja":  "チャオブー"
+    },
+    {
+        "id":  500,
+        "es":  "Emboar",
+        "en":  "Emboar",
+        "ja":  "エンブオー"
+    },
+    {
+        "id":  501,
+        "es":  "Oshawott",
+        "en":  "Oshawott",
+        "ja":  "ミジュマル"
+    },
+    {
+        "id":  502,
+        "es":  "Dewott",
+        "en":  "Dewott",
+        "ja":  "フタチマル"
+    },
+    {
+        "id":  503,
+        "es":  "Samurott",
+        "en":  "Samurott",
+        "ja":  "ダイケンキ"
+    },
+    {
+        "id":  504,
+        "es":  "Patrat",
+        "en":  "Patrat",
+        "ja":  "ミネズミ"
+    },
+    {
+        "id":  505,
+        "es":  "Watchog",
+        "en":  "Watchog",
+        "ja":  "ミルホッグ"
+    },
+    {
+        "id":  506,
+        "es":  "Lillipup",
+        "en":  "Lillipup",
+        "ja":  "ヨーテリー"
+    },
+    {
+        "id":  507,
+        "es":  "Herdier",
+        "en":  "Herdier",
+        "ja":  "ハーデリア"
+    },
+    {
+        "id":  508,
+        "es":  "Stoutland",
+        "en":  "Stoutland",
+        "ja":  "ムーランド"
+    },
+    {
+        "id":  509,
+        "es":  "Purrloin",
+        "en":  "Purrloin",
+        "ja":  "チョロネコ"
+    },
+    {
+        "id":  510,
+        "es":  "Liepard",
+        "en":  "Liepard",
+        "ja":  "レパルダス"
+    },
+    {
+        "id":  511,
+        "es":  "Pansage",
+        "en":  "Pansage",
+        "ja":  "ヤナップ"
+    },
+    {
+        "id":  512,
+        "es":  "Simisage",
+        "en":  "Simisage",
+        "ja":  "ヤナッキー"
+    },
+    {
+        "id":  513,
+        "es":  "Pansear",
+        "en":  "Pansear",
+        "ja":  "バオップ"
+    },
+    {
+        "id":  514,
+        "es":  "Simisear",
+        "en":  "Simisear",
+        "ja":  "バオッキー"
+    },
+    {
+        "id":  515,
+        "es":  "Panpour",
+        "en":  "Panpour",
+        "ja":  "ヒヤップ"
+    },
+    {
+        "id":  516,
+        "es":  "Simipour",
+        "en":  "Simipour",
+        "ja":  "ヒヤッキー"
+    },
+    {
+        "id":  517,
+        "es":  "Munna",
+        "en":  "Munna",
+        "ja":  "ムンナ"
+    },
+    {
+        "id":  518,
+        "es":  "Musharna",
+        "en":  "Musharna",
+        "ja":  "ムシャーナ"
+    },
+    {
+        "id":  519,
+        "es":  "Pidove",
+        "en":  "Pidove",
+        "ja":  "マメパト"
+    },
+    {
+        "id":  520,
+        "es":  "Tranquill",
+        "en":  "Tranquill",
+        "ja":  "ハトーボー"
+    },
+    {
+        "id":  521,
+        "es":  "Unfezant",
+        "en":  "Unfezant",
+        "ja":  "ケンホロウ"
+    },
+    {
+        "id":  522,
+        "es":  "Blitzle",
+        "en":  "Blitzle",
+        "ja":  "シママ"
+    },
+    {
+        "id":  523,
+        "es":  "Zebstrika",
+        "en":  "Zebstrika",
+        "ja":  "ゼブライカ"
+    },
+    {
+        "id":  524,
+        "es":  "Roggenrola",
+        "en":  "Roggenrola",
+        "ja":  "ダンゴロ"
+    },
+    {
+        "id":  525,
+        "es":  "Boldore",
+        "en":  "Boldore",
+        "ja":  "ガントル"
+    },
+    {
+        "id":  526,
+        "es":  "Gigalith",
+        "en":  "Gigalith",
+        "ja":  "ギガイアス"
+    },
+    {
+        "id":  527,
+        "es":  "Woobat",
+        "en":  "Woobat",
+        "ja":  "コロモリ"
+    },
+    {
+        "id":  528,
+        "es":  "Swoobat",
+        "en":  "Swoobat",
+        "ja":  "ココロモリ"
+    },
+    {
+        "id":  529,
+        "es":  "Drilbur",
+        "en":  "Drilbur",
+        "ja":  "モグリュー"
+    },
+    {
+        "id":  530,
+        "es":  "Excadrill",
+        "en":  "Excadrill",
+        "ja":  "ドリュウズ"
+    },
+    {
+        "id":  531,
+        "es":  "Audino",
+        "en":  "Audino",
+        "ja":  "タブンネ"
+    },
+    {
+        "id":  532,
+        "es":  "Timburr",
+        "en":  "Timburr",
+        "ja":  "ドッコラー"
+    },
+    {
+        "id":  533,
+        "es":  "Gurdurr",
+        "en":  "Gurdurr",
+        "ja":  "ドテッコツ"
+    },
+    {
+        "id":  534,
+        "es":  "Conkeldurr",
+        "en":  "Conkeldurr",
+        "ja":  "ローブシン"
+    },
+    {
+        "id":  535,
+        "es":  "Tympole",
+        "en":  "Tympole",
+        "ja":  "オタマロ"
+    },
+    {
+        "id":  536,
+        "es":  "Palpitoad",
+        "en":  "Palpitoad",
+        "ja":  "ガマガル"
+    },
+    {
+        "id":  537,
+        "es":  "Seismitoad",
+        "en":  "Seismitoad",
+        "ja":  "ガマゲロゲ"
+    },
+    {
+        "id":  538,
+        "es":  "Throh",
+        "en":  "Throh",
+        "ja":  "ナゲキ"
+    },
+    {
+        "id":  539,
+        "es":  "Sawk",
+        "en":  "Sawk",
+        "ja":  "ダゲキ"
+    },
+    {
+        "id":  540,
+        "es":  "Sewaddle",
+        "en":  "Sewaddle",
+        "ja":  "クルミル"
+    },
+    {
+        "id":  541,
+        "es":  "Swadloon",
+        "en":  "Swadloon",
+        "ja":  "クルマユ"
+    },
+    {
+        "id":  542,
+        "es":  "Leavanny",
+        "en":  "Leavanny",
+        "ja":  "ハハコモリ"
+    },
+    {
+        "id":  543,
+        "es":  "Venipede",
+        "en":  "Venipede",
+        "ja":  "フシデ"
+    },
+    {
+        "id":  544,
+        "es":  "Whirlipede",
+        "en":  "Whirlipede",
+        "ja":  "ホイーガ"
+    },
+    {
+        "id":  545,
+        "es":  "Scolipede",
+        "en":  "Scolipede",
+        "ja":  "ペンドラー"
+    },
+    {
+        "id":  546,
+        "es":  "Cottonee",
+        "en":  "Cottonee",
+        "ja":  "モンメン"
+    },
+    {
+        "id":  547,
+        "es":  "Whimsicott",
+        "en":  "Whimsicott",
+        "ja":  "エルフーン"
+    },
+    {
+        "id":  548,
+        "es":  "Petilil",
+        "en":  "Petilil",
+        "ja":  "チュリネ"
+    },
+    {
+        "id":  549,
+        "es":  "Lilligant",
+        "en":  "Lilligant",
+        "ja":  "ドレディア"
+    },
+    {
+        "id":  550,
+        "es":  "Basculin",
+        "en":  "Basculin",
+        "ja":  "バスラオ"
+    },
+    {
+        "id":  551,
+        "es":  "Sandile",
+        "en":  "Sandile",
+        "ja":  "メグロコ"
+    },
+    {
+        "id":  552,
+        "es":  "Krokorok",
+        "en":  "Krokorok",
+        "ja":  "ワルビル"
+    },
+    {
+        "id":  553,
+        "es":  "Krookodile",
+        "en":  "Krookodile",
+        "ja":  "ワルビアル"
+    },
+    {
+        "id":  554,
+        "es":  "Darumaka",
+        "en":  "Darumaka",
+        "ja":  "ダルマッカ"
+    },
+    {
+        "id":  555,
+        "es":  "Darmanitan",
+        "en":  "Darmanitan",
+        "ja":  "ヒヒダルマ"
+    },
+    {
+        "id":  556,
+        "es":  "Maractus",
+        "en":  "Maractus",
+        "ja":  "マラカッチ"
+    },
+    {
+        "id":  557,
+        "es":  "Dwebble",
+        "en":  "Dwebble",
+        "ja":  "イシズマイ"
+    },
+    {
+        "id":  558,
+        "es":  "Crustle",
+        "en":  "Crustle",
+        "ja":  "イワパレス"
+    },
+    {
+        "id":  559,
+        "es":  "Scraggy",
+        "en":  "Scraggy",
+        "ja":  "ズルッグ"
+    },
+    {
+        "id":  560,
+        "es":  "Scrafty",
+        "en":  "Scrafty",
+        "ja":  "ズルズキン"
+    },
+    {
+        "id":  561,
+        "es":  "Sigilyph",
+        "en":  "Sigilyph",
+        "ja":  "シンボラー"
+    },
+    {
+        "id":  562,
+        "es":  "Yamask",
+        "en":  "Yamask",
+        "ja":  "デスマス"
+    },
+    {
+        "id":  563,
+        "es":  "Cofagrigus",
+        "en":  "Cofagrigus",
+        "ja":  "デスカーン"
+    },
+    {
+        "id":  564,
+        "es":  "Tirtouga",
+        "en":  "Tirtouga",
+        "ja":  "プロトーガ"
+    },
+    {
+        "id":  565,
+        "es":  "Carracosta",
+        "en":  "Carracosta",
+        "ja":  "アバゴーラ"
+    },
+    {
+        "id":  566,
+        "es":  "Archen",
+        "en":  "Archen",
+        "ja":  "アーケン"
+    },
+    {
+        "id":  567,
+        "es":  "Archeops",
+        "en":  "Archeops",
+        "ja":  "アーケオス"
+    },
+    {
+        "id":  568,
+        "es":  "Trubbish",
+        "en":  "Trubbish",
+        "ja":  "ヤブクロン"
+    },
+    {
+        "id":  569,
+        "es":  "Garbodor",
+        "en":  "Garbodor",
+        "ja":  "ダストダス"
+    },
+    {
+        "id":  570,
+        "es":  "Zorua",
+        "en":  "Zorua",
+        "ja":  "ゾロア"
+    },
+    {
+        "id":  571,
+        "es":  "Zoroark",
+        "en":  "Zoroark",
+        "ja":  "ゾロアーク"
+    },
+    {
+        "id":  572,
+        "es":  "Minccino",
+        "en":  "Minccino",
+        "ja":  "チラーミィ"
+    },
+    {
+        "id":  573,
+        "es":  "Cinccino",
+        "en":  "Cinccino",
+        "ja":  "チラチーノ"
+    },
+    {
+        "id":  574,
+        "es":  "Gothita",
+        "en":  "Gothita",
+        "ja":  "ゴチム"
+    },
+    {
+        "id":  575,
+        "es":  "Gothorita",
+        "en":  "Gothorita",
+        "ja":  "ゴチミル"
+    },
+    {
+        "id":  576,
+        "es":  "Gothitelle",
+        "en":  "Gothitelle",
+        "ja":  "ゴチルゼル"
+    },
+    {
+        "id":  577,
+        "es":  "Solosis",
+        "en":  "Solosis",
+        "ja":  "ユニラン"
+    },
+    {
+        "id":  578,
+        "es":  "Duosion",
+        "en":  "Duosion",
+        "ja":  "ダブラン"
+    },
+    {
+        "id":  579,
+        "es":  "Reuniclus",
+        "en":  "Reuniclus",
+        "ja":  "ランクルス"
+    },
+    {
+        "id":  580,
+        "es":  "Ducklett",
+        "en":  "Ducklett",
+        "ja":  "コアルヒー"
+    },
+    {
+        "id":  581,
+        "es":  "Swanna",
+        "en":  "Swanna",
+        "ja":  "スワンナ"
+    },
+    {
+        "id":  582,
+        "es":  "Vanillite",
+        "en":  "Vanillite",
+        "ja":  "バニプッチ"
+    },
+    {
+        "id":  583,
+        "es":  "Vanillish",
+        "en":  "Vanillish",
+        "ja":  "バニリッチ"
+    },
+    {
+        "id":  584,
+        "es":  "Vanilluxe",
+        "en":  "Vanilluxe",
+        "ja":  "バイバニラ"
+    },
+    {
+        "id":  585,
+        "es":  "Deerling",
+        "en":  "Deerling",
+        "ja":  "シキジカ"
+    },
+    {
+        "id":  586,
+        "es":  "Sawsbuck",
+        "en":  "Sawsbuck",
+        "ja":  "メブキジカ"
+    },
+    {
+        "id":  587,
+        "es":  "Emolga",
+        "en":  "Emolga",
+        "ja":  "エモンガ"
+    },
+    {
+        "id":  588,
+        "es":  "Karrablast",
+        "en":  "Karrablast",
+        "ja":  "カブルモ"
+    },
+    {
+        "id":  589,
+        "es":  "Escavalier",
+        "en":  "Escavalier",
+        "ja":  "シュバルゴ"
+    },
+    {
+        "id":  590,
+        "es":  "Foongus",
+        "en":  "Foongus",
+        "ja":  "タマゲタケ"
+    },
+    {
+        "id":  591,
+        "es":  "Amoonguss",
+        "en":  "Amoonguss",
+        "ja":  "モロバレル"
+    },
+    {
+        "id":  592,
+        "es":  "Frillish",
+        "en":  "Frillish",
+        "ja":  "プルリル"
+    },
+    {
+        "id":  593,
+        "es":  "Jellicent",
+        "en":  "Jellicent",
+        "ja":  "ブルンゲル"
+    },
+    {
+        "id":  594,
+        "es":  "Alomomola",
+        "en":  "Alomomola",
+        "ja":  "ママンボウ"
+    },
+    {
+        "id":  595,
+        "es":  "Joltik",
+        "en":  "Joltik",
+        "ja":  "バチュル"
+    },
+    {
+        "id":  596,
+        "es":  "Galvantula",
+        "en":  "Galvantula",
+        "ja":  "デンチュラ"
+    },
+    {
+        "id":  597,
+        "es":  "Ferroseed",
+        "en":  "Ferroseed",
+        "ja":  "テッシード"
+    },
+    {
+        "id":  598,
+        "es":  "Ferrothorn",
+        "en":  "Ferrothorn",
+        "ja":  "ナットレイ"
+    },
+    {
+        "id":  599,
+        "es":  "Klink",
+        "en":  "Klink",
+        "ja":  "ギアル"
+    },
+    {
+        "id":  600,
+        "es":  "Klang",
+        "en":  "Klang",
+        "ja":  "ギギアル"
+    },
+    {
+        "id":  601,
+        "es":  "Klinklang",
+        "en":  "Klinklang",
+        "ja":  "ギギギアル"
+    },
+    {
+        "id":  602,
+        "es":  "Tynamo",
+        "en":  "Tynamo",
+        "ja":  "シビシラス"
+    },
+    {
+        "id":  603,
+        "es":  "Eelektrik",
+        "en":  "Eelektrik",
+        "ja":  "シビビール"
+    },
+    {
+        "id":  604,
+        "es":  "Eelektross",
+        "en":  "Eelektross",
+        "ja":  "シビルドン"
+    },
+    {
+        "id":  605,
+        "es":  "Elgyem",
+        "en":  "Elgyem",
+        "ja":  "リグレー"
+    },
+    {
+        "id":  606,
+        "es":  "Beheeyem",
+        "en":  "Beheeyem",
+        "ja":  "オーベム"
+    },
+    {
+        "id":  607,
+        "es":  "Litwick",
+        "en":  "Litwick",
+        "ja":  "ヒトモシ"
+    },
+    {
+        "id":  608,
+        "es":  "Lampent",
+        "en":  "Lampent",
+        "ja":  "ランプラー"
+    },
+    {
+        "id":  609,
+        "es":  "Chandelure",
+        "en":  "Chandelure",
+        "ja":  "シャンデラ"
+    },
+    {
+        "id":  610,
+        "es":  "Axew",
+        "en":  "Axew",
+        "ja":  "キバゴ"
+    },
+    {
+        "id":  611,
+        "es":  "Fraxure",
+        "en":  "Fraxure",
+        "ja":  "オノンド"
+    },
+    {
+        "id":  612,
+        "es":  "Haxorus",
+        "en":  "Haxorus",
+        "ja":  "オノノクス"
+    },
+    {
+        "id":  613,
+        "es":  "Cubchoo",
+        "en":  "Cubchoo",
+        "ja":  "クマシュン"
+    },
+    {
+        "id":  614,
+        "es":  "Beartic",
+        "en":  "Beartic",
+        "ja":  "ツンベアー"
+    },
+    {
+        "id":  615,
+        "es":  "Cryogonal",
+        "en":  "Cryogonal",
+        "ja":  "フリージオ"
+    },
+    {
+        "id":  616,
+        "es":  "Shelmet",
+        "en":  "Shelmet",
+        "ja":  "チョボマキ"
+    },
+    {
+        "id":  617,
+        "es":  "Accelgor",
+        "en":  "Accelgor",
+        "ja":  "アギルダー"
+    },
+    {
+        "id":  618,
+        "es":  "Stunfisk",
+        "en":  "Stunfisk",
+        "ja":  "マッギョ"
+    },
+    {
+        "id":  619,
+        "es":  "Mienfoo",
+        "en":  "Mienfoo",
+        "ja":  "コジョフー"
+    },
+    {
+        "id":  620,
+        "es":  "Mienshao",
+        "en":  "Mienshao",
+        "ja":  "コジョンド"
+    },
+    {
+        "id":  621,
+        "es":  "Druddigon",
+        "en":  "Druddigon",
+        "ja":  "クリムガン"
+    },
+    {
+        "id":  622,
+        "es":  "Golett",
+        "en":  "Golett",
+        "ja":  "ゴビット"
+    },
+    {
+        "id":  623,
+        "es":  "Golurk",
+        "en":  "Golurk",
+        "ja":  "ゴルーグ"
+    },
+    {
+        "id":  624,
+        "es":  "Pawniard",
+        "en":  "Pawniard",
+        "ja":  "コマタナ"
+    },
+    {
+        "id":  625,
+        "es":  "Bisharp",
+        "en":  "Bisharp",
+        "ja":  "キリキザン"
+    },
+    {
+        "id":  626,
+        "es":  "Bouffalant",
+        "en":  "Bouffalant",
+        "ja":  "バッフロン"
+    },
+    {
+        "id":  627,
+        "es":  "Rufflet",
+        "en":  "Rufflet",
+        "ja":  "ワシボン"
+    },
+    {
+        "id":  628,
+        "es":  "Braviary",
+        "en":  "Braviary",
+        "ja":  "ウォーグル"
+    },
+    {
+        "id":  629,
+        "es":  "Vullaby",
+        "en":  "Vullaby",
+        "ja":  "バルチャイ"
+    },
+    {
+        "id":  630,
+        "es":  "Mandibuzz",
+        "en":  "Mandibuzz",
+        "ja":  "バルジーナ"
+    },
+    {
+        "id":  631,
+        "es":  "Heatmor",
+        "en":  "Heatmor",
+        "ja":  "クイタラン"
+    },
+    {
+        "id":  632,
+        "es":  "Durant",
+        "en":  "Durant",
+        "ja":  "アイアント"
+    },
+    {
+        "id":  633,
+        "es":  "Deino",
+        "en":  "Deino",
+        "ja":  "モノズ"
+    },
+    {
+        "id":  634,
+        "es":  "Zweilous",
+        "en":  "Zweilous",
+        "ja":  "ジヘッド"
+    },
+    {
+        "id":  635,
+        "es":  "Hydreigon",
+        "en":  "Hydreigon",
+        "ja":  "サザンドラ"
+    },
+    {
+        "id":  636,
+        "es":  "Larvesta",
+        "en":  "Larvesta",
+        "ja":  "メラルバ"
+    },
+    {
+        "id":  637,
+        "es":  "Volcarona",
+        "en":  "Volcarona",
+        "ja":  "ウルガモス"
+    },
+    {
+        "id":  638,
+        "es":  "Cobalion",
+        "en":  "Cobalion",
+        "ja":  "コバルオン"
+    },
+    {
+        "id":  639,
+        "es":  "Terrakion",
+        "en":  "Terrakion",
+        "ja":  "テラキオン"
+    },
+    {
+        "id":  640,
+        "es":  "Virizion",
+        "en":  "Virizion",
+        "ja":  "ビリジオン"
+    },
+    {
+        "id":  641,
+        "es":  "Tornadus",
+        "en":  "Tornadus",
+        "ja":  "トルネロス"
+    },
+    {
+        "id":  642,
+        "es":  "Thundurus",
+        "en":  "Thundurus",
+        "ja":  "ボルトロス"
+    },
+    {
+        "id":  643,
+        "es":  "Reshiram",
+        "en":  "Reshiram",
+        "ja":  "レシラム"
+    },
+    {
+        "id":  644,
+        "es":  "Zekrom",
+        "en":  "Zekrom",
+        "ja":  "ゼクロム"
+    },
+    {
+        "id":  645,
+        "es":  "Landorus",
+        "en":  "Landorus",
+        "ja":  "ランドロス"
+    },
+    {
+        "id":  646,
+        "es":  "Kyurem",
+        "en":  "Kyurem",
+        "ja":  "キュレム"
+    },
+    {
+        "id":  647,
+        "es":  "Keldeo",
+        "en":  "Keldeo",
+        "ja":  "ケルディオ"
+    },
+    {
+        "id":  648,
+        "es":  "Meloetta",
+        "en":  "Meloetta",
+        "ja":  "メロエッタ"
+    },
+    {
+        "id":  649,
+        "es":  "Genesect",
+        "en":  "Genesect",
+        "ja":  "ゲノセクト"
+    },
+    {
+        "id":  650,
+        "es":  "Chespin",
+        "en":  "Chespin",
+        "ja":  "ハリマロン"
+    },
+    {
+        "id":  651,
+        "es":  "Quilladin",
+        "en":  "Quilladin",
+        "ja":  "ハリボーグ"
+    },
+    {
+        "id":  652,
+        "es":  "Chesnaught",
+        "en":  "Chesnaught",
+        "ja":  "ブリガロン"
+    },
+    {
+        "id":  653,
+        "es":  "Fennekin",
+        "en":  "Fennekin",
+        "ja":  "フォッコ"
+    },
+    {
+        "id":  654,
+        "es":  "Braixen",
+        "en":  "Braixen",
+        "ja":  "テールナー"
+    },
+    {
+        "id":  655,
+        "es":  "Delphox",
+        "en":  "Delphox",
+        "ja":  "マフォクシー"
+    },
+    {
+        "id":  656,
+        "es":  "Froakie",
+        "en":  "Froakie",
+        "ja":  "ケロマツ"
+    },
+    {
+        "id":  657,
+        "es":  "Frogadier",
+        "en":  "Frogadier",
+        "ja":  "ゲコガシラ"
+    },
+    {
+        "id":  658,
+        "es":  "Greninja",
+        "en":  "Greninja",
+        "ja":  "ゲッコウガ"
+    },
+    {
+        "id":  659,
+        "es":  "Bunnelby",
+        "en":  "Bunnelby",
+        "ja":  "ホルビー"
+    },
+    {
+        "id":  660,
+        "es":  "Diggersby",
+        "en":  "Diggersby",
+        "ja":  "ホルード"
+    },
+    {
+        "id":  661,
+        "es":  "Fletchling",
+        "en":  "Fletchling",
+        "ja":  "ヤヤコマ"
+    },
+    {
+        "id":  662,
+        "es":  "Fletchinder",
+        "en":  "Fletchinder",
+        "ja":  "ヒノヤコマ"
+    },
+    {
+        "id":  663,
+        "es":  "Talonflame",
+        "en":  "Talonflame",
+        "ja":  "ファイアロー"
+    },
+    {
+        "id":  664,
+        "es":  "Scatterbug",
+        "en":  "Scatterbug",
+        "ja":  "コフキムシ"
+    },
+    {
+        "id":  665,
+        "es":  "Spewpa",
+        "en":  "Spewpa",
+        "ja":  "コフーライ"
+    },
+    {
+        "id":  666,
+        "es":  "Vivillon",
+        "en":  "Vivillon",
+        "ja":  "ビビヨン"
+    },
+    {
+        "id":  667,
+        "es":  "Litleo",
+        "en":  "Litleo",
+        "ja":  "シシコ"
+    },
+    {
+        "id":  668,
+        "es":  "Pyroar",
+        "en":  "Pyroar",
+        "ja":  "カエンジシ"
+    },
+    {
+        "id":  669,
+        "es":  "Flabébé",
+        "en":  "Flabébé",
+        "ja":  "フラベベ"
+    },
+    {
+        "id":  670,
+        "es":  "Floette",
+        "en":  "Floette",
+        "ja":  "フラエッテ"
+    },
+    {
+        "id":  671,
+        "es":  "Florges",
+        "en":  "Florges",
+        "ja":  "フラージェス"
+    },
+    {
+        "id":  672,
+        "es":  "Skiddo",
+        "en":  "Skiddo",
+        "ja":  "メェークル"
+    },
+    {
+        "id":  673,
+        "es":  "Gogoat",
+        "en":  "Gogoat",
+        "ja":  "ゴーゴート"
+    },
+    {
+        "id":  674,
+        "es":  "Pancham",
+        "en":  "Pancham",
+        "ja":  "ヤンチャム"
+    },
+    {
+        "id":  675,
+        "es":  "Pangoro",
+        "en":  "Pangoro",
+        "ja":  "ゴロンダ"
+    },
+    {
+        "id":  676,
+        "es":  "Furfrou",
+        "en":  "Furfrou",
+        "ja":  "トリミアン"
+    },
+    {
+        "id":  677,
+        "es":  "Espurr",
+        "en":  "Espurr",
+        "ja":  "ニャスパー"
+    },
+    {
+        "id":  678,
+        "es":  "Meowstic",
+        "en":  "Meowstic",
+        "ja":  "ニャオニクス"
+    },
+    {
+        "id":  679,
+        "es":  "Honedge",
+        "en":  "Honedge",
+        "ja":  "ヒトツキ"
+    },
+    {
+        "id":  680,
+        "es":  "Doublade",
+        "en":  "Doublade",
+        "ja":  "ニダンギル"
+    },
+    {
+        "id":  681,
+        "es":  "Aegislash",
+        "en":  "Aegislash",
+        "ja":  "ギルガルド"
+    },
+    {
+        "id":  682,
+        "es":  "Spritzee",
+        "en":  "Spritzee",
+        "ja":  "シュシュプ"
+    },
+    {
+        "id":  683,
+        "es":  "Aromatisse",
+        "en":  "Aromatisse",
+        "ja":  "フレフワン"
+    },
+    {
+        "id":  684,
+        "es":  "Swirlix",
+        "en":  "Swirlix",
+        "ja":  "ペロッパフ"
+    },
+    {
+        "id":  685,
+        "es":  "Slurpuff",
+        "en":  "Slurpuff",
+        "ja":  "ペロリーム"
+    },
+    {
+        "id":  686,
+        "es":  "Inkay",
+        "en":  "Inkay",
+        "ja":  "マーイーカ"
+    },
+    {
+        "id":  687,
+        "es":  "Malamar",
+        "en":  "Malamar",
+        "ja":  "カラマネロ"
+    },
+    {
+        "id":  688,
+        "es":  "Binacle",
+        "en":  "Binacle",
+        "ja":  "カメテテ"
+    },
+    {
+        "id":  689,
+        "es":  "Barbaracle",
+        "en":  "Barbaracle",
+        "ja":  "ガメノデス"
+    },
+    {
+        "id":  690,
+        "es":  "Skrelp",
+        "en":  "Skrelp",
+        "ja":  "クズモー"
+    },
+    {
+        "id":  691,
+        "es":  "Dragalge",
+        "en":  "Dragalge",
+        "ja":  "ドラミドロ"
+    },
+    {
+        "id":  692,
+        "es":  "Clauncher",
+        "en":  "Clauncher",
+        "ja":  "ウデッポウ"
+    },
+    {
+        "id":  693,
+        "es":  "Clawitzer",
+        "en":  "Clawitzer",
+        "ja":  "ブロスター"
+    },
+    {
+        "id":  694,
+        "es":  "Helioptile",
+        "en":  "Helioptile",
+        "ja":  "エリキテル"
+    },
+    {
+        "id":  695,
+        "es":  "Heliolisk",
+        "en":  "Heliolisk",
+        "ja":  "エレザード"
+    },
+    {
+        "id":  696,
+        "es":  "Tyrunt",
+        "en":  "Tyrunt",
+        "ja":  "チゴラス"
+    },
+    {
+        "id":  697,
+        "es":  "Tyrantrum",
+        "en":  "Tyrantrum",
+        "ja":  "ガチゴラス"
+    },
+    {
+        "id":  698,
+        "es":  "Amaura",
+        "en":  "Amaura",
+        "ja":  "アマルス"
+    },
+    {
+        "id":  699,
+        "es":  "Aurorus",
+        "en":  "Aurorus",
+        "ja":  "アマルルガ"
+    },
+    {
+        "id":  700,
+        "es":  "Sylveon",
+        "en":  "Sylveon",
+        "ja":  "ニンフィア"
+    },
+    {
+        "id":  701,
+        "es":  "Hawlucha",
+        "en":  "Hawlucha",
+        "ja":  "ルチャブル"
+    },
+    {
+        "id":  702,
+        "es":  "Dedenne",
+        "en":  "Dedenne",
+        "ja":  "デデンネ"
+    },
+    {
+        "id":  703,
+        "es":  "Carbink",
+        "en":  "Carbink",
+        "ja":  "メレシー"
+    },
+    {
+        "id":  704,
+        "es":  "Goomy",
+        "en":  "Goomy",
+        "ja":  "ヌメラ"
+    },
+    {
+        "id":  705,
+        "es":  "Sliggoo",
+        "en":  "Sliggoo",
+        "ja":  "ヌメイル"
+    },
+    {
+        "id":  706,
+        "es":  "Goodra",
+        "en":  "Goodra",
+        "ja":  "ヌメルゴン"
+    },
+    {
+        "id":  707,
+        "es":  "Klefki",
+        "en":  "Klefki",
+        "ja":  "クレッフィ"
+    },
+    {
+        "id":  708,
+        "es":  "Phantump",
+        "en":  "Phantump",
+        "ja":  "ボクレー"
+    },
+    {
+        "id":  709,
+        "es":  "Trevenant",
+        "en":  "Trevenant",
+        "ja":  "オーロット"
+    },
+    {
+        "id":  710,
+        "es":  "Pumpkaboo",
+        "en":  "Pumpkaboo",
+        "ja":  "バケッチャ"
+    },
+    {
+        "id":  711,
+        "es":  "Gourgeist",
+        "en":  "Gourgeist",
+        "ja":  "パンプジン"
+    },
+    {
+        "id":  712,
+        "es":  "Bergmite",
+        "en":  "Bergmite",
+        "ja":  "カチコール"
+    },
+    {
+        "id":  713,
+        "es":  "Avalugg",
+        "en":  "Avalugg",
+        "ja":  "クレベース"
+    },
+    {
+        "id":  714,
+        "es":  "Noibat",
+        "en":  "Noibat",
+        "ja":  "オンバット"
+    },
+    {
+        "id":  715,
+        "es":  "Noivern",
+        "en":  "Noivern",
+        "ja":  "オンバーン"
+    },
+    {
+        "id":  716,
+        "es":  "Xerneas",
+        "en":  "Xerneas",
+        "ja":  "ゼルネアス"
+    },
+    {
+        "id":  717,
+        "es":  "Yveltal",
+        "en":  "Yveltal",
+        "ja":  "イベルタル"
+    },
+    {
+        "id":  718,
+        "es":  "Zygarde",
+        "en":  "Zygarde",
+        "ja":  "ジガルデ"
+    },
+    {
+        "id":  719,
+        "es":  "Diancie",
+        "en":  "Diancie",
+        "ja":  "ディアンシー"
+    },
+    {
+        "id":  720,
+        "es":  "Hoopa",
+        "en":  "Hoopa",
+        "ja":  "フーパ"
+    },
+    {
+        "id":  721,
+        "es":  "Volcanion",
+        "en":  "Volcanion",
+        "ja":  "ボルケニオン"
+    },
+    {
+        "id":  722,
+        "es":  "Rowlet",
+        "en":  "Rowlet",
+        "ja":  "モクロー"
+    },
+    {
+        "id":  723,
+        "es":  "Dartrix",
+        "en":  "Dartrix",
+        "ja":  "フクスロー"
+    },
+    {
+        "id":  724,
+        "es":  "Decidueye",
+        "en":  "Decidueye",
+        "ja":  "ジュナイパー"
+    },
+    {
+        "id":  725,
+        "es":  "Litten",
+        "en":  "Litten",
+        "ja":  "ニャビー"
+    },
+    {
+        "id":  726,
+        "es":  "Torracat",
+        "en":  "Torracat",
+        "ja":  "ニャヒート"
+    },
+    {
+        "id":  727,
+        "es":  "Incineroar",
+        "en":  "Incineroar",
+        "ja":  "ガオガエン"
+    },
+    {
+        "id":  728,
+        "es":  "Popplio",
+        "en":  "Popplio",
+        "ja":  "アシマリ"
+    },
+    {
+        "id":  729,
+        "es":  "Brionne",
+        "en":  "Brionne",
+        "ja":  "オシャマリ"
+    },
+    {
+        "id":  730,
+        "es":  "Primarina",
+        "en":  "Primarina",
+        "ja":  "アシレーヌ"
+    },
+    {
+        "id":  731,
+        "es":  "Pikipek",
+        "en":  "Pikipek",
+        "ja":  "ツツケラ"
+    },
+    {
+        "id":  732,
+        "es":  "Trumbeak",
+        "en":  "Trumbeak",
+        "ja":  "ケララッパ"
+    },
+    {
+        "id":  733,
+        "es":  "Toucannon",
+        "en":  "Toucannon",
+        "ja":  "ドデカバシ"
+    },
+    {
+        "id":  734,
+        "es":  "Yungoos",
+        "en":  "Yungoos",
+        "ja":  "ヤングース"
+    },
+    {
+        "id":  735,
+        "es":  "Gumshoos",
+        "en":  "Gumshoos",
+        "ja":  "デカグース"
+    },
+    {
+        "id":  736,
+        "es":  "Grubbin",
+        "en":  "Grubbin",
+        "ja":  "アゴジムシ"
+    },
+    {
+        "id":  737,
+        "es":  "Charjabug",
+        "en":  "Charjabug",
+        "ja":  "デンヂムシ"
+    },
+    {
+        "id":  738,
+        "es":  "Vikavolt",
+        "en":  "Vikavolt",
+        "ja":  "クワガノン"
+    },
+    {
+        "id":  739,
+        "es":  "Crabrawler",
+        "en":  "Crabrawler",
+        "ja":  "マケンカニ"
+    },
+    {
+        "id":  740,
+        "es":  "Crabominable",
+        "en":  "Crabominable",
+        "ja":  "ケケンカニ"
+    },
+    {
+        "id":  741,
+        "es":  "Oricorio",
+        "en":  "Oricorio",
+        "ja":  "オドリドリ"
+    },
+    {
+        "id":  742,
+        "es":  "Cutiefly",
+        "en":  "Cutiefly",
+        "ja":  "アブリー"
+    },
+    {
+        "id":  743,
+        "es":  "Ribombee",
+        "en":  "Ribombee",
+        "ja":  "アブリボン"
+    },
+    {
+        "id":  744,
+        "es":  "Rockruff",
+        "en":  "Rockruff",
+        "ja":  "イワンコ"
+    },
+    {
+        "id":  745,
+        "es":  "Lycanroc",
+        "en":  "Lycanroc",
+        "ja":  "ルガルガン"
+    },
+    {
+        "id":  746,
+        "es":  "Wishiwashi",
+        "en":  "Wishiwashi",
+        "ja":  "ヨワシ"
+    },
+    {
+        "id":  747,
+        "es":  "Mareanie",
+        "en":  "Mareanie",
+        "ja":  "ヒドイデ"
+    },
+    {
+        "id":  748,
+        "es":  "Toxapex",
+        "en":  "Toxapex",
+        "ja":  "ドヒドイデ"
+    },
+    {
+        "id":  749,
+        "es":  "Mudbray",
+        "en":  "Mudbray",
+        "ja":  "ドロバンコ"
+    },
+    {
+        "id":  750,
+        "es":  "Mudsdale",
+        "en":  "Mudsdale",
+        "ja":  "バンバドロ"
+    },
+    {
+        "id":  751,
+        "es":  "Dewpider",
+        "en":  "Dewpider",
+        "ja":  "シズクモ"
+    },
+    {
+        "id":  752,
+        "es":  "Araquanid",
+        "en":  "Araquanid",
+        "ja":  "オニシズクモ"
+    },
+    {
+        "id":  753,
+        "es":  "Fomantis",
+        "en":  "Fomantis",
+        "ja":  "カリキリ"
+    },
+    {
+        "id":  754,
+        "es":  "Lurantis",
+        "en":  "Lurantis",
+        "ja":  "ラランテス"
+    },
+    {
+        "id":  755,
+        "es":  "Morelull",
+        "en":  "Morelull",
+        "ja":  "ネマシュ"
+    },
+    {
+        "id":  756,
+        "es":  "Shiinotic",
+        "en":  "Shiinotic",
+        "ja":  "マシェード"
+    },
+    {
+        "id":  757,
+        "es":  "Salandit",
+        "en":  "Salandit",
+        "ja":  "ヤトウモリ"
+    },
+    {
+        "id":  758,
+        "es":  "Salazzle",
+        "en":  "Salazzle",
+        "ja":  "エンニュート"
+    },
+    {
+        "id":  759,
+        "es":  "Stufful",
+        "en":  "Stufful",
+        "ja":  "ヌイコグマ"
+    },
+    {
+        "id":  760,
+        "es":  "Bewear",
+        "en":  "Bewear",
+        "ja":  "キテルグマ"
+    },
+    {
+        "id":  761,
+        "es":  "Bounsweet",
+        "en":  "Bounsweet",
+        "ja":  "アマカジ"
+    },
+    {
+        "id":  762,
+        "es":  "Steenee",
+        "en":  "Steenee",
+        "ja":  "アママイコ"
+    },
+    {
+        "id":  763,
+        "es":  "Tsareena",
+        "en":  "Tsareena",
+        "ja":  "アマージョ"
+    },
+    {
+        "id":  764,
+        "es":  "Comfey",
+        "en":  "Comfey",
+        "ja":  "キュワワー"
+    },
+    {
+        "id":  765,
+        "es":  "Oranguru",
+        "en":  "Oranguru",
+        "ja":  "ヤレユータン"
+    },
+    {
+        "id":  766,
+        "es":  "Passimian",
+        "en":  "Passimian",
+        "ja":  "ナゲツケサル"
+    },
+    {
+        "id":  767,
+        "es":  "Wimpod",
+        "en":  "Wimpod",
+        "ja":  "コソクムシ"
+    },
+    {
+        "id":  768,
+        "es":  "Golisopod",
+        "en":  "Golisopod",
+        "ja":  "グソクムシャ"
+    },
+    {
+        "id":  769,
+        "es":  "Sandygast",
+        "en":  "Sandygast",
+        "ja":  "スナバァ"
+    },
+    {
+        "id":  770,
+        "es":  "Palossand",
+        "en":  "Palossand",
+        "ja":  "シロデスナ"
+    },
+    {
+        "id":  771,
+        "es":  "Pyukumuku",
+        "en":  "Pyukumuku",
+        "ja":  "ナマコブシ"
+    },
+    {
+        "id":  772,
+        "es":  "Código Cero",
+        "en":  "Type: Null",
+        "ja":  "タイプ：ヌル"
+    },
+    {
+        "id":  773,
+        "es":  "Silvally",
+        "en":  "Silvally",
+        "ja":  "シルヴァディ"
+    },
+    {
+        "id":  774,
+        "es":  "Minior",
+        "en":  "Minior",
+        "ja":  "メテノ"
+    },
+    {
+        "id":  775,
+        "es":  "Komala",
+        "en":  "Komala",
+        "ja":  "ネッコアラ"
+    },
+    {
+        "id":  776,
+        "es":  "Turtonator",
+        "en":  "Turtonator",
+        "ja":  "バクガメス"
+    },
+    {
+        "id":  777,
+        "es":  "Togedemaru",
+        "en":  "Togedemaru",
+        "ja":  "トゲデマル"
+    },
+    {
+        "id":  778,
+        "es":  "Mimikyu",
+        "en":  "Mimikyu",
+        "ja":  "ミミッキュ"
+    },
+    {
+        "id":  779,
+        "es":  "Bruxish",
+        "en":  "Bruxish",
+        "ja":  "ハギギシリ"
+    },
+    {
+        "id":  780,
+        "es":  "Drampa",
+        "en":  "Drampa",
+        "ja":  "ジジーロン"
+    },
+    {
+        "id":  781,
+        "es":  "Dhelmise",
+        "en":  "Dhelmise",
+        "ja":  "ダダリン"
+    },
+    {
+        "id":  782,
+        "es":  "Jangmo-o",
+        "en":  "Jangmo-o",
+        "ja":  "ジャラコ"
+    },
+    {
+        "id":  783,
+        "es":  "Hakamo-o",
+        "en":  "Hakamo-o",
+        "ja":  "ジャランゴ"
+    },
+    {
+        "id":  784,
+        "es":  "Kommo-o",
+        "en":  "Kommo-o",
+        "ja":  "ジャラランガ"
+    },
+    {
+        "id":  785,
+        "es":  "Tapu Koko",
+        "en":  "Tapu Koko",
+        "ja":  "カプ・コケコ"
+    },
+    {
+        "id":  786,
+        "es":  "Tapu Lele",
+        "en":  "Tapu Lele",
+        "ja":  "カプ・テテフ"
+    },
+    {
+        "id":  787,
+        "es":  "Tapu Bulu",
+        "en":  "Tapu Bulu",
+        "ja":  "カプ・ブルル"
+    },
+    {
+        "id":  788,
+        "es":  "Tapu Fini",
+        "en":  "Tapu Fini",
+        "ja":  "カプ・レヒレ"
+    },
+    {
+        "id":  789,
+        "es":  "Cosmog",
+        "en":  "Cosmog",
+        "ja":  "コスモッグ"
+    },
+    {
+        "id":  790,
+        "es":  "Cosmoem",
+        "en":  "Cosmoem",
+        "ja":  "コスモウム"
+    },
+    {
+        "id":  791,
+        "es":  "Solgaleo",
+        "en":  "Solgaleo",
+        "ja":  "ソルガレオ"
+    },
+    {
+        "id":  792,
+        "es":  "Lunala",
+        "en":  "Lunala",
+        "ja":  "ルナアーラ"
+    },
+    {
+        "id":  793,
+        "es":  "Nihilego",
+        "en":  "Nihilego",
+        "ja":  "ウツロイド"
+    },
+    {
+        "id":  794,
+        "es":  "Buzzwole",
+        "en":  "Buzzwole",
+        "ja":  "マッシブーン"
+    },
+    {
+        "id":  795,
+        "es":  "Pheromosa",
+        "en":  "Pheromosa",
+        "ja":  "フェローチェ"
+    },
+    {
+        "id":  796,
+        "es":  "Xurkitree",
+        "en":  "Xurkitree",
+        "ja":  "デンジュモク"
+    },
+    {
+        "id":  797,
+        "es":  "Celesteela",
+        "en":  "Celesteela",
+        "ja":  "テッカグヤ"
+    },
+    {
+        "id":  798,
+        "es":  "Kartana",
+        "en":  "Kartana",
+        "ja":  "カミツルギ"
+    },
+    {
+        "id":  799,
+        "es":  "Guzzlord",
+        "en":  "Guzzlord",
+        "ja":  "アクジキング"
+    },
+    {
+        "id":  800,
+        "es":  "Necrozma",
+        "en":  "Necrozma",
+        "ja":  "ネクロズマ"
+    },
+    {
+        "id":  801,
+        "es":  "Magearna",
+        "en":  "Magearna",
+        "ja":  "マギアナ"
+    },
+    {
+        "id":  802,
+        "es":  "Marshadow",
+        "en":  "Marshadow",
+        "ja":  "マーシャドー"
+    },
+    {
+        "id":  803,
+        "es":  "Poipole",
+        "en":  "Poipole",
+        "ja":  "ベベノム"
+    },
+    {
+        "id":  804,
+        "es":  "Naganadel",
+        "en":  "Naganadel",
+        "ja":  "アーゴヨン"
+    },
+    {
+        "id":  805,
+        "es":  "Stakataka",
+        "en":  "Stakataka",
+        "ja":  "ツンデツンデ"
+    },
+    {
+        "id":  806,
+        "es":  "Blacephalon",
+        "en":  "Blacephalon",
+        "ja":  "ズガドーン"
+    },
+    {
+        "id":  807,
+        "es":  "Zeraora",
+        "en":  "Zeraora",
+        "ja":  "ゼラオラ"
+    },
+    {
+        "id":  808,
+        "es":  "Meltan",
+        "en":  "Meltan",
+        "ja":  "メルタン"
+    },
+    {
+        "id":  809,
+        "es":  "Melmetal",
+        "en":  "Melmetal",
+        "ja":  "メルメタル"
+    },
+    {
+        "id":  810,
+        "es":  "Grookey",
+        "en":  "Grookey",
+        "ja":  "サルノリ"
+    },
+    {
+        "id":  811,
+        "es":  "Thwackey",
+        "en":  "Thwackey",
+        "ja":  "バチンキー"
+    },
+    {
+        "id":  812,
+        "es":  "Rillaboom",
+        "en":  "Rillaboom",
+        "ja":  "ゴリランダー"
+    },
+    {
+        "id":  813,
+        "es":  "Scorbunny",
+        "en":  "Scorbunny",
+        "ja":  "ヒバニー"
+    },
+    {
+        "id":  814,
+        "es":  "Raboot",
+        "en":  "Raboot",
+        "ja":  "ラビフット"
+    },
+    {
+        "id":  815,
+        "es":  "Cinderace",
+        "en":  "Cinderace",
+        "ja":  "エースバーン"
+    },
+    {
+        "id":  816,
+        "es":  "Sobble",
+        "en":  "Sobble",
+        "ja":  "メッソン"
+    },
+    {
+        "id":  817,
+        "es":  "Drizzile",
+        "en":  "Drizzile",
+        "ja":  "ジメレオン"
+    },
+    {
+        "id":  818,
+        "es":  "Inteleon",
+        "en":  "Inteleon",
+        "ja":  "インテレオン"
+    },
+    {
+        "id":  819,
+        "es":  "Skwovet",
+        "en":  "Skwovet",
+        "ja":  "ホシガリス"
+    },
+    {
+        "id":  820,
+        "es":  "Greedent",
+        "en":  "Greedent",
+        "ja":  "ヨクバリス"
+    },
+    {
+        "id":  821,
+        "es":  "Rookidee",
+        "en":  "Rookidee",
+        "ja":  "ココガラ"
+    },
+    {
+        "id":  822,
+        "es":  "Corvisquire",
+        "en":  "Corvisquire",
+        "ja":  "アオガラス"
+    },
+    {
+        "id":  823,
+        "es":  "Corviknight",
+        "en":  "Corviknight",
+        "ja":  "アーマーガア"
+    },
+    {
+        "id":  824,
+        "es":  "Blipbug",
+        "en":  "Blipbug",
+        "ja":  "サッチムシ"
+    },
+    {
+        "id":  825,
+        "es":  "Dottler",
+        "en":  "Dottler",
+        "ja":  "レドームシ"
+    },
+    {
+        "id":  826,
+        "es":  "Orbeetle",
+        "en":  "Orbeetle",
+        "ja":  "イオルブ"
+    },
+    {
+        "id":  827,
+        "es":  "Nickit",
+        "en":  "Nickit",
+        "ja":  "クスネ"
+    },
+    {
+        "id":  828,
+        "es":  "Thievul",
+        "en":  "Thievul",
+        "ja":  "フォクスライ"
+    },
+    {
+        "id":  829,
+        "es":  "Gossifleur",
+        "en":  "Gossifleur",
+        "ja":  "ヒメンカ"
+    },
+    {
+        "id":  830,
+        "es":  "Eldegoss",
+        "en":  "Eldegoss",
+        "ja":  "ワタシラガ"
+    },
+    {
+        "id":  831,
+        "es":  "Wooloo",
+        "en":  "Wooloo",
+        "ja":  "ウールー"
+    },
+    {
+        "id":  832,
+        "es":  "Dubwool",
+        "en":  "Dubwool",
+        "ja":  "バイウールー"
+    },
+    {
+        "id":  833,
+        "es":  "Chewtle",
+        "en":  "Chewtle",
+        "ja":  "カムカメ"
+    },
+    {
+        "id":  834,
+        "es":  "Drednaw",
+        "en":  "Drednaw",
+        "ja":  "カジリガメ"
+    },
+    {
+        "id":  835,
+        "es":  "Yamper",
+        "en":  "Yamper",
+        "ja":  "ワンパチ"
+    },
+    {
+        "id":  836,
+        "es":  "Boltund",
+        "en":  "Boltund",
+        "ja":  "パルスワン"
+    },
+    {
+        "id":  837,
+        "es":  "Rolycoly",
+        "en":  "Rolycoly",
+        "ja":  "タンドン"
+    },
+    {
+        "id":  838,
+        "es":  "Carkol",
+        "en":  "Carkol",
+        "ja":  "トロッゴン"
+    },
+    {
+        "id":  839,
+        "es":  "Coalossal",
+        "en":  "Coalossal",
+        "ja":  "セキタンザン"
+    },
+    {
+        "id":  840,
+        "es":  "Applin",
+        "en":  "Applin",
+        "ja":  "カジッチュ"
+    },
+    {
+        "id":  841,
+        "es":  "Flapple",
+        "en":  "Flapple",
+        "ja":  "アップリュー"
+    },
+    {
+        "id":  842,
+        "es":  "Appletun",
+        "en":  "Appletun",
+        "ja":  "タルップル"
+    },
+    {
+        "id":  843,
+        "es":  "Silicobra",
+        "en":  "Silicobra",
+        "ja":  "スナヘビ"
+    },
+    {
+        "id":  844,
+        "es":  "Sandaconda",
+        "en":  "Sandaconda",
+        "ja":  "サダイジャ"
+    },
+    {
+        "id":  845,
+        "es":  "Cramorant",
+        "en":  "Cramorant",
+        "ja":  "ウッウ"
+    },
+    {
+        "id":  846,
+        "es":  "Arrokuda",
+        "en":  "Arrokuda",
+        "ja":  "サシカマス"
+    },
+    {
+        "id":  847,
+        "es":  "Barraskewda",
+        "en":  "Barraskewda",
+        "ja":  "カマスジョー"
+    },
+    {
+        "id":  848,
+        "es":  "Toxel",
+        "en":  "Toxel",
+        "ja":  "エレズン"
+    },
+    {
+        "id":  849,
+        "es":  "Toxtricity",
+        "en":  "Toxtricity",
+        "ja":  "ストリンダー"
+    },
+    {
+        "id":  850,
+        "es":  "Sizzlipede",
+        "en":  "Sizzlipede",
+        "ja":  "ヤクデ"
+    },
+    {
+        "id":  851,
+        "es":  "Centiskorch",
+        "en":  "Centiskorch",
+        "ja":  "マルヤクデ"
+    },
+    {
+        "id":  852,
+        "es":  "Clobbopus",
+        "en":  "Clobbopus",
+        "ja":  "タタッコ"
+    },
+    {
+        "id":  853,
+        "es":  "Grapploct",
+        "en":  "Grapploct",
+        "ja":  "オトスパス"
+    },
+    {
+        "id":  854,
+        "es":  "Sinistea",
+        "en":  "Sinistea",
+        "ja":  "ヤバチャ"
+    },
+    {
+        "id":  855,
+        "es":  "Polteageist",
+        "en":  "Polteageist",
+        "ja":  "ポットデス"
+    },
+    {
+        "id":  856,
+        "es":  "Hatenna",
+        "en":  "Hatenna",
+        "ja":  "ミブリム"
+    },
+    {
+        "id":  857,
+        "es":  "Hattrem",
+        "en":  "Hattrem",
+        "ja":  "テブリム"
+    },
+    {
+        "id":  858,
+        "es":  "Hatterene",
+        "en":  "Hatterene",
+        "ja":  "ブリムオン"
+    },
+    {
+        "id":  859,
+        "es":  "Impidimp",
+        "en":  "Impidimp",
+        "ja":  "ベロバー"
+    },
+    {
+        "id":  860,
+        "es":  "Morgrem",
+        "en":  "Morgrem",
+        "ja":  "ギモー"
+    },
+    {
+        "id":  861,
+        "es":  "Grimmsnarl",
+        "en":  "Grimmsnarl",
+        "ja":  "オーロンゲ"
+    },
+    {
+        "id":  862,
+        "es":  "Obstagoon",
+        "en":  "Obstagoon",
+        "ja":  "タチフサグマ"
+    },
+    {
+        "id":  863,
+        "es":  "Perrserker",
+        "en":  "Perrserker",
+        "ja":  "ニャイキング"
+    },
+    {
+        "id":  864,
+        "es":  "Cursola",
+        "en":  "Cursola",
+        "ja":  "サニゴーン"
+    },
+    {
+        "id":  865,
+        "es":  "Sirfetch’d",
+        "en":  "Sirfetch’d",
+        "ja":  "ネギガナイト"
+    },
+    {
+        "id":  866,
+        "es":  "Mr. Rime",
+        "en":  "Mr. Rime",
+        "ja":  "バリコオル"
+    },
+    {
+        "id":  867,
+        "es":  "Runerigus",
+        "en":  "Runerigus",
+        "ja":  "デスバーン"
+    },
+    {
+        "id":  868,
+        "es":  "Milcery",
+        "en":  "Milcery",
+        "ja":  "マホミル"
+    },
+    {
+        "id":  869,
+        "es":  "Alcremie",
+        "en":  "Alcremie",
+        "ja":  "マホイップ"
+    },
+    {
+        "id":  870,
+        "es":  "Falinks",
+        "en":  "Falinks",
+        "ja":  "タイレーツ"
+    },
+    {
+        "id":  871,
+        "es":  "Pincurchin",
+        "en":  "Pincurchin",
+        "ja":  "バチンウニ"
+    },
+    {
+        "id":  872,
+        "es":  "Snom",
+        "en":  "Snom",
+        "ja":  "ユキハミ"
+    },
+    {
+        "id":  873,
+        "es":  "Frosmoth",
+        "en":  "Frosmoth",
+        "ja":  "モスノウ"
+    },
+    {
+        "id":  874,
+        "es":  "Stonjourner",
+        "en":  "Stonjourner",
+        "ja":  "イシヘンジン"
+    },
+    {
+        "id":  875,
+        "es":  "Eiscue",
+        "en":  "Eiscue",
+        "ja":  "コオリッポ"
+    },
+    {
+        "id":  876,
+        "es":  "Indeedee",
+        "en":  "Indeedee",
+        "ja":  "イエッサン"
+    },
+    {
+        "id":  877,
+        "es":  "Morpeko",
+        "en":  "Morpeko",
+        "ja":  "モルペコ"
+    },
+    {
+        "id":  878,
+        "es":  "Cufant",
+        "en":  "Cufant",
+        "ja":  "ゾウドウ"
+    },
+    {
+        "id":  879,
+        "es":  "Copperajah",
+        "en":  "Copperajah",
+        "ja":  "ダイオウドウ"
+    },
+    {
+        "id":  880,
+        "es":  "Dracozolt",
+        "en":  "Dracozolt",
+        "ja":  "パッチラゴン"
+    },
+    {
+        "id":  881,
+        "es":  "Arctozolt",
+        "en":  "Arctozolt",
+        "ja":  "パッチルドン"
+    },
+    {
+        "id":  882,
+        "es":  "Dracovish",
+        "en":  "Dracovish",
+        "ja":  "ウオノラゴン"
+    },
+    {
+        "id":  883,
+        "es":  "Arctovish",
+        "en":  "Arctovish",
+        "ja":  "ウオチルドン"
+    },
+    {
+        "id":  884,
+        "es":  "Duraludon",
+        "en":  "Duraludon",
+        "ja":  "ジュラルドン"
+    },
+    {
+        "id":  885,
+        "es":  "Dreepy",
+        "en":  "Dreepy",
+        "ja":  "ドラメシヤ"
+    },
+    {
+        "id":  886,
+        "es":  "Drakloak",
+        "en":  "Drakloak",
+        "ja":  "ドロンチ"
+    },
+    {
+        "id":  887,
+        "es":  "Dragapult",
+        "en":  "Dragapult",
+        "ja":  "ドラパルト"
+    },
+    {
+        "id":  888,
+        "es":  "Zacian",
+        "en":  "Zacian",
+        "ja":  "ザシアン"
+    },
+    {
+        "id":  889,
+        "es":  "Zamazenta",
+        "en":  "Zamazenta",
+        "ja":  "ザマゼンタ"
+    },
+    {
+        "id":  890,
+        "es":  "Eternatus",
+        "en":  "Eternatus",
+        "ja":  "ムゲンダイナ"
+    },
+    {
+        "id":  891,
+        "es":  "Kubfu",
+        "en":  "Kubfu",
+        "ja":  "ダクマ"
+    },
+    {
+        "id":  892,
+        "es":  "Urshifu",
+        "en":  "Urshifu",
+        "ja":  "ウーラオス"
+    },
+    {
+        "id":  893,
+        "es":  "Zarude",
+        "en":  "Zarude",
+        "ja":  "ザルード"
+    },
+    {
+        "id":  894,
+        "es":  "Regieleki",
+        "en":  "Regieleki",
+        "ja":  "レジエレキ"
+    },
+    {
+        "id":  895,
+        "es":  "Regidrago",
+        "en":  "Regidrago",
+        "ja":  "レジドラゴ"
+    },
+    {
+        "id":  896,
+        "es":  "Glastrier",
+        "en":  "Glastrier",
+        "ja":  "ブリザポス"
+    },
+    {
+        "id":  897,
+        "es":  "Spectrier",
+        "en":  "Spectrier",
+        "ja":  "レイスポス"
+    },
+    {
+        "id":  898,
+        "es":  "Calyrex",
+        "en":  "Calyrex",
+        "ja":  "バドレックス"
+    },
+    {
+        "id":  899,
+        "es":  "Wyrdeer",
+        "en":  "Wyrdeer",
+        "ja":  "アヤシシ"
+    },
+    {
+        "id":  900,
+        "es":  "Kleavor",
+        "en":  "Kleavor",
+        "ja":  "バサギリ"
+    },
+    {
+        "id":  901,
+        "es":  "Ursaluna",
+        "en":  "Ursaluna",
+        "ja":  "ガチグマ"
+    },
+    {
+        "id":  902,
+        "es":  "Basculegion",
+        "en":  "Basculegion",
+        "ja":  "イダイトウ"
+    },
+    {
+        "id":  903,
+        "es":  "Sneasler",
+        "en":  "Sneasler",
+        "ja":  "オオニューラ"
+    },
+    {
+        "id":  904,
+        "es":  "Overqwil",
+        "en":  "Overqwil",
+        "ja":  "ハリーマン"
+    },
+    {
+        "id":  905,
+        "es":  "Enamorus",
+        "en":  "Enamorus",
+        "ja":  "ラブトロス"
+    },
+    {
+        "id":  906,
+        "es":  "Sprigatito",
+        "en":  "Sprigatito",
+        "ja":  "ニャオハ"
+    },
+    {
+        "id":  907,
+        "es":  "Floragato",
+        "en":  "Floragato",
+        "ja":  "ニャローテ"
+    },
+    {
+        "id":  908,
+        "es":  "Meowscarada",
+        "en":  "Meowscarada",
+        "ja":  "マスカーニャ"
+    },
+    {
+        "id":  909,
+        "es":  "Fuecoco",
+        "en":  "Fuecoco",
+        "ja":  "ホゲータ"
+    },
+    {
+        "id":  910,
+        "es":  "Crocalor",
+        "en":  "Crocalor",
+        "ja":  "アチゲータ"
+    },
+    {
+        "id":  911,
+        "es":  "Skeledirge",
+        "en":  "Skeledirge",
+        "ja":  "ラウドボーン"
+    },
+    {
+        "id":  912,
+        "es":  "Quaxly",
+        "en":  "Quaxly",
+        "ja":  "クワッス"
+    },
+    {
+        "id":  913,
+        "es":  "Quaxwell",
+        "en":  "Quaxwell",
+        "ja":  "ウェルカモ"
+    },
+    {
+        "id":  914,
+        "es":  "Quaquaval",
+        "en":  "Quaquaval",
+        "ja":  "ウェーニバル"
+    },
+    {
+        "id":  915,
+        "es":  "Lechonk",
+        "en":  "Lechonk",
+        "ja":  "グルトン"
+    },
+    {
+        "id":  916,
+        "es":  "Oinkologne",
+        "en":  "Oinkologne",
+        "ja":  "パフュートン"
+    },
+    {
+        "id":  917,
+        "es":  "Tarountula",
+        "en":  "Tarountula",
+        "ja":  "タマンチュラ"
+    },
+    {
+        "id":  918,
+        "es":  "Spidops",
+        "en":  "Spidops",
+        "ja":  "ワナイダー"
+    },
+    {
+        "id":  919,
+        "es":  "Nymble",
+        "en":  "Nymble",
+        "ja":  "マメバッタ"
+    },
+    {
+        "id":  920,
+        "es":  "Lokix",
+        "en":  "Lokix",
+        "ja":  "エクスレッグ"
+    },
+    {
+        "id":  921,
+        "es":  "Pawmi",
+        "en":  "Pawmi",
+        "ja":  "パモ"
+    },
+    {
+        "id":  922,
+        "es":  "Pawmo",
+        "en":  "Pawmo",
+        "ja":  "パモット"
+    },
+    {
+        "id":  923,
+        "es":  "Pawmot",
+        "en":  "Pawmot",
+        "ja":  "パーモット"
+    },
+    {
+        "id":  924,
+        "es":  "Tandemaus",
+        "en":  "Tandemaus",
+        "ja":  "ワッカネズミ"
+    },
+    {
+        "id":  925,
+        "es":  "Maushold",
+        "en":  "Maushold",
+        "ja":  "イッカネズミ"
+    },
+    {
+        "id":  926,
+        "es":  "Fidough",
+        "en":  "Fidough",
+        "ja":  "パピモッチ"
+    },
+    {
+        "id":  927,
+        "es":  "Dachsbun",
+        "en":  "Dachsbun",
+        "ja":  "バウッツェル"
+    },
+    {
+        "id":  928,
+        "es":  "Smoliv",
+        "en":  "Smoliv",
+        "ja":  "ミニーブ"
+    },
+    {
+        "id":  929,
+        "es":  "Dolliv",
+        "en":  "Dolliv",
+        "ja":  "オリーニョ"
+    },
+    {
+        "id":  930,
+        "es":  "Arboliva",
+        "en":  "Arboliva",
+        "ja":  "オリーヴァ"
+    },
+    {
+        "id":  931,
+        "es":  "Squawkabilly",
+        "en":  "Squawkabilly",
+        "ja":  "イキリンコ"
+    },
+    {
+        "id":  932,
+        "es":  "Nacli",
+        "en":  "Nacli",
+        "ja":  "コジオ"
+    },
+    {
+        "id":  933,
+        "es":  "Naclstack",
+        "en":  "Naclstack",
+        "ja":  "ジオヅム"
+    },
+    {
+        "id":  934,
+        "es":  "Garganacl",
+        "en":  "Garganacl",
+        "ja":  "キョジオーン"
+    },
+    {
+        "id":  935,
+        "es":  "Charcadet",
+        "en":  "Charcadet",
+        "ja":  "カルボウ"
+    },
+    {
+        "id":  936,
+        "es":  "Armarouge",
+        "en":  "Armarouge",
+        "ja":  "グレンアルマ"
+    },
+    {
+        "id":  937,
+        "es":  "Ceruledge",
+        "en":  "Ceruledge",
+        "ja":  "ソウブレイズ"
+    },
+    {
+        "id":  938,
+        "es":  "Tadbulb",
+        "en":  "Tadbulb",
+        "ja":  "ズピカ"
+    },
+    {
+        "id":  939,
+        "es":  "Bellibolt",
+        "en":  "Bellibolt",
+        "ja":  "ハラバリー"
+    },
+    {
+        "id":  940,
+        "es":  "Wattrel",
+        "en":  "Wattrel",
+        "ja":  "カイデン"
+    },
+    {
+        "id":  941,
+        "es":  "Kilowattrel",
+        "en":  "Kilowattrel",
+        "ja":  "タイカイデン"
+    },
+    {
+        "id":  942,
+        "es":  "Maschiff",
+        "en":  "Maschiff",
+        "ja":  "オラチフ"
+    },
+    {
+        "id":  943,
+        "es":  "Mabosstiff",
+        "en":  "Mabosstiff",
+        "ja":  "マフィティフ"
+    },
+    {
+        "id":  944,
+        "es":  "Shroodle",
+        "en":  "Shroodle",
+        "ja":  "シルシュルー"
+    },
+    {
+        "id":  945,
+        "es":  "Grafaiai",
+        "en":  "Grafaiai",
+        "ja":  "タギングル"
+    },
+    {
+        "id":  946,
+        "es":  "Bramblin",
+        "en":  "Bramblin",
+        "ja":  "アノクサ"
+    },
+    {
+        "id":  947,
+        "es":  "Brambleghast",
+        "en":  "Brambleghast",
+        "ja":  "アノホラグサ"
+    },
+    {
+        "id":  948,
+        "es":  "Toedscool",
+        "en":  "Toedscool",
+        "ja":  "ノノクラゲ"
+    },
+    {
+        "id":  949,
+        "es":  "Toedscruel",
+        "en":  "Toedscruel",
+        "ja":  "リククラゲ"
+    },
+    {
+        "id":  950,
+        "es":  "Klawf",
+        "en":  "Klawf",
+        "ja":  "ガケガニ"
+    },
+    {
+        "id":  951,
+        "es":  "Capsakid",
+        "en":  "Capsakid",
+        "ja":  "カプサイジ"
+    },
+    {
+        "id":  952,
+        "es":  "Scovillain",
+        "en":  "Scovillain",
+        "ja":  "スコヴィラン"
+    },
+    {
+        "id":  953,
+        "es":  "Rellor",
+        "en":  "Rellor",
+        "ja":  "シガロコ"
+    },
+    {
+        "id":  954,
+        "es":  "Rabsca",
+        "en":  "Rabsca",
+        "ja":  "ベラカス"
+    },
+    {
+        "id":  955,
+        "es":  "Flittle",
+        "en":  "Flittle",
+        "ja":  "ヒラヒナ"
+    },
+    {
+        "id":  956,
+        "es":  "Espathra",
+        "en":  "Espathra",
+        "ja":  "クエスパトラ"
+    },
+    {
+        "id":  957,
+        "es":  "Tinkatink",
+        "en":  "Tinkatink",
+        "ja":  "カヌチャン"
+    },
+    {
+        "id":  958,
+        "es":  "Tinkatuff",
+        "en":  "Tinkatuff",
+        "ja":  "ナカヌチャン"
+    },
+    {
+        "id":  959,
+        "es":  "Tinkaton",
+        "en":  "Tinkaton",
+        "ja":  "デカヌチャン"
+    },
+    {
+        "id":  960,
+        "es":  "Wiglett",
+        "en":  "Wiglett",
+        "ja":  "ウミディグダ"
+    },
+    {
+        "id":  961,
+        "es":  "Wugtrio",
+        "en":  "Wugtrio",
+        "ja":  "ウミトリオ"
+    },
+    {
+        "id":  962,
+        "es":  "Bombirdier",
+        "en":  "Bombirdier",
+        "ja":  "オトシドリ"
+    },
+    {
+        "id":  963,
+        "es":  "Finizen",
+        "en":  "Finizen",
+        "ja":  "ナミイルカ"
+    },
+    {
+        "id":  964,
+        "es":  "Palafin",
+        "en":  "Palafin",
+        "ja":  "イルカマン"
+    },
+    {
+        "id":  965,
+        "es":  "Varoom",
+        "en":  "Varoom",
+        "ja":  "ブロロン"
+    },
+    {
+        "id":  966,
+        "es":  "Revavroom",
+        "en":  "Revavroom",
+        "ja":  "ブロロローム"
+    },
+    {
+        "id":  967,
+        "es":  "Cyclizar",
+        "en":  "Cyclizar",
+        "ja":  "モトトカゲ"
+    },
+    {
+        "id":  968,
+        "es":  "Orthworm",
+        "en":  "Orthworm",
+        "ja":  "ミミズズ"
+    },
+    {
+        "id":  969,
+        "es":  "Glimmet",
+        "en":  "Glimmet",
+        "ja":  "キラーメ"
+    },
+    {
+        "id":  970,
+        "es":  "Glimmora",
+        "en":  "Glimmora",
+        "ja":  "キラフロル"
+    },
+    {
+        "id":  971,
+        "es":  "Greavard",
+        "en":  "Greavard",
+        "ja":  "ボチ"
+    },
+    {
+        "id":  972,
+        "es":  "Houndstone",
+        "en":  "Houndstone",
+        "ja":  "ハカドッグ"
+    },
+    {
+        "id":  973,
+        "es":  "Flamigo",
+        "en":  "Flamigo",
+        "ja":  "カラミンゴ"
+    },
+    {
+        "id":  974,
+        "es":  "Cetoddle",
+        "en":  "Cetoddle",
+        "ja":  "アルクジラ"
+    },
+    {
+        "id":  975,
+        "es":  "Cetitan",
+        "en":  "Cetitan",
+        "ja":  "ハルクジラ"
+    },
+    {
+        "id":  976,
+        "es":  "Veluza",
+        "en":  "Veluza",
+        "ja":  "ミガルーサ"
+    },
+    {
+        "id":  977,
+        "es":  "Dondozo",
+        "en":  "Dondozo",
+        "ja":  "ヘイラッシャ"
+    },
+    {
+        "id":  978,
+        "es":  "Tatsugiri",
+        "en":  "Tatsugiri",
+        "ja":  "シャリタツ"
+    },
+    {
+        "id":  979,
+        "es":  "Annihilape",
+        "en":  "Annihilape",
+        "ja":  "コノヨザル"
+    },
+    {
+        "id":  980,
+        "es":  "Clodsire",
+        "en":  "Clodsire",
+        "ja":  "ドオー"
+    },
+    {
+        "id":  981,
+        "es":  "Farigiraf",
+        "en":  "Farigiraf",
+        "ja":  "リキキリン"
+    },
+    {
+        "id":  982,
+        "es":  "Dudunsparce",
+        "en":  "Dudunsparce",
+        "ja":  "ノココッチ"
+    },
+    {
+        "id":  983,
+        "es":  "Kingambit",
+        "en":  "Kingambit",
+        "ja":  "ドドゲザン"
+    },
+    {
+        "id":  984,
+        "es":  "Colmilargo",
+        "en":  "Great Tusk",
+        "ja":  "イダイナキバ"
+    },
+    {
+        "id":  985,
+        "es":  "Colagrito",
+        "en":  "Scream Tail",
+        "ja":  "サケブシッポ"
+    },
+    {
+        "id":  986,
+        "es":  "Furioseta",
+        "en":  "Brute Bonnet",
+        "ja":  "アラブルタケ"
+    },
+    {
+        "id":  987,
+        "es":  "Melenaleteo",
+        "en":  "Flutter Mane",
+        "ja":  "ハバタクカミ"
+    },
+    {
+        "id":  988,
+        "es":  "Reptalada",
+        "en":  "Slither Wing",
+        "ja":  "チヲハウハネ"
+    },
+    {
+        "id":  989,
+        "es":  "Pelarena",
+        "en":  "Sandy Shocks",
+        "ja":  "スナノケガワ"
+    },
+    {
+        "id":  990,
+        "es":  "Ferrodada",
+        "en":  "Iron Treads",
+        "ja":  "テツノワダチ"
+    },
+    {
+        "id":  991,
+        "es":  "Ferrosaco",
+        "en":  "Iron Bundle",
+        "ja":  "テツノツツミ"
+    },
+    {
+        "id":  992,
+        "es":  "Ferropalmas",
+        "en":  "Iron Hands",
+        "ja":  "テツノカイナ"
+    },
+    {
+        "id":  993,
+        "es":  "Ferrocuello",
+        "en":  "Iron Jugulis",
+        "ja":  "テツノコウベ"
+    },
+    {
+        "id":  994,
+        "es":  "Ferropolilla",
+        "en":  "Iron Moth",
+        "ja":  "テツノドクガ"
+    },
+    {
+        "id":  995,
+        "es":  "Ferropúas",
+        "en":  "Iron Thorns",
+        "ja":  "テツノイバラ"
+    },
+    {
+        "id":  996,
+        "es":  "Frigibax",
+        "en":  "Frigibax",
+        "ja":  "セビエ"
+    },
+    {
+        "id":  997,
+        "es":  "Arctibax",
+        "en":  "Arctibax",
+        "ja":  "セゴール"
+    },
+    {
+        "id":  998,
+        "es":  "Baxcalibur",
+        "en":  "Baxcalibur",
+        "ja":  "セグレイブ"
+    },
+    {
+        "id":  999,
+        "es":  "Gimmighoul",
+        "en":  "Gimmighoul",
+        "ja":  "コレクレー"
+    },
+    {
+        "id":  1000,
+        "es":  "Gholdengo",
+        "en":  "Gholdengo",
+        "ja":  "サーフゴー"
+    },
+    {
+        "id":  1001,
+        "es":  "Wo-Chien",
+        "en":  "Wo-Chien",
+        "ja":  "チオンジェン"
+    },
+    {
+        "id":  1002,
+        "es":  "Chien-Pao",
+        "en":  "Chien-Pao",
+        "ja":  "パオジアン"
+    },
+    {
+        "id":  1003,
+        "es":  "Ting-Lu",
+        "en":  "Ting-Lu",
+        "ja":  "ディンルー"
+    },
+    {
+        "id":  1004,
+        "es":  "Chi-Yu",
+        "en":  "Chi-Yu",
+        "ja":  "イーユイ"
+    },
+    {
+        "id":  1005,
+        "es":  "Bramaluna",
+        "en":  "Roaring Moon",
+        "ja":  "トドロクツキ"
+    },
+    {
+        "id":  1006,
+        "es":  "Ferropaladín",
+        "en":  "Iron Valiant",
+        "ja":  "テツノブジン"
+    },
+    {
+        "id":  1007,
+        "es":  "Koraidon",
+        "en":  "Koraidon",
+        "ja":  "コライドン"
+    },
+    {
+        "id":  1008,
+        "es":  "Miraidon",
+        "en":  "Miraidon",
+        "ja":  "ミライドン"
+    },
+    {
+        "id":  1009,
+        "es":  "Ondulagua",
+        "en":  "Walking Wake",
+        "ja":  "ウネルミナモ"
+    },
+    {
+        "id":  1010,
+        "es":  "Ferroverdor",
+        "en":  "Iron Leaves",
+        "ja":  "テツノイサハ"
+    },
+    {
+        "id":  1011,
+        "es":  "Dipplin",
+        "en":  "Dipplin",
+        "ja":  "カミッチュ"
+    },
+    {
+        "id":  1012,
+        "es":  "Poltchageist",
+        "en":  "Poltchageist",
+        "ja":  "チャデス"
+    },
+    {
+        "id":  1013,
+        "es":  "Sinistcha",
+        "en":  "Sinistcha",
+        "ja":  "ヤバソチャ"
+    },
+    {
+        "id":  1014,
+        "es":  "Okidogi",
+        "en":  "Okidogi",
+        "ja":  "イイネイヌ"
+    },
+    {
+        "id":  1015,
+        "es":  "Munkidori",
+        "en":  "Munkidori",
+        "ja":  "マシマシラ"
+    },
+    {
+        "id":  1016,
+        "es":  "Fezandipiti",
+        "en":  "Fezandipiti",
+        "ja":  "キチキギス"
+    },
+    {
+        "id":  1017,
+        "es":  "Ogerpon",
+        "en":  "Ogerpon",
+        "ja":  "オーガポン"
+    },
+    {
+        "id":  1018,
+        "es":  "Archaludon",
+        "en":  "Archaludon",
+        "ja":  "ブリジュラス"
+    },
+    {
+        "id":  1019,
+        "es":  "Hydrapple",
+        "en":  "Hydrapple",
+        "ja":  "カミツオロチ"
+    },
+    {
+        "id":  1020,
+        "es":  "Flamariete",
+        "en":  "Gouging Fire",
+        "ja":  "ウガツホムラ"
+    },
+    {
+        "id":  1021,
+        "es":  "Electrofuria",
+        "en":  "Raging Bolt",
+        "ja":  "タケルライコ"
+    },
+    {
+        "id":  1022,
+        "es":  "Ferromole",
+        "en":  "Iron Boulder",
+        "ja":  "テツノイワオ"
+    },
+    {
+        "id":  1023,
+        "es":  "Ferrotesta",
+        "en":  "Iron Crown",
+        "ja":  "テツノカシラ"
+    },
+    {
+        "id":  1024,
+        "es":  "Terapagos",
+        "en":  "Terapagos",
+        "ja":  "テラパゴス"
+    },
+    {
+        "id":  1025,
+        "es":  "Pecharunt",
+        "en":  "Pecharunt",
+        "ja":  "モモワロウ"
+    }
+]
