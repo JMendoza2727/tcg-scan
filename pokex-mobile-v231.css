@@ -410,3 +410,9 @@
     grid-column:auto;
   }
 }
+
+
+/* POKEX FRIENDS TEMPORARILY DISABLED */
+#v23-friends-home {
+  display: none !important;
+}
