@@ -12,7 +12,7 @@
     /* Nombre principal */
     const title = document.querySelector("h1");
     const desiredTitle =
-      '⚡ PokEX Beta <span class="pokex-version">v2.3</span>';
+      '⚡ PokEX Beta <span class="pokex-version">v2.3.1</span>';
 
     if (
       title &&
