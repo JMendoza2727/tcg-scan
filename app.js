@@ -234,8 +234,597 @@ function imageUrl(base, quality="low") {
   return base ? `${base}/${quality}.webp` : "";
 }
 function money(v) {
-  return (typeof v === "number" && Number.isFinite(v)) ? `${v.toFixed(2)} €` : "—";
+  return moneyCurrency(v, "EUR");
 }
+
+
+function moneyCurrency(
+  value,
+  currency = "EUR"
+) {
+
+  if (
+    typeof value !== "number" ||
+    !Number.isFinite(value)
+  ) {
+    return "—";
+  }
+
+  if (currency === "USD") {
+    return `$${value.toFixed(2)}`;
+  }
+
+  return `${value.toFixed(2)} €`;
+}
+
+
+/* ==========================================================
+   PokEX FX · USD → EUR
+   ========================================================== */
+
+const POKEX_FX_KEY =
+  "pokex-fx-usd-eur-v1";
+
+const POKEX_FX_TTL =
+  24 * 60 * 60 * 1000;
+
+
+async function getUSDtoEURRate() {
+
+  let cached = null;
+
+  try {
+
+    cached =
+      JSON.parse(
+        localStorage.getItem(
+          POKEX_FX_KEY
+        )
+      );
+
+  } catch (_) {}
+
+
+  /*
+   * Si tenemos un cambio de menos
+   * de 24 horas, no consultamos nada.
+   */
+  if (
+    cached &&
+    typeof cached.rate === "number" &&
+    Number.isFinite(cached.rate) &&
+    Date.now() - cached.savedAt <
+      POKEX_FX_TTL
+  ) {
+
+    return {
+      rate: cached.rate,
+      date: cached.date || null,
+      cached: true
+    };
+  }
+
+
+  const controller =
+    new AbortController();
+
+  const timer =
+    setTimeout(
+      () => controller.abort(),
+      5000
+    );
+
+
+  try {
+
+    const response =
+      await fetch(
+        "https://api.frankfurter.dev/v2/rate/USD/EUR?providers=ECB",
+        {
+          signal:
+            controller.signal
+        }
+      );
+
+    if (!response.ok) {
+      throw new Error(
+        "No se pudo obtener USD/EUR"
+      );
+    }
+
+
+    const data =
+      await response.json();
+
+    const rate =
+      Number(data.rate);
+
+
+    if (
+      !Number.isFinite(rate) ||
+      rate <= 0
+    ) {
+      throw new Error(
+        "Cambio USD/EUR inválido"
+      );
+    }
+
+
+    const entry = {
+      rate,
+      date:
+        data.date || null,
+      savedAt:
+        Date.now()
+    };
+
+
+    try {
+
+      localStorage.setItem(
+        POKEX_FX_KEY,
+        JSON.stringify(entry)
+      );
+
+    } catch (_) {}
+
+
+    return {
+      rate,
+      date:
+        entry.date,
+      cached: false
+    };
+
+
+  } catch (error) {
+
+    /*
+     * Si falla Internet pero tenemos
+     * un cambio antiguo, es mejor usar
+     * ese cambio que inventar uno.
+     */
+    if (
+      cached &&
+      typeof cached.rate === "number" &&
+      Number.isFinite(cached.rate)
+    ) {
+
+      return {
+        rate:
+          cached.rate,
+        date:
+          cached.date || null,
+        cached: true,
+        stale: true
+      };
+    }
+
+
+    console.warn(
+      "PokEX FX:",
+      error
+    );
+
+    return null;
+
+
+  } finally {
+
+    clearTimeout(timer);
+  }
+}
+
+
+function usdToEur(
+  dollars,
+  fx
+) {
+
+  if (
+    typeof dollars !== "number" ||
+    !Number.isFinite(dollars) ||
+    !fx ||
+    typeof fx.rate !== "number"
+  ) {
+    return null;
+  }
+
+  return dollars * fx.rate;
+}
+
+
+/* ==========================================================
+   PRECIOS TCGPLAYER
+   ========================================================== */
+
+function pokexFinitePrice(
+  ...values
+) {
+
+  for (const value of values) {
+
+    if (
+      typeof value === "number" &&
+      Number.isFinite(value)
+    ) {
+      return value;
+    }
+  }
+
+  return null;
+}
+
+
+function getTCGPlayerVariants(
+  tcg = {}
+) {
+
+  const labels = {
+
+    "normal":
+      "Normal",
+
+    "holo":
+      "Holo",
+
+    "holofoil":
+      "Holofoil",
+
+    "reverse":
+      "Reverse Holo",
+
+    "reverse-holofoil":
+      "Reverse Holo",
+
+    "1st-edition":
+      "1ª edición",
+
+    "1st-edition-holofoil":
+      "1ª edición Holo",
+
+    "unlimited":
+      "Unlimited",
+
+    "unlimited-holofoil":
+      "Unlimited Holo"
+  };
+
+
+  const priority = [
+    "normal",
+    "holofoil",
+    "holo",
+    "reverse",
+    "reverse-holofoil",
+    "unlimited",
+    "unlimited-holofoil",
+    "1st-edition",
+    "1st-edition-holofoil"
+  ];
+
+
+  const ignored =
+    new Set([
+      "updated",
+      "unit"
+    ]);
+
+
+  const keys = [
+    ...priority,
+
+    ...Object.keys(tcg)
+      .filter(key =>
+        !priority.includes(key) &&
+        !ignored.has(key)
+      )
+  ];
+
+
+  const seen =
+    new Set();
+
+  const variants = [];
+
+
+  for (const key of keys) {
+
+    if (seen.has(key))
+      continue;
+
+    seen.add(key);
+
+
+    const data =
+      tcg[key];
+
+
+    if (
+      !data ||
+      typeof data !== "object"
+    ) {
+      continue;
+    }
+
+
+    const value =
+      pokexFinitePrice(
+        data.marketPrice,
+        data.midPrice,
+        data.lowPrice,
+        data.highPrice
+      );
+
+
+    if (value === null)
+      continue;
+
+
+    variants.push({
+      key,
+
+      label:
+        labels[key] ||
+        key
+          .replaceAll("-", " ")
+          .replace(
+            /\b\w/g,
+            x => x.toUpperCase()
+          ),
+
+      data,
+      value
+    });
+  }
+
+
+  return variants;
+}
+
+
+/* ==========================================================
+   PRECIO PREFERIDO PokEX
+   ========================================================== */
+
+function getPreferredPokEXPrice(
+  card
+) {
+
+  const cm =
+    card?.pricing?.cardmarket ||
+    {};
+
+
+  /*
+   * CARDMARKET sigue siendo
+   * nuestra fuente principal.
+   */
+  if (
+    typeof cm.trend === "number" &&
+    Number.isFinite(cm.trend)
+  ) {
+
+    return {
+      source:
+        "Cardmarket",
+
+      currency:
+        "EUR",
+
+      value:
+        cm.trend,
+
+      updated:
+        cm.updated || null,
+
+      variantKey:
+        null,
+
+      variantLabel:
+        null,
+
+      data:
+        cm
+    };
+  }
+
+
+  /*
+   * Si Cardmarket no tiene precio,
+   * probamos TCGplayer.
+   */
+  const tcg =
+    card?.pricing?.tcgplayer ||
+    {};
+
+
+  const variants =
+    getTCGPlayerVariants(tcg);
+
+
+  if (!variants.length) {
+    return null;
+  }
+
+
+  const chosen =
+    variants[0];
+
+
+  return {
+    source:
+      "TCGplayer",
+
+    currency:
+      "USD",
+
+    value:
+      chosen.value,
+
+    updated:
+      tcg.updated || null,
+
+    variantKey:
+      chosen.key,
+
+    variantLabel:
+      chosen.label,
+
+    data:
+      chosen.data,
+
+    variants
+  };
+}
+
+
+/*
+ * Precio preparado para guardarlo
+ * en Mi Pokédex.
+ *
+ * NUNCA guardamos dólares como
+ * si fueran euros.
+ */
+async function getStoredPokEXPrice(
+  card
+) {
+
+  const price =
+    getPreferredPokEXPrice(card);
+
+
+  if (!price)
+    return null;
+
+
+  if (
+    price.currency === "EUR"
+  ) {
+
+    return {
+      ...price,
+
+      originalValue:
+        price.value,
+
+      originalCurrency:
+        "EUR",
+
+      fxRate:
+        null,
+
+      fxDate:
+        null
+    };
+  }
+
+
+  const fx =
+    await getUSDtoEURRate();
+
+
+  if (!fx) {
+
+    /*
+     * No inventamos conversión.
+     * Simplemente no utilizamos ese
+     * precio para el total en euros.
+     */
+    return {
+      ...price,
+
+      converted:
+        false,
+
+      originalValue:
+        price.value,
+
+      originalCurrency:
+        "USD"
+    };
+  }
+
+
+  const euros =
+    usdToEur(
+      price.value,
+      fx
+    );
+
+
+  return {
+    ...price,
+
+    value:
+      euros,
+
+    currency:
+      "EUR",
+
+    converted:
+      true,
+
+    originalValue:
+      price.value,
+
+    originalCurrency:
+      "USD",
+
+    fxRate:
+      fx.rate,
+
+    fxDate:
+      fx.date
+  };
+}
+
+
+function formatPriceUpdated(
+  value
+) {
+
+  if (!value)
+    return "";
+
+
+  const date =
+    new Date(value);
+
+
+  if (
+    Number.isNaN(
+      date.getTime()
+    )
+  ) {
+    return "";
+  }
+
+
+  return date.toLocaleString();
+}
+
+
+/*
+ * Expuesto para Mi Pokédex.
+ */
+window.PokEXPricing = {
+
+  getPreferredPrice:
+    getPreferredPokEXPrice,
+
+  getStoredPrice:
+    getStoredPokEXPrice,
+
+  getTCGPlayerVariants,
+
+  getUSDtoEURRate,
+
+  usdToEur,
+
+  moneyCurrency
+};
+
 
 function levenshtein(a, b) {
   if (a === b) return 0;
@@ -670,7 +1259,7 @@ async function openCard(id) {
         "hidden"
       );
 
-      renderDetail(card);
+      await renderDetail(card);
 
       return;
 
@@ -713,75 +1302,483 @@ async function openCard(id) {
   }
 }
 
-function renderDetail(card) {
-  const cm = card.pricing?.cardmarket || {};
+async function renderDetail(card) {
+
+  const cm =
+    card.pricing?.cardmarket || {};
+
+  const tcg =
+    card.pricing?.tcgplayer || {};
+
+  const preferred =
+    getPreferredPokEXPrice(card);
+
+
   resultBox.innerHTML = "";
-  resultBox.classList.remove("hidden");
 
-  const box = document.createElement("article");
-  box.className = "detail";
+  resultBox.classList.remove(
+    "hidden"
+  );
 
-  const grid = document.createElement("div");
-  grid.className = "detailGrid";
 
-  const left = document.createElement("div");
+  const box =
+    document.createElement(
+      "article"
+    );
+
+  box.className =
+    "detail";
+
+
+  const grid =
+    document.createElement(
+      "div"
+    );
+
+  grid.className =
+    "detailGrid";
+
+
+  const left =
+    document.createElement(
+      "div"
+    );
+
+
   if (card.image) {
-    const img = document.createElement("img");
-    img.className = "detailImg";
-    img.src = imageUrl(card.image,"high");
-    img.alt = card.name || "Carta";
+
+    const img =
+      document.createElement(
+        "img"
+      );
+
+    img.className =
+      "detailImg";
+
+    img.src =
+      imageUrl(
+        card.image,
+        "high"
+      );
+
+    img.alt =
+      card.name ||
+      "Carta";
+
     left.appendChild(img);
   }
 
-  const right = document.createElement("div");
-  const title = document.createElement("h2");
-  title.textContent = card.name || "Carta";
+
+  const right =
+    document.createElement(
+      "div"
+    );
+
+
+  const title =
+    document.createElement(
+      "h2"
+    );
+
+  title.textContent =
+    card.name ||
+    "Carta";
+
   right.appendChild(title);
 
+
   const meta = [
-    `📦 ${card.set?.name || "Set desconocido"}`,
-    `🔢 Nº ${card.localId ?? "—"}`,
-    `⭐ ${card.rarity || "Rareza no indicada"}`
+
+    `📦 ${
+      card.set?.name ||
+      "Set desconocido"
+    }`,
+
+    `🔢 Nº ${
+      card.localId ??
+      "—"
+    }`,
+
+    `⭐ ${
+      card.rarity ||
+      "Rareza no indicada"
+    }`
+
   ];
+
+
   for (const m of meta) {
-    const p = document.createElement("p");
-    p.className = "meta";
-    p.textContent = m;
+
+    const p =
+      document.createElement(
+        "p"
+      );
+
+    p.className =
+      "meta";
+
+    p.textContent =
+      m;
+
     right.appendChild(p);
   }
 
-  const gridPrices = document.createElement("div");
-  gridPrices.className = "priceGrid";
-  const prices = [
-    ["Tendencia", money(cm.trend), true],
-    ["Mínimo", money(cm.low), false],
-    ["Media 7 días", money(cm.avg7), false],
-    ["Media 30 días", money(cm.avg30), false]
-  ];
-  for (const [label,value,main] of prices) {
-    const p = document.createElement("div");
-    p.className = "price" + (main ? " main" : "");
-    p.innerHTML = `<span>${label}</span><strong>${value}</strong>`;
+
+  const gridPrices =
+    document.createElement(
+      "div"
+    );
+
+  gridPrices.className =
+    "priceGrid";
+
+
+  let prices = [];
+  let sourceText = "";
+
+
+  /* ========================================================
+     CARDMARKET
+     ======================================================== */
+
+  if (
+    preferred?.source ===
+    "Cardmarket"
+  ) {
+
+    prices = [
+
+      [
+        "Tendencia",
+        moneyCurrency(
+          cm.trend,
+          "EUR"
+        ),
+        true
+      ],
+
+      [
+        "Mínimo",
+        moneyCurrency(
+          cm.low,
+          "EUR"
+        ),
+        false
+      ],
+
+      [
+        "Media 7 días",
+        moneyCurrency(
+          cm.avg7,
+          "EUR"
+        ),
+        false
+      ],
+
+      [
+        "Media 30 días",
+        moneyCurrency(
+          cm.avg30,
+          "EUR"
+        ),
+        false
+      ]
+    ];
+
+
+    const date =
+      formatPriceUpdated(
+        cm.updated
+      );
+
+
+    sourceText =
+      date
+        ? `Cardmarket · actualizado ${date}`
+        : "Cardmarket";
+  }
+
+
+  /* ========================================================
+     TCGPLAYER → EUR
+     ======================================================== */
+
+  else if (
+    preferred?.source ===
+    "TCGplayer"
+  ) {
+
+    const tp =
+      preferred.data || {};
+
+
+    const fx =
+      await getUSDtoEURRate();
+
+
+    const displayTCG =
+      value => {
+
+        if (
+          typeof value !==
+            "number" ||
+          !Number.isFinite(value)
+        ) {
+          return "—";
+        }
+
+
+        if (fx) {
+
+          const euros =
+            usdToEur(
+              value,
+              fx
+            );
+
+          return moneyCurrency(
+            euros,
+            "EUR"
+          );
+        }
+
+
+        /*
+         * Solo si el servicio de
+         * cambio está caído mostramos
+         * USD. Nunca fingimos que son €.
+         */
+        return moneyCurrency(
+          value,
+          "USD"
+        );
+      };
+
+
+    prices = [
+
+      [
+        "Mercado",
+        displayTCG(
+          tp.marketPrice
+        ),
+        true
+      ],
+
+      [
+        "Mínimo",
+        displayTCG(
+          tp.lowPrice
+        ),
+        false
+      ],
+
+      [
+        "Medio",
+        displayTCG(
+          tp.midPrice
+        ),
+        false
+      ],
+
+      [
+        "Máximo",
+        displayTCG(
+          tp.highPrice
+        ),
+        false
+      ]
+
+    ];
+
+
+    /*
+     * Si no existe marketPrice,
+     * utilizamos el mejor dato
+     * disponible como principal.
+     */
+    if (
+      prices[0][1] === "—"
+    ) {
+
+      prices[0][1] =
+        displayTCG(
+          preferred.value
+        );
+    }
+
+
+    const original =
+      moneyCurrency(
+        preferred.value,
+        "USD"
+      );
+
+
+    sourceText =
+      `TCGplayer · ${preferred.variantLabel}`;
+  }
+
+
+  /* ========================================================
+     SIN PRECIO
+     ======================================================== */
+
+  else {
+
+    prices = [
+
+      [
+        "Precio",
+        "—",
+        true
+      ],
+
+      [
+        "Mínimo",
+        "—",
+        false
+      ],
+
+      [
+        "Medio",
+        "—",
+        false
+      ],
+
+      [
+        "Máximo",
+        "—",
+        false
+      ]
+
+    ];
+
+
+    sourceText =
+      "Sin precio disponible " +
+      "para esta carta.";
+  }
+
+
+  for (
+    const [
+      label,
+      value,
+      main
+    ]
+    of prices
+  ) {
+
+    const p =
+      document.createElement(
+        "div"
+      );
+
+
+    p.className =
+      "price" +
+      (
+        main
+          ? " main"
+          : ""
+      );
+
+
+    p.innerHTML =
+      `<span>${label}</span>` +
+      `<strong>${value}</strong>`;
+
+
     gridPrices.appendChild(p);
   }
-  right.appendChild(gridPrices);
 
-  const updated = document.createElement("p");
-  updated.className = "muted";
-  updated.textContent = cm.updated
-    ? `Cardmarket · actualizado ${new Date(cm.updated).toLocaleString()}`
-    : "Sin precio Cardmarket disponible para esta carta.";
-  right.appendChild(updated);
 
-  grid.append(left,right);
-  box.appendChild(grid);
-  resultBox.appendChild(box);
+  right.appendChild(
+    gridPrices
+  );
 
-  if (window.tcgCollectionAttach) {
-    window.tcgCollectionAttach(card);
+
+  const updated =
+    document.createElement(
+      "p"
+    );
+
+  updated.className =
+    "muted";
+
+  updated.textContent =
+    sourceText;
+
+  right.appendChild(
+    updated
+  );
+
+
+  /*
+   * Mostramos si TCGplayer
+   * dispone de otros acabados.
+   */
+  if (
+    preferred?.source ===
+      "TCGplayer" &&
+    preferred.variants?.length > 1
+  ) {
+
+    const other =
+      document.createElement(
+        "p"
+      );
+
+    other.className =
+      "muted";
+
+
+    other.textContent =
+      "Otros acabados con precio: "
+      +
+      preferred.variants
+        .slice(1)
+        .map(
+          x => x.label
+        )
+        .join(", ");
+
+
+    right.appendChild(
+      other
+    );
   }
-  window.scrollTo({top: 0, behavior: "smooth"});
+
+
+  grid.append(
+    left,
+    right
+  );
+
+  box.appendChild(grid);
+
+  resultBox.appendChild(
+    box
+  );
+
+
+  if (
+    window.tcgCollectionAttach
+  ) {
+
+    window.tcgCollectionAttach(
+      card
+    );
+  }
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
 }
+
 
 function loadImage(file) {
   return new Promise((resolve,reject) => {
