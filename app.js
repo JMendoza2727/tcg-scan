@@ -26,6 +26,187 @@ let currentResults = [];
 let shown = 0;
 let worker = null;
 let workerLang = null;
+/* =========================================================
+   PokEX V2.1 · nombres Pokémon ES / EN / JP
+   ========================================================= */
+
+let pokemonNamesV21 = null;
+
+async function loadPokemonNamesV21() {
+
+  if (pokemonNamesV21)
+    return pokemonNamesV21;
+
+  const r = await fetch(
+    "./pokemon-names-v2.1.json?v=1"
+  );
+
+  if (!r.ok)
+    throw new Error(
+      "No se pudo cargar el traductor Pokémon."
+    );
+
+  pokemonNamesV21 =
+    await r.json();
+
+  return pokemonNamesV21;
+}
+
+
+async function translatePokemonQueryV21(
+  raw,
+  targetLang
+) {
+
+  const original =
+    String(raw || "").trim();
+
+  if (
+    !original ||
+    !["es", "en", "ja"].includes(targetLang)
+  ) {
+    return original;
+  }
+
+
+  const parsed =
+    parseCardQuery(original);
+
+  let name =
+    parsed.name || original;
+
+  const names =
+    await loadPokemonNamesV21();
+
+
+  /*
+   * Buscamos cualquiera de los nombres
+   * conocidos ES / EN / JP dentro del texto.
+   *
+   * Ordenamos por longitud para evitar:
+   * Mew antes de Mewtwo,
+   * Porygon antes de Porygon2, etc.
+   */
+
+  const possibilities = [];
+
+  for (const pokemon of names) {
+
+    const target =
+      pokemon[targetLang];
+
+    if (!target)
+      continue;
+
+    for (const sourceLang of ["es", "en", "ja"]) {
+
+      const alias =
+        pokemon[sourceLang];
+
+      if (!alias)
+        continue;
+
+      const pos =
+        name
+          .toLocaleLowerCase()
+          .indexOf(
+            String(alias)
+              .toLocaleLowerCase()
+          );
+
+      if (pos !== -1) {
+
+        possibilities.push({
+          pos,
+          alias,
+          target,
+          length:
+            String(alias).length
+        });
+      }
+    }
+  }
+
+
+  if (possibilities.length) {
+
+    possibilities.sort(
+      (a, b) =>
+        b.length - a.length
+    );
+
+    const best =
+      possibilities[0];
+
+    name =
+      name.slice(0, best.pos)
+      +
+      best.target
+      +
+      name.slice(
+        best.pos + best.alias.length
+      );
+  }
+
+
+  /*
+   * En japonés las variantes normalmente
+   * van pegadas al nombre:
+   *
+   * リザードンex
+   * ピカチュウV
+   * ミュウVMAX
+   */
+
+  if (targetLang === "ja") {
+
+    name = name.replace(
+      /([\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}ー])\s+(ex|gx|vmax|vstar|v)\b/giu,
+      "$1$2"
+    );
+
+  }
+
+
+  /*
+   * Si venimos del japonés:
+   *
+   * リザードンex
+   *       ↓
+   * Charizard ex
+   */
+
+  if (targetLang !== "ja") {
+
+    name = name.replace(
+      /([A-Za-zÀ-ÿ])(?=(ex|gx|vmax|vstar|v)\b)/gi,
+      "$1 "
+    );
+  }
+
+
+  /*
+   * Conservamos la numeración escrita.
+   */
+
+  if (parsed.number) {
+
+    return (
+      name.trim()
+      + " "
+      + parsed.number
+      + (
+          parsed.total
+            ? "/" + parsed.total
+            : ""
+        )
+    );
+  }
+
+
+  return name.trim();
+}
+
 
 function showMessage(text, error=false) {
   messageEl.textContent = text;
@@ -386,7 +567,25 @@ async function doSearch() {
   resetContent();
   try {
     if (!catalog.length) await ensureCatalog(langEl.value);
-    const results = searchLocal(q);
+    const translatedQ =
+      await translatePokemonQueryV21(
+        q,
+        langEl.value
+      );
+
+    let results =
+      searchLocal(translatedQ);
+
+    /*
+     * Si la traducción no da resultado,
+     * probamos también el texto original.
+     */
+    if (
+      !results.length &&
+      translatedQ !== q
+    ) {
+      results = searchLocal(q);
+    }
     showSearchResults(results);
   } catch (e) {
     setProgress(false);
@@ -782,7 +981,7 @@ langEl.addEventListener("change", async () => {
   searchBtn.disabled = !langEl.value;
   photoEl.disabled = !langEl.value;
   cameraBtn.classList.toggle("disabled", !langEl.value);
-  queryEl.placeholder = langEl.value === "ja" ? "リザードン、ピカチュウ…" : "Charizard, Pikachu…";
+  queryEl.placeholder = langEl.value === "ja" ? "Charizard, Pikachu, リザードン…" : "Charizard, Pikachu…";
   if (!langEl.value) {
     catalogStatus.textContent = "El catálogo se descargará una vez y quedará guardado en el iPhone.";
     return;
