@@ -21,7 +21,7 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-const VERSION = "2.3.1";
+const VERSION = "2.3.2";
 
 const config =
   window.POKEX_FIREBASE_CONFIG || null;
@@ -186,7 +186,7 @@ function setRequestBadge(count){
 
   const requestTab =
     document.querySelector(
-      '.v234-tab[data-tab="requests"]'
+      '.v234-tab[data-tab="requests"], .v234-tab[data-f232="requests"]'
     );
 
   if(requestTab){

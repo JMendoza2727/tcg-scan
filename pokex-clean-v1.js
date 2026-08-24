@@ -1,5 +1,4 @@
 (() => {
-
   const hideExactTexts = [
     "Pokémon TCG · buscador · cámara · precios",
     "El catálogo se descargará una vez y quedará guardado en el iPhone.",
@@ -7,12 +6,11 @@
     "Online"
   ];
 
-  function cleanPokEX() {
+  const desiredTitle =
+    '⚡ PokEX Beta <span class="pokex-version">v2.3.2</span>';
 
-    /* Nombre principal */
+  function cleanPokEX() {
     const title = document.querySelector("h1");
-    const desiredTitle =
-      '⚡ PokEX Beta <span class="pokex-version">v2.3.2</span>';
 
     if (
       title &&
@@ -21,11 +19,8 @@
       title.innerHTML = desiredTitle;
     }
 
-    /* Quitar textos secundarios */
     document.querySelectorAll("body *").forEach(el => {
-
-      if (el.children.length)
-        return;
+      if (el.children.length) return;
 
       const text =
         el.textContent
@@ -41,9 +36,7 @@
       ) {
         el.style.display = "none";
       }
-
     });
-
   }
 
   cleanPokEX();
@@ -56,5 +49,4 @@
         subtree: true
       }
     );
-
 })();
