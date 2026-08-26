@@ -2224,6 +2224,10 @@ photoEl.addEventListener("change", () => {
 
 function updateNetwork() {
   netBadge.textContent = navigator.onLine ? "Online" : "Sin conexión";
+  netBadge.classList.toggle(
+    "is-offline",
+    !navigator.onLine
+  );
 }
 window.addEventListener("online", updateNetwork);
 window.addEventListener("offline", updateNetwork);
@@ -2255,15 +2259,23 @@ let pokemonProductMap = null;
 
 async function loadPokemonProductMap() {
 
-  if (pokemonProductMap)
+  if (pokemonProductMap !== null)
     return pokemonProductMap;
 
-  const r = await fetch("./pokemon-map.json");
+  try {
+    const r = await fetch(
+      "./pokemon-map.json",
+      { cache: "force-cache" }
+    );
 
-  if (!r.ok)
-    throw new Error("No se pudo cargar el mapa Pokémon");
+    pokemonProductMap =
+      r.ok
+        ? await r.json()
+        : {};
+  } catch (_) {
+    pokemonProductMap = {};
+  }
 
-  pokemonProductMap = await r.json();
 
   return pokemonProductMap;
 }
@@ -2276,16 +2288,18 @@ visualScanBtn?.addEventListener("click", () => {
     return;
   }
 
-  visualScanner.classList.remove("hidden");
+  visualScanner?.classList.remove("hidden");
 
-  scannerFrame.src = "./scanner/";
+  if (scannerFrame) {
+    scannerFrame.src = "./scanner/";
+  }
 
 });
 
 
 closeScannerBtn?.addEventListener("click", () => {
 
-  visualScanner.classList.add("hidden");
+  visualScanner?.classList.add("hidden");
 
 });
 
@@ -2300,7 +2314,7 @@ window.addEventListener("message", async event => {
   if (!data || data.type !== "tcgscan-match")
     return;
 
-  visualScanner.classList.add("hidden");
+  visualScanner?.classList.add("hidden");
 
   const pct =
     Math.round(Number(data.score) * 1000) / 10;

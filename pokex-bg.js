@@ -6,8 +6,24 @@
   document.body.prepend(wrap);
 
   const colors = ["yellow", "blue", "red"];
+  const reducedMotion =
+    window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
 
-  for (let i = 0; i < 18; i++) {
+  const mobile =
+    window.matchMedia(
+      "(max-width: 700px), (pointer: coarse)"
+    ).matches;
+
+  const particleCount =
+    reducedMotion
+      ? 0
+      : mobile
+        ? 6
+        : 12;
+
+  for (let i = 0; i < particleCount; i++) {
     const p = document.createElement("div");
     const size = 6 + Math.random() * 18;
     const left = Math.random() * 100;
@@ -34,5 +50,10 @@
         document.hidden
       );
     }
+  );
+
+  document.body.classList.toggle(
+    "pokex-background-paused",
+    document.hidden
   );
 })();

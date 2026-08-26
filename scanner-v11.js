@@ -128,6 +128,40 @@
   frame.allow =
     "camera";
 
+  frame.title =
+    "Escáner de cartas PokEX";
+
+  const shield =
+    document.createElement("div");
+
+  shield.id =
+    "cv11Shield";
+
+  shield.innerHTML = `
+    <div class="cv11-shield-card">
+      <div class="cv11-shield-logo" aria-hidden="true">⚡</div>
+      <div class="cv11-shield-kicker">PokEX Scanner</div>
+      <h2>Preparando la cámara</h2>
+      <p id="cv11ShieldText">Cargando reconocimiento visual…</p>
+
+      <div class="cv11-shield-progress" aria-hidden="true">
+        <div id="cv11ShieldFill"></div>
+      </div>
+
+      <div class="cv11-shield-meta">
+        <span>Motor visual</span>
+        <strong id="cv11ShieldPct">0%</strong>
+      </div>
+
+      <button
+        id="cv11StartCamera"
+        type="button"
+        hidden>
+        Activar cámara
+      </button>
+    </div>
+  `;
+
   const close =
     document.createElement("button");
 
@@ -143,6 +177,8 @@
 
   overlay.appendChild(frame);
 
+  overlay.appendChild(shield);
+
   overlay.appendChild(close);
 
   document.body.appendChild(overlay);
@@ -150,6 +186,26 @@
 
   let ready = false;
   let started = false;
+
+  const shieldText =
+    shield.querySelector(
+      "#cv11ShieldText"
+    );
+
+  const shieldPercentage =
+    shield.querySelector(
+      "#cv11ShieldPct"
+    );
+
+  const shieldFill =
+    shield.querySelector(
+      "#cv11ShieldFill"
+    );
+
+  const startCameraButton =
+    shield.querySelector(
+      "#cv11StartCamera"
+    );
 
 
   /* =====================================
@@ -200,6 +256,123 @@
   }
 
 
+  function brandScannerDocument() {
+
+    const inside = doc();
+
+    if (
+      !inside ||
+      inside.getElementById(
+        "pokexScannerBrand"
+      )
+    ) {
+      return;
+    }
+
+    const style =
+      inside.createElement("style");
+
+    style.id =
+      "pokexScannerBrand";
+
+    style.textContent = `
+      .app-bar__title {
+        font-size: 0 !important;
+      }
+
+      .app-bar__title::after {
+        content: "PokEX Scanner";
+        font-size: 18px;
+        font-weight: 850;
+        letter-spacing: -.02em;
+      }
+
+      .icon-button--debug {
+        display: none !important;
+      }
+    `;
+
+    inside.head?.appendChild(style);
+  }
+
+
+  function setShieldProgress(
+    value,
+    message
+  ) {
+
+    const n = Math.max(
+      0,
+      Math.min(100, Number(value) || 0)
+    );
+
+    shieldPercentage.textContent =
+      `${Math.round(n)}%`;
+
+    shieldFill.style.width =
+      `${n}%`;
+
+    if (message) {
+      shieldText.textContent = message;
+    }
+  }
+
+
+  function showShield(
+    message = "Preparando la cámara…"
+  ) {
+    shield.classList.remove(
+      "cv11-shield-hidden"
+    );
+
+    shieldText.textContent = message;
+  }
+
+
+  function hideShield() {
+    shield.classList.add(
+      "cv11-shield-hidden"
+    );
+  }
+
+
+  function waitForCamera(
+    attempt = 0
+  ) {
+
+    if (cameraIsRunning()) {
+      setShieldProgress(
+        100,
+        "Cámara preparada"
+      );
+
+      setTimeout(
+        hideShield,
+        160
+      );
+
+      return;
+    }
+
+    if (attempt >= 80) {
+      shieldText.textContent =
+        "No se pudo abrir la cámara. Inténtalo de nuevo.";
+
+      startCameraButton.hidden = false;
+      startCameraButton.disabled = false;
+      startCameraButton.textContent =
+        "Reintentar";
+
+      return;
+    }
+
+    setTimeout(
+      () => waitForCamera(attempt + 1),
+      125
+    );
+  }
+
+
   /* =====================================
      PROGRESO
      ===================================== */
@@ -238,6 +411,8 @@
 
 
     if (inside) {
+
+      brandScannerDocument();
 
       const p =
         inside.getElementById(
@@ -282,6 +457,13 @@
           message?.textContent
         );
 
+      setShieldProgress(
+        n,
+        statusText(
+          message?.textContent
+        )
+      );
+
 
       const cameraButton =
         badge();
@@ -309,6 +491,16 @@
         text.textContent =
           "Cámara preparada";
 
+        setShieldProgress(
+          100,
+          "Reconocimiento preparado"
+        );
+
+        startCameraButton.hidden = false;
+        startCameraButton.disabled = false;
+        startCameraButton.textContent =
+          "Activar cámara";
+
 
         button.disabled =
           false;
@@ -334,7 +526,7 @@
 
     setTimeout(
       poll,
-      180
+      250
     );
 
   }
@@ -362,6 +554,14 @@
   button.addEventListener(
     "click",
     () => {
+
+      showShield(
+        started
+          ? "Abriendo la cámara…"
+          : "Cargando reconocimiento visual…"
+      );
+
+      startCameraButton.hidden = true;
 
       overlay.classList.remove(
         "cv11-hidden"
@@ -407,8 +607,39 @@
 
         cameraButton.click();
 
+        waitForCamera();
+
+      } else if (cameraIsRunning()) {
+
+        hideShield();
+
       }
 
+    }
+  );
+
+
+  startCameraButton.addEventListener(
+    "click",
+    () => {
+
+      const cameraButton = badge();
+
+      if (!cameraButton) {
+        shieldText.textContent =
+          "La cámara aún no está preparada.";
+        return;
+      }
+
+      startCameraButton.disabled = true;
+      startCameraButton.textContent =
+        "Abriendo cámara…";
+
+      shieldText.textContent =
+        "Concediendo acceso a la cámara…";
+
+      cameraButton.click();
+      waitForCamera();
     }
   );
 

@@ -31,7 +31,7 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-const CURRENT_VERSION = "2.3.5";
+const CURRENT_VERSION = "2.4.0";
 const SEEN_KEY = "pokex_seen_version";
 
 const cfg =
@@ -931,6 +931,21 @@ function closeOverlay(
   overlay.classList.add(
     "hidden"
   );
+
+  const anyOpen =
+    [...document.querySelectorAll(
+      ".v23-overlay"
+    )].some(
+      item =>
+        !item.classList.contains(
+          "hidden"
+        )
+    );
+
+  document.body.classList.toggle(
+    "pokex-modal-open",
+    anyOpen
+  );
 }
 
 function openOverlay(
@@ -938,6 +953,10 @@ function openOverlay(
 ) {
   overlay.classList.remove(
     "hidden"
+  );
+
+  document.body.classList.add(
+    "pokex-modal-open"
   );
 }
 
@@ -2521,7 +2540,7 @@ function openFriends() {
 function installHomeButtons() {
   if (
     document.querySelector(
-      ".pokex-v23-home"
+      "#v23AccountButton"
     )
   ) {
     return;
@@ -2535,28 +2554,24 @@ function installHomeButtons() {
   if (!existing)
     return;
 
-  const nav =
-    document.createElement(
-      "div"
-    );
-
-  nav.className =
-    "pokex-v23-home";
-
-  nav.innerHTML = `
-    <button
-      type="button"
-      id="v23AccountButton">
-      👤 Cuenta
-    </button>
-  `;
-
-  existing.insertAdjacentElement(
-    "afterend",
-    nav
+  existing.classList.add(
+    "pokex-quick-actions"
   );
 
-  nav
+  existing.insertAdjacentHTML(
+    "beforeend",
+    `
+    <button
+      type="button"
+      class="pokex-account-btn"
+      id="v23AccountButton">
+      <span aria-hidden="true">👤</span>
+      <span>Cuenta</span>
+    </button>
+  `
+  );
+
+  existing
     .querySelector(
       "#v23AccountButton"
     )
@@ -2613,11 +2628,11 @@ function welcomeHTML(
         </strong>
 
         <p>
-          👤 Cuentas PokEX
+          ✨ Interfaz móvil renovada
           <br>
-          ☁️ Colección sincronizada
+          ⚡ PokEX más rápida y eficiente
           <br>
-          🔄 Sincronización entre dispositivos
+          📷 Carga del escáner integrada
         </p>
 
       </div>
@@ -2878,5 +2893,5 @@ if (!configured) {
 }
 
 console.log(
-  "✅ PokEX Beta v2.3.5 · Cuenta cargada"
+  "✅ PokEX v2.4.0 · Cuenta cargada"
 );
