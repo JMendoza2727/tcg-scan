@@ -254,7 +254,17 @@ function normalize(s) {
     .replace(/\s+/g, " ");
 }
 function imageUrl(base, quality="low") {
-  return base ? `${base}/${quality}.webp` : "";
+  const value = String(base || "").trim();
+  if (!value) return "";
+
+  if (
+    /^(?:data:|blob:)/i.test(value) ||
+    /\.(?:avif|gif|jpe?g|png|webp)(?:[?#].*)?$/i.test(value)
+  ) {
+    return value;
+  }
+
+  return `${value.replace(/\/$/, "")}/${quality}.webp`;
 }
 function money(v) {
   return moneyCurrency(v, "EUR");
@@ -1371,6 +1381,8 @@ async function openCard(id) {
           "No se pudo cargar la carta japonesa."
         );
 
+      await completeMissingImage(card, "ja");
+
       setProgress(false);
 
       preview.classList.add(
@@ -1411,12 +1423,36 @@ async function openCard(id) {
         .applyOne(card);
     }
 
+    await completeMissingImage(card, langEl.value);
+
     setProgress(false);
     preview.classList.add("hidden");
     renderDetail(card);
   } catch (e) {
     setProgress(false);
     showMessage(e.message, true);
+  }
+}
+
+async function completeMissingImage(card, language) {
+  if (card?.image || !window.PokEXImageResolver) return;
+
+  setProgress(true, "Buscando una imagen real…", 68);
+
+  try {
+    const result = await window.PokEXImageResolver.resolve(card, language);
+    if (!result?.image) return;
+
+    card._pokexResolvedImage = result;
+
+    if (result.kind === "exact") {
+      card.image = result.image;
+      card._pokexImageSource = result.source;
+    } else {
+      card._pokexReferenceImage = result.image;
+    }
+  } catch (error) {
+    console.warn("PokEX image resolver:", error);
   }
 }
 
@@ -1463,7 +1499,13 @@ async function renderDetail(card) {
     );
 
 
-  if (card.image) {
+  const visibleImage =
+    card.image ||
+    card._pokexReferenceImage ||
+    "";
+
+
+  if (visibleImage) {
 
     const img =
       document.createElement(
@@ -1475,7 +1517,7 @@ async function renderDetail(card) {
 
     img.src =
       imageUrl(
-        card.image,
+        visibleImage,
         "high"
       );
 
@@ -1483,7 +1525,39 @@ async function renderDetail(card) {
       card.name ||
       "Carta";
 
+    img.addEventListener("error", async () => {
+      if (img.dataset.pokexFallbackTried === "1") return;
+      img.dataset.pokexFallbackTried = "1";
+
+      try {
+        const result = await window.PokEXImageResolver?.resolve(
+          card,
+          card._pokexJP ? "ja" : langEl.value
+        );
+
+        if (result?.image && result.image !== visibleImage) {
+          card._pokexResolvedImage = result;
+          if (result.kind === "exact") card.image = result.image;
+          else card._pokexReferenceImage = result.image;
+          img.src = imageUrl(result.image, "high");
+          return;
+        }
+      } catch (_) {}
+
+      img.replaceWith(createMissingImagePlaceholder());
+    });
+
     left.appendChild(img);
+  } else {
+    left.appendChild(createMissingImagePlaceholder());
+  }
+
+
+  if (card._pokexResolvedImage?.label) {
+    const imageNote = document.createElement("p");
+    imageNote.className = "pokex-image-note";
+    imageNote.textContent = card._pokexResolvedImage.label;
+    left.appendChild(imageNote);
   }
 
 
@@ -1895,6 +1969,13 @@ async function renderDetail(card) {
     top: 0,
     behavior: "smooth"
   });
+}
+
+function createMissingImagePlaceholder() {
+  const placeholder = document.createElement("div");
+  placeholder.className = "pokex-detail-placeholder";
+  placeholder.innerHTML = "<span aria-hidden=\"true\">◓</span><strong>Imagen pendiente</strong>";
+  return placeholder;
 }
 
 

@@ -322,6 +322,38 @@ button:active:not(:disabled) {
   line-height: 1.08;
 }
 
+.pokex-image-note {
+  width: min(340px, 100%);
+  margin: 10px auto 0;
+  color: #aebdda;
+  font-size: 12px;
+  line-height: 1.4;
+  text-align: center;
+}
+
+.pokex-detail-placeholder {
+  display: grid;
+  width: min(340px, 100%);
+  aspect-ratio: 2.5 / 3.5;
+  margin: auto;
+  place-content: center;
+  gap: 10px;
+  border: 1px solid rgba(255, 216, 61, .18);
+  border-radius: 18px;
+  background: linear-gradient(145deg, #102447, #09162e);
+  color: #aebdda;
+  text-align: center;
+}
+
+.pokex-detail-placeholder span {
+  color: var(--pokex-yellow);
+  font-size: 44px;
+}
+
+.pokex-detail-placeholder strong {
+  font-size: 13px;
+}
+
 .priceGrid {
   gap: 8px;
 }
