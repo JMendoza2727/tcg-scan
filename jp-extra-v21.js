@@ -10,7 +10,7 @@
       return catalog;
 
     const r = await fetch(
-      "./data/jp-catalog-v21.json?v=211"
+      "./data/jp-catalog-v21.json?v=2350"
     );
 
     if (!r.ok)
@@ -302,8 +302,31 @@
   function merge(primary, extra) {
 
     const result = [];
-    const positions =
+    const primaryPositions =
       new Map();
+    const matchedPrimary = new Set();
+    const seenExtra = new Set();
+
+
+    function addPrimaryPosition(key, position) {
+
+      if (!primaryPositions.has(key)) {
+        primaryPositions.set(key, []);
+      }
+
+      primaryPositions.get(key).push(position);
+    }
+
+
+    function extraSignature(card) {
+
+      return [
+        cardKey(card),
+        text(card?.name),
+        text(card?.rarity),
+        directImage(card?.image)
+      ].join("|");
+    }
 
 
     /*
@@ -314,7 +337,7 @@
       const key =
         cardKey(card);
 
-      positions.set(
+      addPrimaryPosition(
         key,
         result.length
       );
@@ -327,20 +350,38 @@
 
       const key =
         cardKey(extraCard);
+      const signature =
+        extraSignature(extraCard);
 
 
-      if (positions.has(key)) {
+      if (seenExtra.has(signature)) {
+        continue;
+      }
+
+      seenExtra.add(signature);
+
+
+      const candidates =
+        primaryPositions.get(key) || [];
+
+      let pos = candidates.find(
+        candidate =>
+          !matchedPrimary.has(candidate) &&
+          text(result[candidate]?.name) ===
+            text(extraCard?.name)
+      );
+
+      if (pos != null) {
 
         /*
          * La carta ya existe en TCGdex.
          * Aprovechamos la base nueva para
          * rellenar huecos.
          */
-        const pos =
-          positions.get(key);
-
         const existing =
           result[pos];
+
+        matchedPrimary.add(pos);
 
 
         if (
@@ -367,11 +408,6 @@
         continue;
       }
 
-
-      positions.set(
-        key,
-        result.length
-      );
 
       result.push(
         extraCard

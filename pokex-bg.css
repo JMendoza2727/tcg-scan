@@ -191,3 +191,19 @@ body {
   letter-spacing: .3px;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  body::before,
+  body::after,
+  .pokex-particle {
+    animation: none !important;
+  }
+}
+
+body.pokex-background-paused::before,
+body.pokex-background-paused::after,
+body.pokex-background-paused .pokex-particle,
+body.cv11-camera-open::before,
+body.cv11-camera-open::after,
+body.cv11-camera-open .pokex-particle {
+  animation-play-state: paused !important;
+}

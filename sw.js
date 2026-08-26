@@ -1,31 +1,124 @@
-const CACHE = "pokex-shell-v2331-no-friends";
-const SHELL = ["./", "./index.html", "./styles.css", "./app.js", "./manifest.webmanifest", "./icon-192.png", "./icon-512.png"];
+const VERSION = "2350";
+const APP_CACHE = `pokex-app-${VERSION}`;
+const DATA_CACHE = `pokex-data-${VERSION}`;
+const SCANNER_CACHE = "pokex-scanner-v11";
+
+const APP_SHELL = [
+  "./",
+  "./index.html",
+  "./manifest.webmanifest?v=2350",
+  "./icon-192.png",
+  "./icon-512.png",
+  "./styles.css?v=2350",
+  "./pokedex-v1.css?v=2350",
+  "./scanner-v11.css?v=2350",
+  "./pokex-layout-v1.css?v=2350",
+  "./pokex-bg.css?v=2350",
+  "./pokex-v22.css?v=2350",
+  "./pokex-auth-v23.css?v=2350",
+  "./pokex-mobile-v231.css?v=2350",
+  "./jp-extra-v21.js?v=2350",
+  "./en-images-v21.js?v=2350",
+  "./app.js?v=2350",
+  "./pokedex-v1.js?v=2350",
+  "./scanner-v11.js?v=2350",
+  "./pokex-clean-v1.js?v=2350",
+  "./pokex-language-v1.js?v=2350",
+  "./pokex-layout-v1.js?v=2350",
+  "./pokex-bg.js?v=2350",
+  "./pokex-v22.js?v=2350",
+  "./pokex-firebase-config.js?v=2350",
+  "./pokex-auth-v23.js?v=2350",
+  "./pokex-mobile-v231.js?v=2350"
+];
 
 self.addEventListener("install", event => {
-  event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)));
+  event.waitUntil(
+    caches.open(APP_CACHE).then(cache => cache.addAll(APP_SHELL))
+  );
   self.skipWaiting();
 });
 
 self.addEventListener("activate", event => {
   event.waitUntil(
-    caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE).map(k => caches.delete(k))))
+    caches.keys().then(keys => Promise.all(
+      keys
+        .filter(key =>
+          (
+            key.startsWith("pokex-app-") ||
+            key.startsWith("pokex-shell-") ||
+            key.startsWith("pokex-data-") ||
+            key.startsWith("pokex-scanner-")
+          ) &&
+          key !== APP_CACHE &&
+          key !== DATA_CACHE &&
+          key !== SCANNER_CACHE
+        )
+        .map(key => caches.delete(key))
+    )).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
+async function networkFirst(request) {
+  const cache = await caches.open(APP_CACHE);
+
+  try {
+    const freshRequest = new Request(request, { cache: "no-cache" });
+    const response = await fetch(freshRequest);
+
+    if (response.ok) {
+      await cache.put(request, response.clone());
+    }
+
+    return response;
+  } catch (_) {
+    const cached = await cache.match(request);
+    if (cached) return cached;
+
+    if (request.mode === "navigate") {
+      return cache.match("./index.html");
+    }
+
+    throw _;
+  }
+}
+
+async function cacheFirst(request, cacheName = DATA_CACHE) {
+  const cache = await caches.open(cacheName);
+  const cached = await cache.match(request);
+  if (cached) return cached;
+
+  const response = await fetch(request);
+  if (response.status === 200) {
+    await cache.put(request, response.clone());
+  }
+  return response;
+}
+
 self.addEventListener("fetch", event => {
-  const url = new URL(event.request.url);
+  const request = event.request;
+  if (request.method !== "GET") return;
+
+  const url = new URL(request.url);
   if (url.origin !== self.location.origin) return;
-  event.respondWith(
-    caches.match(event.request).then(cached => cached || fetch(event.request).then(response => {
-      const copy = response.clone();
-      caches.open(CACHE).then(cache => cache.put(event.request, copy));
-      return response;
-    }))
-  );
+
+  if (url.pathname.includes("/scanner/")) {
+    event.respondWith(
+      cacheFirst(request, SCANNER_CACHE)
+    );
+    return;
+  }
+
+  const isInterface =
+    request.mode === "navigate" ||
+    /\.(?:html|css|js|webmanifest)$/i.test(url.pathname);
+
+  if (isInterface) {
+    event.respondWith(networkFirst(request));
+    return;
+  }
+
+  if (/\.(?:json|png|jpg|jpeg|webp|svg|woff2?)$/i.test(url.pathname)) {
+    event.respondWith(cacheFirst(request));
+  }
 });
-// PokEX interfaz v2 - 200 resultados
-// PokEX update - 3 idiomas
-// PokEX animated background
-// PokEX glass background v2
-// PokEX glass particles v3

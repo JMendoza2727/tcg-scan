@@ -25,4 +25,14 @@
 
     wrap.appendChild(p);
   }
+
+  document.addEventListener(
+    "visibilitychange",
+    () => {
+      document.body.classList.toggle(
+        "pokex-background-paused",
+        document.hidden
+      );
+    }
+  );
 })();

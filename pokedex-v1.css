@@ -122,6 +122,18 @@
   gap: 13px;
 }
 
+.pokedex-more {
+  width: 100%;
+  margin: 16px 0 4px;
+  min-height: 48px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(255,255,255,.08);
+  color: white;
+  font: inherit;
+  font-weight: 800;
+}
+
 .pokedex-card {
   position: relative;
 
@@ -325,4 +337,3 @@ body.pokedex-open {
     font-size: 12px;
   }
 }
-

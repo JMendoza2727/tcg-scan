@@ -2,9 +2,19 @@
 
   const DB_NAME = "tcgscan-pokedex";
   const STORE = "cards";
+  const PAGE_SIZE = 100;
+
+  let dbPromise = null;
+  let viewItems = [];
+  let filteredItems = [];
+  let renderedItems = 0;
+  let searchTimer = null;
 
   function openPokedexDB() {
-    return new Promise((resolve, reject) => {
+    if (dbPromise)
+      return dbPromise;
+
+    dbPromise = new Promise((resolve, reject) => {
       const req = indexedDB.open(DB_NAME, 1);
 
       req.onupgradeneeded = () => {
@@ -18,8 +28,22 @@
       };
 
       req.onsuccess = () => resolve(req.result);
-      req.onerror = () => reject(req.error);
+      req.onerror = () => {
+        dbPromise = null;
+        reject(req.error);
+      };
     });
+
+    return dbPromise;
+  }
+
+  function notifyCollectionChanged(detail) {
+    window.dispatchEvent(
+      new CustomEvent(
+        "pokex:collection-changed",
+        { detail }
+      )
+    );
   }
 
 
@@ -276,6 +300,12 @@
 
     await refreshCounter();
 
+    notifyCollectionChanged({
+      key,
+      item,
+      deleted: false
+    });
+
     return item;
   }
 
@@ -294,11 +324,24 @@
     if (existing.quantity <= 0) {
       await deleteCard(key);
       await refreshCounter();
+
+      notifyCollectionChanged({
+        key,
+        item: null,
+        deleted: true
+      });
+
       return null;
     }
 
     await saveCard(existing);
     await refreshCounter();
+
+    notifyCollectionChanged({
+      key,
+      item: existing,
+      deleted: false
+    });
 
     return existing;
   }
@@ -472,6 +515,13 @@
            class="pokedex-grid">
       </div>
 
+      <button id="pokedexMore"
+              class="pokedex-more"
+              type="button"
+              hidden>
+        Cargar más
+      </button>
+
     </div>
   `;
 
@@ -501,9 +551,95 @@
   }
 
 
-  async function renderPokedex(filter = "") {
-    let items =
-      await getAll();
+  function escapeHTML(value) {
+    return String(value ?? "")
+      .replaceAll("&", "&amp;")
+      .replaceAll("<", "&lt;")
+      .replaceAll(">", "&gt;")
+      .replaceAll('"', "&quot;");
+  }
+
+
+  function renderPokedexPage() {
+    const grid =
+      document.getElementById(
+        "pokedexGrid"
+      );
+
+    const more =
+      document.getElementById(
+        "pokedexMore"
+      );
+
+    const end = Math.min(
+      renderedItems + PAGE_SIZE,
+      filteredItems.length
+    );
+
+    const fragment =
+      document.createDocumentFragment();
+
+    for (
+      let i = renderedItems;
+      i < end;
+      i++
+    ) {
+      const item = filteredItems[i];
+
+      const div =
+        document.createElement("button");
+
+      div.type = "button";
+      div.className = "pokedex-card";
+      div.dataset.pokedexKey = item.key;
+
+      const image =
+        item.image
+          ? (
+              /\.(?:jpe?g|png|webp)(?:\?.*)?$/i
+                .test(item.image)
+                ? item.image
+                : `${item.image}/low.webp`
+            )
+          : "";
+
+      div.innerHTML = `
+        <div class="pokedex-img-wrap">
+          ${
+            image
+              ? `<img src="${escapeHTML(image)}"
+                      loading="lazy"
+                      decoding="async"
+                      alt="${escapeHTML(item.name || "Carta")}">`
+              : `<div class="pokedex-noimg">Sin imagen</div>`
+          }
+          <span class="pokedex-qty">x${item.quantity}</span>
+        </div>
+        <strong>${escapeHTML(item.name || "Carta")}</strong>
+        <span>Nº ${escapeHTML(item.localId || "—")}</span>
+        <small>${escapeHTML(item.setName || "")}</small>
+        <b>${moneyItem(item)}</b>
+      `;
+
+      fragment.appendChild(div);
+    }
+
+    grid.appendChild(fragment);
+    renderedItems = end;
+    more.hidden =
+      renderedItems >= filteredItems.length;
+  }
+
+
+  async function renderPokedex(
+    filter = "",
+    reload = false
+  ) {
+    if (reload || !viewItems.length) {
+      viewItems = await getAll();
+    }
+
+    let items = [...viewItems];
 
     const q =
       String(filter)
@@ -529,6 +665,7 @@
       );
 
     grid.innerHTML = "";
+    renderedItems = 0;
 
     const totalCards =
       items.reduce(
@@ -614,93 +751,16 @@
           Aún no tienes cartas aquí.
         </div>
       `;
+
+      document.getElementById(
+        "pokedexMore"
+      ).hidden = true;
+
       return;
     }
 
-
-    items.forEach(item => {
-
-      const div =
-        document.createElement("button");
-
-      div.type = "button";
-      div.className = "pokedex-card";
-
-      const image =
-        item.image
-          ? (
-              /\.(?:jpe?g|png|webp)(?:\?.*)?$/i
-                .test(item.image)
-                ? item.image
-                : `${item.image}/low.webp`
-            )
-          : "";
-
-      div.innerHTML = `
-        <div class="pokedex-img-wrap">
-
-          ${
-            image
-              ? `<img src="${image}"
-                      loading="lazy"
-                      alt="${item.name}">`
-              : `<div class="pokedex-noimg">
-                   Sin imagen
-                 </div>`
-          }
-
-          <span class="pokedex-qty">
-            x${item.quantity}
-          </span>
-
-        </div>
-
-        <strong>${item.name}</strong>
-
-        <span>
-          Nº ${item.localId || "—"}
-        </span>
-
-        <small>
-          ${item.setName || ""}
-        </small>
-
-        <b>
-          ${moneyItem(item)}
-        </b>
-      `;
-
-
-      div.addEventListener(
-        "click",
-        async () => {
-
-          overlay.classList.add(
-            "hidden"
-          );
-
-          document.body.classList.remove(
-            "pokedex-open"
-          );
-
-          if (window.langEl) {
-            window.langEl.value =
-              item.lang;
-          }
-
-          if (
-            typeof window.openCard ===
-            "function"
-          ) {
-            await window.openCard(
-              item.id
-            );
-          }
-        }
-      );
-
-      grid.appendChild(div);
-    });
+    filteredItems = items;
+    renderPokedexPage();
   }
 
 
@@ -718,7 +778,7 @@
           "pokedex-open"
         );
 
-        await renderPokedex();
+        await renderPokedex("", true);
       }
     );
 
@@ -744,10 +804,92 @@
     .getElementById("pokedexSearch")
     ?.addEventListener(
       "input",
-      e =>
-        renderPokedex(
-          e.target.value
-        )
+      e => {
+        clearTimeout(searchTimer);
+        searchTimer = setTimeout(
+          () => renderPokedex(
+            e.target.value
+          ),
+          140
+        );
+      }
+    );
+
+
+  document
+    .getElementById("pokedexMore")
+    ?.addEventListener(
+      "click",
+      renderPokedexPage
+    );
+
+
+  document
+    .getElementById("pokedexGrid")
+    ?.addEventListener(
+      "click",
+      async event => {
+        const cardButton =
+          event.target.closest(
+            "[data-pokedex-key]"
+          );
+
+        if (!cardButton)
+          return;
+
+        const item = viewItems.find(
+          card =>
+            card.key ===
+            cardButton.dataset.pokedexKey
+        );
+
+        if (!item)
+          return;
+
+        overlay.classList.add("hidden");
+        document.body.classList.remove(
+          "pokedex-open"
+        );
+
+        const language =
+          document.getElementById("lang");
+
+        if (language) {
+          language.value = item.lang;
+        }
+
+        if (
+          typeof window.openCard ===
+          "function"
+        ) {
+          await window.openCard(item.id);
+        }
+      }
+    );
+
+
+  document
+    .getElementById("pokedexGrid")
+    ?.addEventListener(
+      "error",
+      event => {
+        const image = event.target;
+
+        if (!(image instanceof HTMLImageElement))
+          return;
+
+        const placeholder =
+          document.createElement("div");
+
+        placeholder.className =
+          "pokedex-noimg";
+
+        placeholder.textContent =
+          "Sin imagen";
+
+        image.replaceWith(placeholder);
+      },
+      true
     );
 
 
@@ -1387,8 +1529,13 @@
 
 
     await renderPokedex(
-      search?.value || ""
+      search?.value || "",
+      true
     );
+
+    notifyCollectionChanged({
+      full: true
+    });
 
 
     const parts = [
@@ -1456,6 +1603,30 @@
 
 
   renderLastUpdate();
+
+
+  window.addEventListener(
+    "pokex:collection-reloaded",
+    async () => {
+      await refreshCounter();
+
+      if (
+        !overlay.classList.contains(
+          "hidden"
+        )
+      ) {
+        const search =
+          document.getElementById(
+            "pokedexSearch"
+          );
+
+        await renderPokedex(
+          search?.value || "",
+          true
+        );
+      }
+    }
+  );
 
 
 })();

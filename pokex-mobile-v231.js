@@ -11,6 +11,7 @@ import {
 
 import {
   getFirestore,
+  getDoc,
   collection,
   query,
   where,
@@ -21,7 +22,7 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-const VERSION = "2.3.3";
+const VERSION = "2.3.5";
 
 const config =
   window.POKEX_FIREBASE_CONFIG || null;
@@ -88,20 +89,17 @@ async function loadProfile(uid){
   }
 
   const snap =
-    await getDocs(
-      query(
-        collection(db,"users"),
-        where("__name__","==",uid)
-      )
+    await getDoc(
+      doc(db,"users",uid)
     );
 
-  if(snap.empty){
+  if(!snap.exists()){
     return null;
   }
 
   return {
-    uid:snap.docs[0].id,
-    ...snap.docs[0].data()
+    uid:snap.id,
+    ...snap.data()
   };
 }
 
@@ -1237,29 +1235,28 @@ function polishAll(){
     setTimeout(
       ()=>{
         injectAccountSettings();
-        addSkeletons();
-        compactFriendMenus();
-        detectPokedexGrid();
         updateVersionDisplay();
-        addAvatarsToFriends()
-          .catch(console.warn);
       },
       80
     );
 }
 
-const observer =
-  new MutationObserver(
-    polishAll
+const accountOverlay =
+  document.getElementById(
+    "pokexAccountOverlay"
   );
 
-observer.observe(
-  document.documentElement,
-  {
-    childList:true,
-    subtree:true
-  }
-);
+if(accountOverlay){
+  new MutationObserver(
+    polishAll
+  ).observe(
+    accountOverlay,
+    {
+      childList:true,
+      subtree:true
+    }
+  );
+}
 
 onAuthStateChanged(
   auth,
@@ -1334,24 +1331,48 @@ document.addEventListener(
     }
 
     if(document.hidden){
-      if(
-        musicContext
-        &&
-        musicContext.state === "running"
-      ){
-        await musicContext.suspend();
-      }
+      await stopMusic();
     }else{
-      if(
-        musicContext
-        &&
-        musicContext.state === "suspended"
-      ){
-        try{
-          await musicContext.resume();
-        }catch{}
-      }
+      try{
+        await startMusic();
+      }catch{}
     }
+  }
+);
+
+let musicPausedForScanner = false;
+
+new MutationObserver(
+  async ()=>{
+    const scannerOpen =
+      document.body.classList.contains(
+        "cv11-camera-open"
+      );
+
+    if(scannerOpen){
+      if(musicEnabled()){
+        musicPausedForScanner = true;
+        await stopMusic();
+      }
+      return;
+    }
+
+    if(
+      musicPausedForScanner &&
+      musicEnabled() &&
+      !document.hidden
+    ){
+      musicPausedForScanner = false;
+      try{
+        await startMusic();
+      }catch{}
+    }
+  }
+).observe(
+  document.body,
+  {
+    attributes:true,
+    attributeFilter:["class"]
   }
 );
 
