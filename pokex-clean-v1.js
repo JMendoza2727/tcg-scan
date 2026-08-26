@@ -7,7 +7,7 @@
   ];
 
   const desiredTitle =
-    '⚡ PokEX Beta <span class="pokex-version">v2.3.3</span>';
+    '⚡ PokEX Beta <span class="pokex-version">v2.3.5</span>';
 
   function cleanPokEX() {
     const title = document.querySelector("h1");
@@ -40,13 +40,4 @@
   }
 
   cleanPokEX();
-
-  new MutationObserver(cleanPokEX)
-    .observe(
-      document.body,
-      {
-        childList: true,
-        subtree: true
-      }
-    );
 })();

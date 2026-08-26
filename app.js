@@ -1,5 +1,6 @@
 const API = "https://api.tcgdex.net/v2";
 const PAGE = 200;
+const CATALOG_TTL = 24 * 60 * 60 * 1000;
 
 const el = id => document.getElementById(id);
 const langEl = el("lang");
@@ -26,6 +27,28 @@ let currentResults = [];
 let shown = 0;
 let worker = null;
 let workerLang = null;
+let tesseractPromise = null;
+let catalogDbPromise = null;
+const catalogRefreshes = new Map();
+
+function ensureTesseract() {
+  if (window.Tesseract)
+    return Promise.resolve(window.Tesseract);
+
+  if (tesseractPromise)
+    return tesseractPromise;
+
+  tesseractPromise = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js";
+    script.async = true;
+    script.onload = () => resolve(window.Tesseract);
+    script.onerror = () => reject(new Error("No se pudo cargar el OCR local."));
+    document.head.appendChild(script);
+  });
+
+  return tesseractPromise;
+}
 /* =========================================================
    PokEX V2.1 · nombres Pokémon ES / EN / JP
    ========================================================= */
@@ -875,15 +898,30 @@ function tokenScore(query, name) {
 }
 
 function openDB() {
-  return new Promise((resolve,reject) => {
+  if (catalogDbPromise)
+    return catalogDbPromise;
+
+  catalogDbPromise = new Promise((resolve,reject) => {
     const req = indexedDB.open("tcgscan", 1);
     req.onupgradeneeded = () => {
       const db = req.result;
       if (!db.objectStoreNames.contains("catalogs")) db.createObjectStore("catalogs");
     };
-    req.onsuccess = () => resolve(req.result);
-    req.onerror = () => reject(req.error);
+    req.onsuccess = () => {
+      const db = req.result;
+      db.onversionchange = () => {
+        db.close();
+        catalogDbPromise = null;
+      };
+      resolve(db);
+    };
+    req.onerror = () => {
+      catalogDbPromise = null;
+      reject(req.error);
+    };
   });
+
+  return catalogDbPromise;
 }
 async function dbGet(key) {
   const db = await openDB();
@@ -904,6 +942,72 @@ async function dbPut(key,val) {
   });
 }
 
+function catalogDate(saved) {
+  if (!Number.isFinite(saved) || saved <= 0)
+    return "fecha desconocida";
+
+  return new Intl.DateTimeFormat(
+    "es-ES",
+    {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric"
+    }
+  ).format(new Date(saved));
+}
+
+async function refreshCatalog(lang, cacheKey, background = false) {
+  if (catalogRefreshes.has(lang))
+    return catalogRefreshes.get(lang);
+
+  const task = (async () => {
+    if (!background) {
+      setProgress(true, "Descargando catálogo del idioma…", 12);
+    }
+
+    const r = await fetch(
+      `${API}/${lang}/cards`,
+      { cache: "no-store" }
+    );
+
+    if (!r.ok)
+      throw new Error("No se pudo descargar el catálogo.");
+
+    const freshCatalog = await r.json();
+    const saved = Date.now();
+
+    if (!background) {
+      setProgress(true, "Guardando catálogo en el iPhone…", 70);
+    }
+
+    try {
+      await dbPut(
+        cacheKey,
+        {
+          cards: freshCatalog,
+          saved
+        }
+      );
+    } catch (_) {}
+
+    if (langEl.value === lang) {
+      catalog = freshCatalog;
+      catalogStatus.textContent =
+        `${catalog.length.toLocaleString()} cartas · actualizado ${catalogDate(saved)}.`;
+    }
+
+    if (!background)
+      setProgress(false);
+
+    return freshCatalog;
+  })().finally(() => {
+    catalogRefreshes.delete(lang);
+  });
+
+  catalogRefreshes.set(lang, task);
+  return task;
+}
+
 async function ensureCatalog(lang) {
   catalog = [];
   catalogStatus.textContent = "Preparando catálogo…";
@@ -912,19 +1016,28 @@ async function ensureCatalog(lang) {
     const cached = await dbGet(cacheKey);
     if (cached && Array.isArray(cached.cards) && cached.cards.length) {
       catalog = cached.cards;
-      catalogStatus.textContent = `${catalog.length.toLocaleString()} cartas cargadas desde el iPhone.`;
+      const saved = Number(cached.saved) || 0;
+      const fresh = Date.now() - saved < CATALOG_TTL;
+
+      catalogStatus.textContent = fresh
+        ? `${catalog.length.toLocaleString()} cartas · actualizado ${catalogDate(saved)}.`
+        : `${catalog.length.toLocaleString()} cartas disponibles · actualizando catálogo…`;
+
+      if (!fresh && navigator.onLine) {
+        refreshCatalog(lang, cacheKey, true)
+          .catch(() => {
+            if (langEl.value === lang) {
+              catalogStatus.textContent =
+                `${catalog.length.toLocaleString()} cartas guardadas · actualización pendiente.`;
+            }
+          });
+      }
+
       return;
     }
   } catch (_) {}
 
-  setProgress(true, "Descargando catálogo del idioma…", 12);
-  const r = await fetch(`${API}/${lang}/cards`);
-  if (!r.ok) throw new Error("No se pudo descargar el catálogo.");
-  catalog = await r.json();
-  setProgress(true, "Guardando catálogo en el iPhone…", 70);
-  try { await dbPut(cacheKey, {cards: catalog, saved: Date.now()}); } catch (_) {}
-  setProgress(false);
-  catalogStatus.textContent = `${catalog.length.toLocaleString()} cartas guardadas en el iPhone.`;
+  await refreshCatalog(lang, cacheKey);
 }
 
 function parseCardQuery(raw) {
@@ -1101,6 +1214,9 @@ function renderTile(card, target=cardsEl) {
     const img = document.createElement("img");
     img.src = src;
     img.loading = "lazy";
+    img.decoding = "async";
+    img.width = 245;
+    img.height = 342;
     img.alt = card.name || "Carta";
     img.onerror = () => {
       const ph = document.createElement("div");
@@ -1131,7 +1247,9 @@ function renderTile(card, target=cardsEl) {
 
 function renderNext() {
   const end = Math.min(shown + PAGE, currentResults.length);
-  for (let i=shown; i<end; i++) renderTile(currentResults[i]);
+  const fragment = document.createDocumentFragment();
+  for (let i=shown; i<end; i++) renderTile(currentResults[i], fragment);
+  cardsEl.appendChild(fragment);
   shown = end;
   moreBtn.classList.toggle("hidden", shown >= currentResults.length);
 }
@@ -1999,7 +2117,7 @@ async function identifyPhoto(file) {
 
   try {
     if (!catalog.length) await ensureCatalog(langEl.value);
-    if (!window.Tesseract) throw new Error("No se pudo cargar el OCR local.");
+    await ensureTesseract();
 
     const {img,url} = await loadImage(file);
     const ocr = await getWorker(langEl.value);
@@ -2112,7 +2230,10 @@ window.addEventListener("offline", updateNetwork);
 updateNetwork();
 
 if ("serviceWorker" in navigator) {
-  navigator.serviceWorker.register("./sw.js").catch(() => {});
+  navigator.serviceWorker
+    .register("./sw.js", { updateViaCache: "none" })
+    .then(registration => registration.update())
+    .catch(() => {});
 }
 
 
@@ -2131,12 +2252,6 @@ const closeScannerBtn =
   document.getElementById("closeScannerBtn");
 
 let pokemonProductMap = null;
-
-/* CollectorVision se mantiene cargado desde que abre la app */
-if (scannerFrame) {
-  scannerFrame.src = "./scanner/";
-}
-
 
 async function loadPokemonProductMap() {
 

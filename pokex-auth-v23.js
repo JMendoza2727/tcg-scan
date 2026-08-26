@@ -1,6 +1,8 @@
 
 import {
-  initializeApp
+  initializeApp,
+  getApps,
+  getApp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-app.js";
 
 import {
@@ -29,7 +31,7 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-const CURRENT_VERSION = "2.3.3";
+const CURRENT_VERSION = "2.3.5";
 const SEEN_KEY = "pokex_seen_version";
 
 const cfg =
@@ -50,6 +52,9 @@ let currentUser = null;
 let currentProfile = null;
 let initialSyncRunning = false;
 let syncTimer = null;
+let syncNowRunning = false;
+let fullSyncPending = false;
+const dirtyCards = new Map();
 
 function sleep(ms) {
   return new Promise(
@@ -188,6 +193,26 @@ function itemTime(item) {
   );
 }
 
+function comparableCard(item) {
+  const value = {
+    ...(item || {})
+  };
+
+  delete value.syncedAt;
+
+  return JSON.stringify(
+    Object.keys(value)
+      .sort()
+      .reduce(
+        (out, key) => {
+          out[key] = value[key];
+          return out;
+        },
+        {}
+      )
+  );
+}
+
 function mergeItem(local, remote) {
   if (!local)
     return remote;
@@ -283,6 +308,16 @@ async function mirrorRemote(cards) {
       )
     );
 
+  const remoteById =
+    new Map(
+      remoteSnap.docs.map(
+        snap => [
+          snap.id,
+          snap.data()
+        ]
+      )
+    );
+
   const operations = [];
 
   for (const snap of remoteSnap.docs) {
@@ -299,6 +334,27 @@ async function mirrorRemote(cards) {
       card.key ||
       `${card.lang}:${card.id}`;
 
+    const documentId =
+      docIdForKey(key);
+
+    const data = {
+      ...card,
+      key
+    };
+
+    const remote =
+      remoteById.get(
+        documentId
+      );
+
+    if (
+      remote &&
+      comparableCard(remote) ===
+        comparableCard(data)
+    ) {
+      continue;
+    }
+
     operations.push({
       type: "set",
       ref: doc(
@@ -306,11 +362,10 @@ async function mirrorRemote(cards) {
         "users",
         currentUser.uid,
         "cards",
-        docIdForKey(key)
+        documentId
       ),
       data: {
-        ...card,
-        key,
+        ...data,
         syncedAt:
           Date.now()
       }
@@ -408,24 +463,107 @@ async function syncNow() {
   if (
     !configured ||
     !currentUser ||
-    initialSyncRunning
+    initialSyncRunning ||
+    syncNowRunning
   ) {
     return;
   }
 
-  setSyncText(
-    "Sincronizando…"
-  );
+  syncNowRunning = true;
 
-  const cards =
-    await localCards();
+  try {
+    setSyncText(
+      "Sincronizando…"
+    );
 
-  await mirrorRemote(cards);
-  await updateStats();
+    const cards =
+      await localCards();
 
-  setSyncText(
-    "Sincronizado"
-  );
+    await mirrorRemote(cards);
+    await updateStats();
+
+    setSyncText(
+      "Sincronizado"
+    );
+  } finally {
+    syncNowRunning = false;
+  }
+}
+
+async function syncDirtyCards() {
+  if (
+    !configured ||
+    !currentUser ||
+    !dirtyCards.size
+  ) {
+    return;
+  }
+
+  const pending =
+    new Map(dirtyCards);
+
+  dirtyCards.clear();
+
+  try {
+    setSyncText("Sincronizando…");
+
+    const entries =
+      [...pending.entries()];
+
+    for (
+      let start = 0;
+      start < entries.length;
+      start += 400
+    ) {
+      const batch = writeBatch(db);
+
+      for (
+        const [key, change]
+        of entries.slice(
+          start,
+          start + 400
+        )
+      ) {
+        const ref = doc(
+          db,
+          "users",
+          currentUser.uid,
+          "cards",
+          docIdForKey(key)
+        );
+
+        if (
+          change.deleted ||
+          !change.item
+        ) {
+          batch.delete(ref);
+        } else {
+          batch.set(
+            ref,
+            {
+              ...change.item,
+              key,
+              syncedAt: Date.now()
+            }
+          );
+        }
+      }
+
+      await batch.commit();
+    }
+
+    await updateStats();
+    setSyncText("Sincronizado");
+
+  } catch (error) {
+    for (const [key, change] of pending) {
+      if (!dirtyCards.has(key)) {
+        dirtyCards.set(key, change);
+      }
+    }
+
+    throw error;
+  }
 }
 
 async function initialSync() {
@@ -515,9 +653,21 @@ async function initialSync() {
   }
 }
 
-function scheduleSync() {
+function scheduleSync(event) {
   if (!currentUser)
     return;
+
+  const detail =
+    event?.detail || {};
+
+  if (detail.full) {
+    fullSyncPending = true;
+  } else if (detail.key) {
+    dirtyCards.set(
+      detail.key,
+      detail
+    );
+  }
 
   clearTimeout(
     syncTimer
@@ -526,9 +676,14 @@ function scheduleSync() {
   syncTimer =
     setTimeout(
       () => {
-        syncNow().catch(
-          console.warn
-        );
+        const task =
+          fullSyncPending
+            ? syncNow()
+            : syncDirtyCards();
+
+        fullSyncPending = false;
+
+        task.catch(console.warn);
       },
       1600
     );
@@ -553,7 +708,7 @@ function refreshLegacyCollection() {
 
   window.dispatchEvent(
     new CustomEvent(
-      "pokex:collection-changed"
+      "pokex:collection-reloaded"
     )
   );
 }
@@ -2625,58 +2780,17 @@ function watchLocalChanges() {
     scheduleSync
   );
 
-  document.addEventListener(
-    "click",
-    event => {
-      const target =
-        event.target.closest(
-          "button"
-        );
-
-      if (!target)
-        return;
-
+  window.addEventListener(
+    "online",
+    () => {
       if (
-        target.closest(
-          ".pokedex-card-controls"
-        ) ||
-        target.id ===
-          "updatePokedex"
+        dirtyCards.size ||
+        fullSyncPending
       ) {
-        setTimeout(
-          scheduleSync,
-          2500
-        );
+        scheduleSync();
       }
     }
   );
-
-  const status =
-    document.getElementById(
-      "pokedexUpdateStatus"
-    );
-
-  if (status) {
-    new MutationObserver(
-      () => {
-        if (
-          /actualización terminada/i
-            .test(
-              status.textContent
-            )
-        ) {
-          scheduleSync();
-        }
-      }
-    ).observe(
-      status,
-      {
-        childList: true,
-        subtree: true,
-        characterData: true
-      }
-    );
-  }
 }
 
 async function waitForPokEX() {
@@ -2718,7 +2832,9 @@ if (!configured) {
 
 } else {
   app =
-    initializeApp(cfg);
+    getApps().length
+      ? getApp()
+      : initializeApp(cfg);
 
   auth =
     getAuth(app);
@@ -2762,5 +2878,5 @@ if (!configured) {
 }
 
 console.log(
-  "✅ PokEX Beta v2.3.3 · Cuenta cargada"
+  "✅ PokEX Beta v2.3.5 · Cuenta cargada"
 );

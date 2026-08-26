@@ -41,10 +41,10 @@
   oldButton.replaceWith(button);
 
 
-  button.disabled = true;
+  button.disabled = false;
 
   button.textContent =
-    "⏳ Preparando cámara…";
+    "⚡ Escanear carta";
 
 
   /* =====================================
@@ -84,6 +84,9 @@
     "afterend",
     preparing
   );
+
+  preparing.style.display =
+    "none";
 
 
   const text =
@@ -125,10 +128,6 @@
   frame.allow =
     "camera";
 
-  frame.src =
-    "./scanner/?v=11";
-
-
   const close =
     document.createElement("button");
 
@@ -150,6 +149,7 @@
 
 
   let ready = false;
+  let started = false;
 
 
   /* =====================================
@@ -344,19 +344,14 @@
     "load",
     () => {
 
-      setTimeout(
-        poll,
-        150
-      );
+      if (started) {
+        setTimeout(
+          poll,
+          150
+        );
+      }
 
     }
-  );
-
-
-  /* Por si Safari carga muy rápido */
-  setTimeout(
-    poll,
-    300
   );
 
 
@@ -368,10 +363,6 @@
     "click",
     () => {
 
-      if (!ready)
-        return;
-
-
       overlay.classList.remove(
         "cv11-hidden"
       );
@@ -380,6 +371,29 @@
       document.body.classList.add(
         "cv11-camera-open"
       );
+
+
+      if (!started) {
+
+        started = true;
+
+        preparing.style.display =
+          "block";
+
+        button.disabled = true;
+
+        button.textContent =
+          "⏳ Preparando cámara…";
+
+        frame.src =
+          "./scanner/?v=11";
+
+        return;
+      }
+
+
+      if (!ready)
+        return;
 
 
       const cameraButton =
