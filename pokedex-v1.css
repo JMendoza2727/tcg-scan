@@ -186,6 +186,18 @@
   font-weight: 900;
 }
 
+.pokedex-reference {
+  position: absolute;
+  left: 7px;
+  bottom: 7px;
+  border-radius: 999px;
+  padding: 4px 7px;
+  background: rgba(7,11,24,.86);
+  color: #d5def0;
+  font-size: 10px;
+  font-weight: 750;
+}
+
 .pokedex-card strong,
 .pokedex-card span,
 .pokedex-card small,

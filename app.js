@@ -1,6 +1,7 @@
 const API = "https://api.tcgdex.net/v2";
 const PAGE = 200;
 const CATALOG_TTL = 24 * 60 * 60 * 1000;
+const SET_CATALOG_TTL = 30 * 24 * 60 * 60 * 1000;
 
 const el = id => document.getElementById(id);
 const langEl = el("lang");
@@ -23,6 +24,9 @@ const netBadge = el("netBadge");
 const countText = el("countText");
 
 let catalog = [];
+let setCatalog = [];
+let setCatalogLang = null;
+const setsById = new Map();
 let currentResults = [];
 let shown = 0;
 let worker = null;
@@ -254,7 +258,17 @@ function normalize(s) {
     .replace(/\s+/g, " ");
 }
 function imageUrl(base, quality="low") {
-  return base ? `${base}/${quality}.webp` : "";
+  const value = String(base || "").trim();
+  if (!value) return "";
+
+  if (
+    /^(?:data:|blob:)/i.test(value) ||
+    /\.(?:avif|gif|jpe?g|png|webp)(?:[?#].*)?$/i.test(value)
+  ) {
+    return value;
+  }
+
+  return `${value.replace(/\/$/, "")}/${quality}.webp`;
 }
 function money(v) {
   return moneyCurrency(v, "EUR");
@@ -1040,35 +1054,128 @@ async function ensureCatalog(lang) {
   await refreshCatalog(lang, cacheKey);
 }
 
+function applySetCatalog(lang, sets) {
+  setCatalogLang = lang;
+  setCatalog = Array.isArray(sets) ? sets : [];
+  setsById.clear();
+
+  for (const set of setCatalog) {
+    if (set?.id) setsById.set(String(set.id).toLocaleLowerCase(), set);
+  }
+}
+
+async function ensureSetCatalog(lang) {
+  if (setCatalogLang === lang && setCatalog.length) return;
+
+  const cacheKey = `sets-${lang}-v1`;
+  let cached = null;
+
+  try {
+    cached = await dbGet(cacheKey);
+  } catch (_) {}
+
+  if (Array.isArray(cached?.sets) && cached.sets.length) {
+    applySetCatalog(lang, cached.sets);
+
+    if (Date.now() - Number(cached.saved || 0) < SET_CATALOG_TTL) {
+      return;
+    }
+  }
+
+  if (!navigator.onLine) return;
+
+  try {
+    const response = await fetch(`${API}/${lang}/sets`, { cache: "no-store" });
+    if (!response.ok) return;
+
+    const sets = await response.json();
+    if (!Array.isArray(sets)) return;
+
+    applySetCatalog(lang, sets);
+
+    try {
+      await dbPut(cacheKey, { sets, saved: Date.now() });
+    } catch (_) {}
+  } catch (_) {}
+}
+
+function cardSetId(card) {
+  if (card?.set?.id) return String(card.set.id);
+
+  const id = String(card?.id || "");
+  const localId = String(card?.localId || "");
+  const suffix = `-${localId}`;
+
+  if (id && localId && id.toLocaleLowerCase().endsWith(suffix.toLocaleLowerCase())) {
+    return id.slice(0, -suffix.length);
+  }
+
+  return "";
+}
+
+function cardSetInfo(card) {
+  const id = cardSetId(card);
+  const indexed = setsById.get(id.toLocaleLowerCase());
+
+  return {
+    id,
+    name: card?.set?.name || indexed?.name || ""
+  };
+}
+
+function cleanCardSearchText(raw) {
+  return String(raw || "")
+    .normalize("NFKC")
+    .replace(
+      /[\[(]\s*(?:pre[\s-]?release|prerelease|staff)\s*[\])]/gi,
+      " "
+    )
+    .replace(/\b(?:pre[\s-]?release|prerelease|staff)\b/gi, " ")
+    .replace(/\s*[-–—]\s*(?=$)/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function cleanCardSearchRemainder(raw) {
+  return cleanCardSearchText(raw)
+    .replace(/^[-–—#\s]+|[-–—#\s]+$/g, "")
+    .trim();
+}
+
 function parseCardQuery(raw) {
 
-  const text = String(raw || "").trim();
+  const text = cleanCardSearchText(raw);
 
-  /*
-   * Ejemplos admitidos:
-   *
-   * Charizard ex - 125/197
-   * Charizard ex 125/197
-   * Charizard ex #125/197
-   * Charizard ex Nº 125/197
-   */
-
-  const match = text.match(
-    /^(.*?)\s*(?:[-–—#]|n[º°]?\.?\s*)?\s*([A-Za-z]?\d{1,4})\s*\/\s*(\d{1,4})\s*$/i
+  const fraction = text.match(
+    /(?:^|\s)(?:[-–—#]|n[º°]?\.?\s*)?([A-Za-z]{0,4}\d{1,4}[A-Za-z]?)\s*\/\s*(\d{1,4})(?=\s|$)/i
   );
 
-  if (!match) {
+  if (fraction) {
     return {
-      name: text,
-      number: "",
-      total: ""
+      name: cleanCardSearchRemainder(
+        `${text.slice(0, fraction.index)} ${text.slice(fraction.index + fraction[0].length)}`
+      ),
+      number: fraction[1].trim(),
+      total: fraction[2].trim()
     };
   }
 
+  const numbers = [
+    ...text.matchAll(/(?:^|\s)(?:#|n[º°]?\.?\s*)?(\d{1,4})(?=\s|$)/gi)
+  ];
+
+  if (!numbers.length) {
+    return { name: text, number: "", total: "" };
+  }
+
+  const number = numbers[numbers.length - 1];
+
   return {
-    name: match[1].trim(),
-    number: match[2].trim(),
-    total: match[3].trim()
+    name: cleanCardSearchRemainder(
+      `${text.slice(0, number.index)} ${text.slice(number.index + number[0].length)}`
+    ),
+    number: number[1].trim(),
+    total: ""
   };
 }
 
@@ -1085,7 +1192,7 @@ function normalizeCardNumber(value) {
    * Mantiene cosas tipo TG01.
    */
 
-  const m = v.match(/^([A-Z]*)(\d+)$/);
+  const m = v.match(/^([A-Z]*)(\d+)([A-Z]*)$/);
 
   if (!m)
     return v;
@@ -1097,14 +1204,15 @@ function normalizeCardNumber(value) {
       parseInt(m[2], 10)
     );
 
-  return prefix + number;
+  return prefix + number + m[3];
 }
 
 
-function searchLocal(q) {
+function searchLocalPass(q, useParsedNumber = true) {
 
-  const parsed =
-    parseCardQuery(q);
+  const parsed = useParsedNumber
+    ? parseCardQuery(q)
+    : { name: String(q || "").trim(), number: "", total: "" };
 
   const searchedNumber =
     normalizeCardNumber(
@@ -1149,11 +1257,18 @@ function searchLocal(q) {
     }
 
 
-    const score =
-      tokenScore(
-        parsed.name,
-        card.name
-      );
+    const set = cardSetInfo(card);
+    const searchable = [
+      card.name,
+      set.name,
+      set.id,
+      card.id,
+      card.localId
+    ].filter(Boolean).join(" ");
+
+    const nameScore = tokenScore(parsed.name, card.name);
+    const metadataScore = tokenScore(parsed.name, searchable);
+    const score = Math.max(nameScore, metadataScore);
 
 
     /*
@@ -1163,7 +1278,7 @@ function searchLocal(q) {
     const minimum =
       searchedNumber
       ? 0.55
-      : 0.70;
+      : 0.68;
 
 
     if (score >= minimum) {
@@ -1173,7 +1288,7 @@ function searchLocal(q) {
         score:
           searchedNumber
           ? score + 1
-          : score
+          : score + (nameScore >= 0.98 ? 0.15 : 0)
       });
     }
   }
@@ -1194,6 +1309,15 @@ function searchLocal(q) {
   );
 }
 
+function searchLocal(q) {
+  const parsed = parseCardQuery(q);
+  const strict = searchLocalPass(q, true);
+
+  if (strict.length || !parsed.number) return strict;
+
+  return searchLocalPass(q, false);
+}
+
 
 function resetContent() {
   hideMessage();
@@ -1209,7 +1333,10 @@ function renderTile(card, target=cardsEl) {
   button.type = "button";
   button.className = "cardTile";
 
-  const src = imageUrl(card.image,"low");
+  const src = imageUrl(
+    card.image || card._pokexReferenceImage,
+    "low"
+  );
   if (src) {
     const img = document.createElement("img");
     img.src = src;
@@ -1241,6 +1368,14 @@ function renderTile(card, target=cardsEl) {
   num.textContent = `Nº ${card.localId ?? "—"}`;
   button.appendChild(num);
 
+  const set = cardSetInfo(card);
+  if (set.name || set.id) {
+    const expansion = document.createElement("span");
+    expansion.className = "small pokex-card-set";
+    expansion.textContent = set.name || set.id;
+    button.appendChild(expansion);
+  }
+
   button.addEventListener("click", () => openCard(card.id));
   target.appendChild(button);
 }
@@ -1269,11 +1404,12 @@ function showSearchResults(results) {
 }
 
 async function doSearch() {
-  const q = queryEl.value.trim();
+  const q = cleanCardSearchText(queryEl.value);
   if (!langEl.value || q.length < 2) return;
   resetContent();
   try {
     if (!catalog.length) await ensureCatalog(langEl.value);
+    await ensureSetCatalog(langEl.value);
     const translatedQ =
       await translatePokemonQueryV21(
         q,
@@ -1335,6 +1471,10 @@ async function doSearch() {
         .apply(results);
     }
 
+    if (window.PokEXImageResolver?.hydrate) {
+      await window.PokEXImageResolver.hydrate(results, langEl.value);
+    }
+
     showSearchResults(results);
   } catch (e) {
     setProgress(false);
@@ -1370,6 +1510,8 @@ async function openCard(id) {
         throw new Error(
           "No se pudo cargar la carta japonesa."
         );
+
+      await completeMissingImage(card, "ja");
 
       setProgress(false);
 
@@ -1411,12 +1553,36 @@ async function openCard(id) {
         .applyOne(card);
     }
 
+    await completeMissingImage(card, langEl.value);
+
     setProgress(false);
     preview.classList.add("hidden");
     renderDetail(card);
   } catch (e) {
     setProgress(false);
     showMessage(e.message, true);
+  }
+}
+
+async function completeMissingImage(card, language) {
+  if (card?.image || !window.PokEXImageResolver) return;
+
+  setProgress(true, "Buscando una imagen real…", 68);
+
+  try {
+    const result = await window.PokEXImageResolver.resolve(card, language);
+    if (!result?.image) return;
+
+    card._pokexResolvedImage = result;
+
+    if (result.kind === "exact") {
+      card.image = result.image;
+      card._pokexImageSource = result.source;
+    } else {
+      card._pokexReferenceImage = result.image;
+    }
+  } catch (error) {
+    console.warn("PokEX image resolver:", error);
   }
 }
 
@@ -1463,7 +1629,13 @@ async function renderDetail(card) {
     );
 
 
-  if (card.image) {
+  const visibleImage =
+    card.image ||
+    card._pokexReferenceImage ||
+    "";
+
+
+  if (visibleImage) {
 
     const img =
       document.createElement(
@@ -1475,7 +1647,7 @@ async function renderDetail(card) {
 
     img.src =
       imageUrl(
-        card.image,
+        visibleImage,
         "high"
       );
 
@@ -1483,7 +1655,39 @@ async function renderDetail(card) {
       card.name ||
       "Carta";
 
+    img.addEventListener("error", async () => {
+      if (img.dataset.pokexFallbackTried === "1") return;
+      img.dataset.pokexFallbackTried = "1";
+
+      try {
+        const result = await window.PokEXImageResolver?.resolve(
+          card,
+          card._pokexJP ? "ja" : langEl.value
+        );
+
+        if (result?.image && result.image !== visibleImage) {
+          card._pokexResolvedImage = result;
+          if (result.kind === "exact") card.image = result.image;
+          else card._pokexReferenceImage = result.image;
+          img.src = imageUrl(result.image, "high");
+          return;
+        }
+      } catch (_) {}
+
+      img.replaceWith(createMissingImagePlaceholder());
+    });
+
     left.appendChild(img);
+  } else {
+    left.appendChild(createMissingImagePlaceholder());
+  }
+
+
+  if (card._pokexResolvedImage?.label) {
+    const imageNote = document.createElement("p");
+    imageNote.className = "pokex-image-note";
+    imageNote.textContent = card._pokexResolvedImage.label;
+    left.appendChild(imageNote);
   }
 
 
@@ -1897,6 +2101,13 @@ async function renderDetail(card) {
   });
 }
 
+function createMissingImagePlaceholder() {
+  const placeholder = document.createElement("div");
+  placeholder.className = "pokex-detail-placeholder";
+  placeholder.innerHTML = "<span aria-hidden=\"true\">◓</span><strong>Imagen pendiente</strong>";
+  return placeholder;
+}
+
 
 function loadImage(file) {
   return new Promise((resolve,reject) => {
@@ -2196,11 +2407,14 @@ async function identifyPhoto(file) {
 langEl.addEventListener("change", async () => {
   resetContent();
   catalog = [];
+  applySetCatalog(null, []);
   queryEl.disabled = !langEl.value;
   searchBtn.disabled = !langEl.value;
   photoEl.disabled = !langEl.value;
   cameraBtn.classList.toggle("disabled", !langEl.value);
-  queryEl.placeholder = langEl.value === "ja" ? "Charizard, Pikachu, リザードン…" : "Charizard, Pikachu…";
+  queryEl.placeholder = langEl.value === "ja"
+    ? "ゲンガー 057, リザードン M2a…"
+    : "Gengar 057, Gengar + expansión…";
   if (!langEl.value) {
     catalogStatus.textContent = "El catálogo se descargará una vez y quedará guardado en el iPhone.";
     return;
@@ -2337,11 +2551,14 @@ window.addEventListener("message", async event => {
       para encontrar la carta equivalente en TCGdex.
     */
 
-    const name =
-      product?.name || data.cardName;
+    const scanned = parseCardQuery(
+      product?.name || data.cardName
+    );
+
+    const name = scanned.name;
 
     const number =
-      String(product?.number || "")
+      String(product?.number || scanned.number || "")
         .split("/")[0]
         .trim();
 
@@ -2398,7 +2615,7 @@ window.addEventListener("message", async event => {
     }
 
     queryEl.value =
-      data.cardName || name;
+      `${name} ${number}`.trim();
 
     await doSearch();
 
@@ -2406,8 +2623,9 @@ window.addEventListener("message", async event => {
 
     console.error(e);
 
-    queryEl.value =
-      data.cardName || "";
+    queryEl.value = cleanCardSearchText(
+      data.cardName || ""
+    );
 
     await doSearch();
 
