@@ -165,7 +165,13 @@
           card.set?.name || "",
 
         image:
-          card.image || "",
+          card.image ||
+          card._pokexReferenceImage ||
+          "",
+
+        imageKind:
+          card._pokexResolvedImage?.kind ||
+          "exact",
 
         quantity:
           0,
@@ -203,8 +209,14 @@
 
     item.image =
       card.image ||
+      card._pokexReferenceImage ||
       item.image ||
       "";
+
+    item.imageKind =
+      card._pokexResolvedImage?.kind ||
+      item.imageKind ||
+      "exact";
 
 
     item.quantity += 1;
@@ -593,15 +605,24 @@
       div.className = "pokedex-card";
       div.dataset.pokedexKey = item.key;
 
+      const storedImage =
+        item.image ||
+        item._pokexReferenceImage ||
+        "";
+
       const image =
-        item.image
+        storedImage
           ? (
               /\.(?:jpe?g|png|webp)(?:\?.*)?$/i
-                .test(item.image)
-                ? item.image
-                : `${item.image}/low.webp`
+                .test(storedImage)
+                ? storedImage
+                : `${storedImage}/low.webp`
             )
           : "";
+
+      const referenceImage =
+        item.imageKind === "reference" ||
+        item._pokexResolvedImage?.kind === "reference";
 
       div.innerHTML = `
         <div class="pokedex-img-wrap">
@@ -613,6 +634,7 @@
                       alt="${escapeHTML(item.name || "Carta")}">`
               : `<div class="pokedex-noimg">Sin imagen</div>`
           }
+          ${referenceImage ? `<span class="pokedex-reference">Referencia</span>` : ""}
           <span class="pokedex-qty">x${item.quantity}</span>
         </div>
         <strong>${escapeHTML(item.name || "Carta")}</strong>
@@ -637,6 +659,10 @@
   ) {
     if (reload || !viewItems.length) {
       viewItems = await getAll();
+
+      if (window.PokEXImageResolver?.hydrate) {
+        await window.PokEXImageResolver.hydrate(viewItems, "en");
+      }
     }
 
     let items = [...viewItems];
@@ -1133,8 +1159,21 @@
         );
       }
 
-      return await window.PokEXJP
+      const card = await window.PokEXJP
         .getCard(item.id);
+
+      if (
+        card &&
+        !card.image &&
+        window.PokEXImageResolver?.resolve
+      ) {
+        try {
+          const result = await window.PokEXImageResolver.resolve(card, "ja");
+          window.PokEXImageResolver.applyResult?.(card, result);
+        } catch (_) {}
+      }
+
+      return card;
     }
 
 
@@ -1180,6 +1219,16 @@
         await window.PokEXENImages
           .applyOne(card);
 
+      } catch (_) {}
+    }
+
+    if (
+      !card.image &&
+      window.PokEXImageResolver?.resolve
+    ) {
+      try {
+        const result = await window.PokEXImageResolver.resolve(card, lang);
+        window.PokEXImageResolver.applyResult?.(card, result);
       } catch (_) {}
     }
 
@@ -1398,7 +1447,9 @@
           item.image || "";
 
         const newImage =
-          card.image || "";
+          card.image ||
+          card._pokexReferenceImage ||
+          "";
 
 
         if (
@@ -1414,6 +1465,10 @@
 
           item.image =
             newImage;
+
+          item.imageKind =
+            card._pokexResolvedImage?.kind ||
+            "exact";
         }
 
 

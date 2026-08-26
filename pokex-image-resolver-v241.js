@@ -93,6 +93,61 @@
     } catch (_) {}
   }
 
+  function applyResult(card, result) {
+    if (!card || !result?.image) return false;
+
+    card._pokexResolvedImage = result;
+
+    if (result.kind === "exact") {
+      card.image = result.image;
+      card._pokexImageSource = result.source;
+    } else {
+      card._pokexReferenceImage = result.image;
+    }
+
+    return true;
+  }
+
+  async function hydrate(cards, defaultLang = "es") {
+    const items = Array.isArray(cards) ? cards : [];
+    const missing = items.filter(card =>
+      card?.id && !card.image && !card._pokexReferenceImage
+    );
+
+    if (!missing.length) return 0;
+
+    let entries = [];
+    const db = await openDatabase();
+
+    if (db) {
+      entries = await new Promise(resolve => {
+        const transaction = db.transaction(STORE_NAME, "readonly");
+        const request = transaction.objectStore(STORE_NAME).getAll();
+        request.onsuccess = () => resolve(request.result || []);
+        request.onerror = () => resolve([]);
+      });
+    }
+
+    const indexed = new Map(entries.map(entry => [entry.key, entry]));
+    let hydrated = 0;
+
+    for (const card of missing) {
+      const key = cacheKey(card, card.lang || defaultLang);
+      const entry = memoryCache.get(key) || indexed.get(key);
+
+      if (
+        entry?.result &&
+        Date.now() - entry.savedAt < POSITIVE_TTL &&
+        applyResult(card, entry.result)
+      ) {
+        memoryCache.set(key, entry);
+        hydrated += 1;
+      }
+    }
+
+    return hydrated;
+  }
+
   async function fetchJson(url, timeout = REQUEST_TIMEOUT) {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), timeout);
@@ -285,5 +340,5 @@
     return task;
   }
 
-  window.PokEXImageResolver = { resolve };
+  window.PokEXImageResolver = { resolve, hydrate, applyResult };
 })();

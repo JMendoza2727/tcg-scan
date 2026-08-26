@@ -1123,9 +1123,28 @@ function cardSetInfo(card) {
   };
 }
 
+function cleanCardSearchText(raw) {
+  return String(raw || "")
+    .normalize("NFKC")
+    .replace(
+      /[\[(]\s*(?:pre[\s-]?release|prerelease|staff)\s*[\])]/gi,
+      " "
+    )
+    .replace(/\b(?:pre[\s-]?release|prerelease|staff)\b/gi, " ")
+    .replace(/\s*[-–—]\s*(?=$)/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+function cleanCardSearchRemainder(raw) {
+  return cleanCardSearchText(raw)
+    .replace(/^[-–—#\s]+|[-–—#\s]+$/g, "")
+    .trim();
+}
+
 function parseCardQuery(raw) {
 
-  const text = String(raw || "").trim();
+  const text = cleanCardSearchText(raw);
 
   const fraction = text.match(
     /(?:^|\s)(?:[-–—#]|n[º°]?\.?\s*)?([A-Za-z]{0,4}\d{1,4}[A-Za-z]?)\s*\/\s*(\d{1,4})(?=\s|$)/i
@@ -1133,7 +1152,9 @@ function parseCardQuery(raw) {
 
   if (fraction) {
     return {
-      name: `${text.slice(0, fraction.index)} ${text.slice(fraction.index + fraction[0].length)}`.trim(),
+      name: cleanCardSearchRemainder(
+        `${text.slice(0, fraction.index)} ${text.slice(fraction.index + fraction[0].length)}`
+      ),
       number: fraction[1].trim(),
       total: fraction[2].trim()
     };
@@ -1150,7 +1171,9 @@ function parseCardQuery(raw) {
   const number = numbers[numbers.length - 1];
 
   return {
-    name: `${text.slice(0, number.index)} ${text.slice(number.index + number[0].length)}`.trim(),
+    name: cleanCardSearchRemainder(
+      `${text.slice(0, number.index)} ${text.slice(number.index + number[0].length)}`
+    ),
     number: number[1].trim(),
     total: ""
   };
@@ -1310,7 +1333,10 @@ function renderTile(card, target=cardsEl) {
   button.type = "button";
   button.className = "cardTile";
 
-  const src = imageUrl(card.image,"low");
+  const src = imageUrl(
+    card.image || card._pokexReferenceImage,
+    "low"
+  );
   if (src) {
     const img = document.createElement("img");
     img.src = src;
@@ -1378,7 +1404,7 @@ function showSearchResults(results) {
 }
 
 async function doSearch() {
-  const q = queryEl.value.trim();
+  const q = cleanCardSearchText(queryEl.value);
   if (!langEl.value || q.length < 2) return;
   resetContent();
   try {
@@ -1443,6 +1469,10 @@ async function doSearch() {
 
       await window.PokEXENImages
         .apply(results);
+    }
+
+    if (window.PokEXImageResolver?.hydrate) {
+      await window.PokEXImageResolver.hydrate(results, langEl.value);
     }
 
     showSearchResults(results);
@@ -2521,11 +2551,14 @@ window.addEventListener("message", async event => {
       para encontrar la carta equivalente en TCGdex.
     */
 
-    const name =
-      product?.name || data.cardName;
+    const scanned = parseCardQuery(
+      product?.name || data.cardName
+    );
+
+    const name = scanned.name;
 
     const number =
-      String(product?.number || "")
+      String(product?.number || scanned.number || "")
         .split("/")[0]
         .trim();
 
@@ -2582,7 +2615,7 @@ window.addEventListener("message", async event => {
     }
 
     queryEl.value =
-      data.cardName || name;
+      `${name} ${number}`.trim();
 
     await doSearch();
 
@@ -2590,8 +2623,9 @@ window.addEventListener("message", async event => {
 
     console.error(e);
 
-    queryEl.value =
-      data.cardName || "";
+    queryEl.value = cleanCardSearchText(
+      data.cardName || ""
+    );
 
     await doSearch();
 
