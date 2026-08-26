@@ -81,16 +81,28 @@
     const value =
       String(raw || "").trim();
 
-    const m =
-      value.match(
-        /^(.*?)\s*(?:[-–—#]|n[º°]?\.?\s*)?\s*([A-Za-z]?\d{1,4})\s*\/\s*(\d{1,4})\s*$/i
-      );
+    const m = value.match(
+      /(?:^|\s)(?:[-–—#]|n[º°]?\.?\s*)?([A-Za-z]{0,4}\d{1,4}[A-Za-z]?)\s*\/\s*(\d{1,4})(?=\s|$)/i
+    );
 
     if (m) {
       return {
-        name: m[1].trim(),
-        num: number(m[2]),
-        total: m[3]
+        name: `${value.slice(0, m.index)} ${value.slice(m.index + m[0].length)}`.trim(),
+        num: number(m[1]),
+        total: m[2]
+      };
+    }
+
+    const numbers = [
+      ...value.matchAll(/(?:^|\s)(?:#|n[º°]?\.?\s*)?(\d{1,4})(?=\s|$)/gi)
+    ];
+
+    if (numbers.length) {
+      const last = numbers[numbers.length - 1];
+      return {
+        name: `${value.slice(0, last.index)} ${value.slice(last.index + last[0].length)}`.trim(),
+        num: number(last[1]),
+        total: ""
       };
     }
 
@@ -279,12 +291,14 @@
        * そらをとぶピカチュウ
        * ピカチュウex
        */
-      if (
-        wantedName &&
-        !text(rec.n).includes(
-          wantedName
-        )
-      ) {
+      const searchable = text([
+        rec.n,
+        rec.s,
+        rec.sf,
+        rec.sr
+      ].filter(Boolean).join(" "));
+
+      if (wantedName && !searchable.includes(wantedName)) {
         continue;
       }
 

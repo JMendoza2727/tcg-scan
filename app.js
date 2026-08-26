@@ -1,6 +1,7 @@
 const API = "https://api.tcgdex.net/v2";
 const PAGE = 200;
 const CATALOG_TTL = 24 * 60 * 60 * 1000;
+const SET_CATALOG_TTL = 30 * 24 * 60 * 60 * 1000;
 
 const el = id => document.getElementById(id);
 const langEl = el("lang");
@@ -23,6 +24,9 @@ const netBadge = el("netBadge");
 const countText = el("countText");
 
 let catalog = [];
+let setCatalog = [];
+let setCatalogLang = null;
+const setsById = new Map();
 let currentResults = [];
 let shown = 0;
 let worker = null;
@@ -1050,35 +1054,105 @@ async function ensureCatalog(lang) {
   await refreshCatalog(lang, cacheKey);
 }
 
+function applySetCatalog(lang, sets) {
+  setCatalogLang = lang;
+  setCatalog = Array.isArray(sets) ? sets : [];
+  setsById.clear();
+
+  for (const set of setCatalog) {
+    if (set?.id) setsById.set(String(set.id).toLocaleLowerCase(), set);
+  }
+}
+
+async function ensureSetCatalog(lang) {
+  if (setCatalogLang === lang && setCatalog.length) return;
+
+  const cacheKey = `sets-${lang}-v1`;
+  let cached = null;
+
+  try {
+    cached = await dbGet(cacheKey);
+  } catch (_) {}
+
+  if (Array.isArray(cached?.sets) && cached.sets.length) {
+    applySetCatalog(lang, cached.sets);
+
+    if (Date.now() - Number(cached.saved || 0) < SET_CATALOG_TTL) {
+      return;
+    }
+  }
+
+  if (!navigator.onLine) return;
+
+  try {
+    const response = await fetch(`${API}/${lang}/sets`, { cache: "no-store" });
+    if (!response.ok) return;
+
+    const sets = await response.json();
+    if (!Array.isArray(sets)) return;
+
+    applySetCatalog(lang, sets);
+
+    try {
+      await dbPut(cacheKey, { sets, saved: Date.now() });
+    } catch (_) {}
+  } catch (_) {}
+}
+
+function cardSetId(card) {
+  if (card?.set?.id) return String(card.set.id);
+
+  const id = String(card?.id || "");
+  const localId = String(card?.localId || "");
+  const suffix = `-${localId}`;
+
+  if (id && localId && id.toLocaleLowerCase().endsWith(suffix.toLocaleLowerCase())) {
+    return id.slice(0, -suffix.length);
+  }
+
+  return "";
+}
+
+function cardSetInfo(card) {
+  const id = cardSetId(card);
+  const indexed = setsById.get(id.toLocaleLowerCase());
+
+  return {
+    id,
+    name: card?.set?.name || indexed?.name || ""
+  };
+}
+
 function parseCardQuery(raw) {
 
   const text = String(raw || "").trim();
 
-  /*
-   * Ejemplos admitidos:
-   *
-   * Charizard ex - 125/197
-   * Charizard ex 125/197
-   * Charizard ex #125/197
-   * Charizard ex Nº 125/197
-   */
-
-  const match = text.match(
-    /^(.*?)\s*(?:[-–—#]|n[º°]?\.?\s*)?\s*([A-Za-z]?\d{1,4})\s*\/\s*(\d{1,4})\s*$/i
+  const fraction = text.match(
+    /(?:^|\s)(?:[-–—#]|n[º°]?\.?\s*)?([A-Za-z]{0,4}\d{1,4}[A-Za-z]?)\s*\/\s*(\d{1,4})(?=\s|$)/i
   );
 
-  if (!match) {
+  if (fraction) {
     return {
-      name: text,
-      number: "",
-      total: ""
+      name: `${text.slice(0, fraction.index)} ${text.slice(fraction.index + fraction[0].length)}`.trim(),
+      number: fraction[1].trim(),
+      total: fraction[2].trim()
     };
   }
 
+  const numbers = [
+    ...text.matchAll(/(?:^|\s)(?:#|n[º°]?\.?\s*)?(\d{1,4})(?=\s|$)/gi)
+  ];
+
+  if (!numbers.length) {
+    return { name: text, number: "", total: "" };
+  }
+
+  const number = numbers[numbers.length - 1];
+
   return {
-    name: match[1].trim(),
-    number: match[2].trim(),
-    total: match[3].trim()
+    name: `${text.slice(0, number.index)} ${text.slice(number.index + number[0].length)}`.trim(),
+    number: number[1].trim(),
+    total: ""
   };
 }
 
@@ -1095,7 +1169,7 @@ function normalizeCardNumber(value) {
    * Mantiene cosas tipo TG01.
    */
 
-  const m = v.match(/^([A-Z]*)(\d+)$/);
+  const m = v.match(/^([A-Z]*)(\d+)([A-Z]*)$/);
 
   if (!m)
     return v;
@@ -1107,14 +1181,15 @@ function normalizeCardNumber(value) {
       parseInt(m[2], 10)
     );
 
-  return prefix + number;
+  return prefix + number + m[3];
 }
 
 
-function searchLocal(q) {
+function searchLocalPass(q, useParsedNumber = true) {
 
-  const parsed =
-    parseCardQuery(q);
+  const parsed = useParsedNumber
+    ? parseCardQuery(q)
+    : { name: String(q || "").trim(), number: "", total: "" };
 
   const searchedNumber =
     normalizeCardNumber(
@@ -1159,11 +1234,18 @@ function searchLocal(q) {
     }
 
 
-    const score =
-      tokenScore(
-        parsed.name,
-        card.name
-      );
+    const set = cardSetInfo(card);
+    const searchable = [
+      card.name,
+      set.name,
+      set.id,
+      card.id,
+      card.localId
+    ].filter(Boolean).join(" ");
+
+    const nameScore = tokenScore(parsed.name, card.name);
+    const metadataScore = tokenScore(parsed.name, searchable);
+    const score = Math.max(nameScore, metadataScore);
 
 
     /*
@@ -1173,7 +1255,7 @@ function searchLocal(q) {
     const minimum =
       searchedNumber
       ? 0.55
-      : 0.70;
+      : 0.68;
 
 
     if (score >= minimum) {
@@ -1183,7 +1265,7 @@ function searchLocal(q) {
         score:
           searchedNumber
           ? score + 1
-          : score
+          : score + (nameScore >= 0.98 ? 0.15 : 0)
       });
     }
   }
@@ -1202,6 +1284,15 @@ function searchLocal(q) {
   return results.map(
     result => result.card
   );
+}
+
+function searchLocal(q) {
+  const parsed = parseCardQuery(q);
+  const strict = searchLocalPass(q, true);
+
+  if (strict.length || !parsed.number) return strict;
+
+  return searchLocalPass(q, false);
 }
 
 
@@ -1251,6 +1342,14 @@ function renderTile(card, target=cardsEl) {
   num.textContent = `Nº ${card.localId ?? "—"}`;
   button.appendChild(num);
 
+  const set = cardSetInfo(card);
+  if (set.name || set.id) {
+    const expansion = document.createElement("span");
+    expansion.className = "small pokex-card-set";
+    expansion.textContent = set.name || set.id;
+    button.appendChild(expansion);
+  }
+
   button.addEventListener("click", () => openCard(card.id));
   target.appendChild(button);
 }
@@ -1284,6 +1383,7 @@ async function doSearch() {
   resetContent();
   try {
     if (!catalog.length) await ensureCatalog(langEl.value);
+    await ensureSetCatalog(langEl.value);
     const translatedQ =
       await translatePokemonQueryV21(
         q,
@@ -2277,11 +2377,14 @@ async function identifyPhoto(file) {
 langEl.addEventListener("change", async () => {
   resetContent();
   catalog = [];
+  applySetCatalog(null, []);
   queryEl.disabled = !langEl.value;
   searchBtn.disabled = !langEl.value;
   photoEl.disabled = !langEl.value;
   cameraBtn.classList.toggle("disabled", !langEl.value);
-  queryEl.placeholder = langEl.value === "ja" ? "Charizard, Pikachu, リザードン…" : "Charizard, Pikachu…";
+  queryEl.placeholder = langEl.value === "ja"
+    ? "ゲンガー 057, リザードン M2a…"
+    : "Gengar 057, Gengar + expansión…";
   if (!langEl.value) {
     catalogStatus.textContent = "El catálogo se descargará una vez y quedará guardado en el iPhone.";
     return;

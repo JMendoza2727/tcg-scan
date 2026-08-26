@@ -312,6 +312,16 @@ button:active:not(:disabled) {
   text-overflow: ellipsis;
 }
 
+.pokex-card-set {
+  min-height: 2.5em;
+  overflow: hidden;
+  color: #b8c5dd;
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
 .detail {
   border-radius: 22px;
   padding: 16px;
