@@ -10,7 +10,7 @@
       return catalog;
 
     const r = await fetch(
-      "./data/jp-catalog-v21.json?v=2350"
+      "./data/jp-catalog-v21.json?v=2400"
     );
 
     if (!r.ok)

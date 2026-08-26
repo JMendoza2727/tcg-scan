@@ -1,43 +1,10 @@
 (() => {
-  const hideExactTexts = [
-    "Pokémon TCG · buscador · cámara · precios",
-    "El catálogo se descargará una vez y quedará guardado en el iPhone.",
-    "Tolera errores: por ejemplo, charizar.",
-    "Online"
-  ];
+  const version =
+    document.querySelector(
+      ".pokex-version"
+    );
 
-  const desiredTitle =
-    '⚡ PokEX Beta <span class="pokex-version">v2.3.5</span>';
-
-  function cleanPokEX() {
-    const title = document.querySelector("h1");
-
-    if (
-      title &&
-      title.innerHTML !== desiredTitle
-    ) {
-      title.innerHTML = desiredTitle;
-    }
-
-    document.querySelectorAll("body *").forEach(el => {
-      if (el.children.length) return;
-
-      const text =
-        el.textContent
-          .replace(/\s+/g, " ")
-          .trim();
-
-      if (
-        hideExactTexts.some(
-          target =>
-            text === target ||
-            text.includes(target)
-        )
-      ) {
-        el.style.display = "none";
-      }
-    });
+  if (version) {
+    version.textContent = "v2.4.0";
   }
-
-  cleanPokEX();
 })();

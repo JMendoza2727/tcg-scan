@@ -22,7 +22,7 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-const VERSION = "2.3.5";
+const VERSION = "2.4.0";
 
 const config =
   window.POKEX_FIREBASE_CONFIG || null;
@@ -59,8 +59,16 @@ let polishTimer = null;
 
 let musicContext = null;
 let musicGain = null;
+let musicFilter = null;
+let musicCompressor = null;
 let musicTimer = null;
 let musicStep = 0;
+let musicNextNoteTime = 0;
+const musicVoices = new Set();
+
+const MUSIC_STEP_SECONDS = 0.165;
+const MUSIC_LOOKAHEAD_MS = 400;
+const MUSIC_SCHEDULE_AHEAD = 1.0;
 
 const MUSIC_KEY =
   "pokex_music_enabled";
@@ -251,9 +259,9 @@ function setMasterVolume(value){
       Number(value) / 100;
 
     musicGain.gain.setTargetAtTime(
-      0.16 * volume,
+      0.18 * volume,
       musicContext.currentTime,
-      0.04
+      0.06
     );
   }
 }
@@ -261,7 +269,7 @@ function setMasterVolume(value){
 function chipTone(
   freq,
   duration = 0.12,
-  offset = 0,
+  when = 0,
   type = "square",
   level = 0.10,
   detune = 0
@@ -278,8 +286,10 @@ function chipTone(
     return;
   }
 
-  const now =
-    musicContext.currentTime + offset;
+  const now = Math.max(
+    musicContext.currentTime,
+    when || musicContext.currentTime
+  );
 
   const osc =
     musicContext.createOscillator();
@@ -303,14 +313,19 @@ function chipTone(
     now
   );
 
-  gain.gain.exponentialRampToValueAtTime(
+  gain.gain.linearRampToValueAtTime(
     level,
-    now + 0.008
+    now + 0.014
+  );
+
+  gain.gain.exponentialRampToValueAtTime(
+    Math.max(0.0001, level * 0.68),
+    now + Math.max(0.03, duration * 0.62)
   );
 
   gain.gain.exponentialRampToValueAtTime(
     0.0001,
-    now + duration
+    now + duration + 0.035
   );
 
   osc.connect(gain);
@@ -318,7 +333,15 @@ function chipTone(
 
   osc.start(now);
   osc.stop(
-    now + duration + 0.025
+    now + duration + 0.055
+  );
+
+  musicVoices.add(osc);
+
+  osc.addEventListener(
+    "ended",
+    () => musicVoices.delete(osc),
+    { once: true }
   );
 }
 
@@ -392,7 +415,7 @@ const POKEX_BASS = [
   "G3"
 ];
 
-function musicTick(){
+function musicTick(when){
 
   const step =
     musicStep % POKEX_LEAD.length;
@@ -409,19 +432,19 @@ function musicTick(){
   if(leadName){
     chipTone(
       POKEX_NOTES[leadName],
-      0.145,
-      0,
-      "square",
-      0.105
+      0.16,
+      when,
+      "triangle",
+      0.11
     );
 
     chipTone(
       POKEX_NOTES[leadName],
-      0.10,
-      0.008,
-      "square",
-      0.025,
-      7
+      0.14,
+      when + 0.006,
+      "sine",
+      0.032,
+      5
     );
   }
 
@@ -430,10 +453,10 @@ function musicTick(){
 
   chipTone(
     POKEX_NOTES[arpName],
-    0.085,
-    0.015,
-    "square",
-    0.038
+    0.13,
+    when + 0.018,
+    "triangle",
+    0.046
   );
 
   if(step % 4 === 0){
@@ -442,32 +465,62 @@ function musicTick(){
       POKEX_NOTES[
         POKEX_BASS[section]
       ],
-      0.27,
-      0,
+      0.31,
+      when,
       "triangle",
-      0.12
+      0.13
     );
 
     chipTone(
-      95,
-      0.035,
-      0,
-      "square",
-      0.045
+      82,
+      0.055,
+      when,
+      "sine",
+      0.05
     );
   }
 
   if(step % 4 === 2){
     chipTone(
-      1500,
-      0.018,
-      0,
-      "square",
-      0.018
+      920,
+      0.028,
+      when,
+      "sine",
+      0.02
     );
   }
 
   musicStep++;
+}
+
+function scheduleMusic(){
+  if(
+    !musicContext ||
+    musicContext.state !== "running"
+  ){
+    return;
+  }
+
+  const current =
+    musicContext.currentTime;
+
+  if(
+    !musicNextNoteTime ||
+    musicNextNoteTime <
+      current - MUSIC_STEP_SECONDS
+  ){
+    musicNextNoteTime =
+      current + 0.045;
+  }
+
+  const horizon =
+    current + MUSIC_SCHEDULE_AHEAD;
+
+  while(musicNextNoteTime < horizon){
+    musicTick(musicNextNoteTime);
+    musicNextNoteTime +=
+      MUSIC_STEP_SECONDS;
+  }
 }
 
 async function startMusic(){
@@ -486,7 +539,25 @@ async function startMusic(){
     musicGain =
       musicContext.createGain();
 
-    musicGain.connect(
+    musicFilter =
+      musicContext.createBiquadFilter();
+
+    musicFilter.type = "lowpass";
+    musicFilter.frequency.value = 3600;
+    musicFilter.Q.value = 0.65;
+
+    musicCompressor =
+      musicContext.createDynamicsCompressor();
+
+    musicCompressor.threshold.value = -22;
+    musicCompressor.knee.value = 16;
+    musicCompressor.ratio.value = 3;
+    musicCompressor.attack.value = 0.012;
+    musicCompressor.release.value = 0.2;
+
+    musicGain.connect(musicFilter);
+    musicFilter.connect(musicCompressor);
+    musicCompressor.connect(
       musicContext.destination
     );
 
@@ -496,18 +567,21 @@ async function startMusic(){
   }
 
   if(
-    musicContext.state === "suspended"
+    musicContext.state !== "running"
   ){
     await musicContext.resume();
   }
 
   if(!musicTimer){
-    musicTick();
+    musicNextNoteTime =
+      musicContext.currentTime + 0.045;
+
+    scheduleMusic();
 
     musicTimer =
       setInterval(
-        musicTick,
-        185
+        scheduleMusic,
+        MUSIC_LOOKAHEAD_MS
       );
   }
 
@@ -519,6 +593,16 @@ async function stopMusic(){
     clearInterval(musicTimer);
     musicTimer = null;
   }
+
+  musicNextNoteTime = 0;
+
+  for(const voice of musicVoices){
+    try{
+      voice.stop();
+    }catch{}
+  }
+
+  musicVoices.clear();
 
   if(
     musicContext
