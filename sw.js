@@ -1,36 +1,36 @@
-const VERSION = "3130";
+const VERSION = "3200";
 const APP_CACHE = `pokex-app-${VERSION}`;
 const DATA_CACHE = `pokex-data-${VERSION}`;
-const SCANNER_CACHE = "pokex-scanner-v11";
+const SCANNER_CACHE = "pokex-scanner-v12";
 
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./manifest.webmanifest?v=3130",
+  "./manifest.webmanifest?v=3200",
   "./icon-192.png",
   "./icon-512.png",
-  "./styles.css?v=3130",
-  "./pokedex-v1.css?v=3130",
-  "./scanner-v11.css?v=3130",
-  "./pokex-bg.css?v=3130",
-  "./pokex-v22.css?v=3130",
-  "./pokex-auth-v23.css?v=3130",
-  "./pokex-mobile-v231.css?v=3130",
-  "./pokex-final-v24.css?v=3130",
-  "./jp-extra-v21.js?v=3130",
-  "./en-images-v21.js?v=3130",
-  "./pokex-image-resolver-v241.js?v=3130",
-  "./pokex-price-resolver-v30.js?v=3130",
-  "./app.js?v=3130",
-  "./pokedex-v1.js?v=3130",
-  "./scanner-v11.js?v=3130",
-  "./pokex-clean-v1.js?v=3130",
-  "./pokex-language-v1.js?v=3130",
-  "./pokex-bg.js?v=3130",
-  "./pokex-v22.js?v=3130",
-  "./pokex-firebase-config.js?v=3130",
-  "./pokex-auth-v23.js?v=3130",
-  "./pokex-mobile-v231.js?v=3130"
+  "./styles.css?v=3200",
+  "./pokedex-v1.css?v=3200",
+  "./scanner-v11.css?v=3200",
+  "./pokex-bg.css?v=3200",
+  "./pokex-v22.css?v=3200",
+  "./pokex-auth-v23.css?v=3200",
+  "./pokex-mobile-v231.css?v=3200",
+  "./pokex-final-v24.css?v=3200",
+  "./jp-extra-v21.js?v=3200",
+  "./en-images-v21.js?v=3200",
+  "./pokex-image-resolver-v241.js?v=3200",
+  "./pokex-price-resolver-v30.js?v=3200",
+  "./app.js?v=3200",
+  "./pokedex-v1.js?v=3200",
+  "./scanner-v11.js?v=3200",
+  "./pokex-clean-v1.js?v=3200",
+  "./pokex-language-v1.js?v=3200",
+  "./pokex-bg.js?v=3200",
+  "./pokex-v22.js?v=3200",
+  "./pokex-firebase-config.js?v=3200",
+  "./pokex-auth-v23.js?v=3200",
+  "./pokex-mobile-v231.js?v=3200"
 ];
 
 self.addEventListener("install", event => {
@@ -104,8 +104,16 @@ self.addEventListener("fetch", event => {
   if (url.origin !== self.location.origin) return;
 
   if (url.pathname.includes("/scanner/")) {
+    const stableScannerAsset =
+      url.pathname.includes("/scanner/assets/") ||
+      url.pathname.includes("/scanner/vendor/") ||
+      url.pathname.includes("/scanner/sounds/") ||
+      /\.(?:wasm|onnx|bin|f16)$/i.test(url.pathname);
+
     event.respondWith(
-      cacheFirst(request, SCANNER_CACHE)
+      stableScannerAsset
+        ? cacheFirst(request, SCANNER_CACHE)
+        : networkFirst(request)
     );
     return;
   }
