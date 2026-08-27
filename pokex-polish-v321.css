@@ -1,0 +1,40 @@
+/* PokEX v3.2 · pulido táctil iOS */
+button,
+select,
+label,
+.top,
+.panel,
+.pokex-nav,
+.pokedex-nav,
+.pokedex-header,
+.pokedex-card,
+.cardTile,
+.v23-window,
+.v23-card,
+.v23-stat,
+.v231-settings,
+[role="button"] {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+button,
+select,
+.cardTile,
+.pokedex-card,
+[role="button"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+input,
+textarea,
+[contenteditable="true"] {
+  -webkit-user-select: text;
+  user-select: text;
+  -webkit-touch-callout: default;
+}
+
+img {
+  -webkit-user-drag: none;
+}
