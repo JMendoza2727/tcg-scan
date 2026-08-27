@@ -43,6 +43,19 @@ body.pokex-modal-open {
   overflow: hidden;
 }
 
+html.pokex-modal-open,
+html.pokex-modal-open body,
+html.pokex-home-locked,
+html.pokex-home-locked body {
+  overflow: hidden !important;
+  overscroll-behavior: none;
+}
+
+html.pokex-home-locked,
+html.pokex-home-locked body {
+  height: 100%;
+}
+
 button,
 select,
 input {
@@ -522,7 +535,7 @@ button:active:not(:disabled) {
 
 .pokedex-overlay {
   background: #061025;
-  overscroll-behavior: contain;
+  overscroll-behavior: none;
 }
 
 .pokedex-header {
@@ -638,6 +651,8 @@ button:active:not(:disabled) {
     12px
     calc(12px + env(safe-area-inset-bottom));
   background: rgba(3, 8, 22, .94);
+  overflow: hidden;
+  overscroll-behavior: none;
 }
 
 .v23-window {
@@ -647,6 +662,7 @@ button:active:not(:disabled) {
   border-radius: 22px;
   padding: 16px;
   background: #0a1934;
+  overscroll-behavior: contain;
 }
 
 .v23-header {
