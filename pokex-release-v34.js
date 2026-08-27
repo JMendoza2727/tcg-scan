@@ -1,13 +1,14 @@
 (() => {
   const VERSION = "3.4";
-  const KEY = "pokex_seen_release_v34";
+  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3412";
+  const KEY = `pokex_seen_release_v34_${BUILD}`;
 
   const changes = [
-    "👤 Perfiles de amigos con avatar, estadísticas y colección completa.",
-    "🃏 Colecciones de amigos en modo solo lectura y con buscador propio.",
-    "🏆 Rankings entre amigos por valor total, número de cartas y cartas distintas.",
-    "🔒 La colección se abre únicamente desde una amistad aceptada.",
-    "✨ Pulido general de la experiencia social de PokEX."
+    "🏆 Rankings y colecciones de amigos integrados.",
+    "👤 Cuenta y personalización más consistentes.",
+    "🔄 Nuevo botón para comprobar actualizaciones desde el inicio.",
+    "🧹 Limpieza de módulos antiguos y caché unificada.",
+    "⚙️ Mejoras internas de estabilidad sin cambiar tu colección."
   ];
 
   function applyVersion(){
@@ -18,7 +19,7 @@
   function show(){
     let seen="";
     try{seen=localStorage.getItem(KEY)||"";}catch{}
-    if(seen===VERSION || document.getElementById("pokexReleaseV34")) return;
+    if(seen===BUILD || document.getElementById("pokexReleaseV34")) return;
 
     const overlay=document.createElement("div");
     overlay.id="pokexReleaseV34";
@@ -26,7 +27,7 @@
     overlay.innerHTML=`
       <div class="pokex-release-card" role="dialog" aria-modal="true" aria-labelledby="pokexReleaseV34Title">
         <h2 id="pokexReleaseV34Title">PokEX v${VERSION}</h2>
-        <p class="pokex-release-lead">La experiencia social ya está aquí.</p>
+        <p class="pokex-release-lead">PokEX se ha actualizado.</p>
         <div class="pokex-release-changes">
           <strong>Novedades principales</strong>
           ${changes.map(item=>`<p>${item}</p>`).join("")}
@@ -35,7 +36,7 @@
       </div>`;
 
     overlay.querySelector(".pokex-release-continue")?.addEventListener("click",()=>{
-      try{localStorage.setItem(KEY,VERSION);}catch{}
+      try{localStorage.setItem(KEY,BUILD);}catch{}
       overlay.remove();
     },{once:true});
 
