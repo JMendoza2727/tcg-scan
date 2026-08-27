@@ -1,0 +1,37 @@
+.v33-music-line .v23-muted{
+  display:none !important;
+}
+
+.v33-techno-btn{
+  font-size:0 !important;
+}
+
+.v33-techno-btn::after{
+  content:"⚡ Modo Techno";
+  font-size:14px;
+  font-weight:850;
+}
+
+.v33-techno-btn.active::after{
+  content:"🎮 Original";
+}
+
+@media(max-width:699px){
+  .detail{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    backdrop-filter:none !important;
+    -webkit-backdrop-filter:none !important;
+    padding:4px 0 10px !important;
+    margin:12px 0 !important;
+  }
+
+  .detailGrid{
+    gap:18px !important;
+  }
+
+  .detailImg{
+    width:min(360px,100%) !important;
+  }
+}
