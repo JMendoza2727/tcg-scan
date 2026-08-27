@@ -189,15 +189,6 @@
     });
   }
 
-  function updateVersion(){
-    document.querySelectorAll(".v23-stat").forEach(stat=>{
-      if(stat.textContent.toLowerCase().includes("versión vista")){
-        const strong = stat.querySelector("strong");
-        if(strong && strong.textContent.trim() !== "v3.3") strong.textContent = "v3.3";
-      }
-    });
-  }
-
   function wireMusic(){
     document.querySelectorAll(".v231-setting-line").forEach(line=>{
       if(!line.textContent.toLowerCase().includes("música de fondo")) return;
@@ -247,7 +238,6 @@
 
   function refreshUI(){
     updateSync();
-    updateVersion();
     wireMusic();
 
     document.querySelectorAll(".v33-techno-btn").forEach(btn=>{
