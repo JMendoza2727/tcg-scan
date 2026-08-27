@@ -5,6 +5,6 @@
     );
 
   if (version) {
-    version.textContent = "v3.0";
+    version.textContent = "v3.1";
   }
 })();
