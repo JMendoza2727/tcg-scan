@@ -31,7 +31,7 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-const CURRENT_VERSION = "3.1";
+const CURRENT_VERSION = "3.2";
 const SEEN_KEY = "pokex_seen_version";
 const SYNC_QUEUE_KEY = "pokex_sync_queue_v31";
 const ACCOUNT_AVATARS = new Set([
@@ -3250,5 +3250,5 @@ if (!configured) {
 }
 
 console.log(
-  "✅ PokEX v3.1 · Cuenta cargada"
+  "✅ PokEX v3.2 · Cuenta cargada"
 );
