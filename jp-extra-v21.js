@@ -1,89 +1,40 @@
 ﻿(() => {
-
   let catalog = null;
   const byId = new Map();
 
-
   async function load() {
+    if (catalog) return catalog;
 
-    if (catalog)
-      return catalog;
-
-    const r = await fetch(
-      "./data/jp-catalog-v21.json?v=2400"
-    );
-
-    if (!r.ok)
-      throw new Error(
-        "No se pudo cargar el catálogo japonés ampliado."
-      );
+    const r = await fetch("./data/jp-catalog-v21.json?v=3210");
+    if (!r.ok) throw new Error("No se pudo cargar el catálogo japonés ampliado.");
 
     catalog = await r.json();
-
     for (const rec of catalog) {
-      if (rec.jid != null) {
-        byId.set(
-          String(rec.jid),
-          rec
-        );
-      }
+      if (rec.jid != null) byId.set(String(rec.jid), rec);
     }
 
-    console.log(
-      `🇯🇵 PokEX JP: ${catalog.length} cartas cargadas`
-    );
-
+    console.log(`🇯🇵 PokEX JP: ${catalog.length} cartas cargadas`);
     return catalog;
   }
 
-
   function text(v) {
-    return String(v || "")
-      .normalize("NFKC")
-      .trim()
-      .toLowerCase()
-      .replace(/\s+/g, "");
+    return String(v || "").normalize("NFKC").trim().toLowerCase().replace(/\s+/g, "");
   }
-
 
   function number(v) {
-
-    const raw =
-      String(v || "")
-        .normalize("NFKC")
-        .trim()
-        .toUpperCase();
-
-    const m =
-      raw.match(/^([A-Z]*)(\d+)$/);
-
-    if (!m)
-      return raw;
-
-    return (
-      m[1] +
-      String(parseInt(m[2], 10))
-    );
+    const raw = String(v || "").normalize("NFKC").trim().toUpperCase();
+    const m = raw.match(/^([A-Z]*)(\d+)$/);
+    if (!m) return raw;
+    return m[1] + String(parseInt(m[2], 10));
   }
-
 
   function setCode(v) {
-    return String(v || "")
-      .normalize("NFKC")
-      .trim()
-      .toUpperCase()
-      .replace(/\s+/g, "");
+    return String(v || "").normalize("NFKC").trim().toUpperCase().replace(/\s+/g, "");
   }
 
-
   function parseQuery(raw) {
-
-    const value =
-      String(raw || "").trim();
-
-    const m = value.match(
-      /(?:^|\s)(?:[-–—#]|n[º°]?\.?\s*)?([A-Za-z]{0,4}\d{1,4}[A-Za-z]?)\s*\/\s*(\d{1,4})(?=\s|$)/i
-    );
+    const value = String(raw || "").trim();
+    const m = value.match(/(?:^|\s)(?:[-–—#]|n[º°]?\.?\s*)?([A-Za-z]{0,4}\d{1,4}[A-Za-z]?)\s*\/\s*(\d{1,4})(?=\s|$)/i);
 
     if (m) {
       return {
@@ -93,10 +44,7 @@
       };
     }
 
-    const numbers = [
-      ...value.matchAll(/(?:^|\s)(?:#|n[º°]?\.?\s*)?(\d{1,4})(?=\s|$)/gi)
-    ];
-
+    const numbers = [...value.matchAll(/(?:^|\s)(?:#|n[º°]?\.?\s*)?(\d{1,4})(?=\s|$)/gi)];
     if (numbers.length) {
       const last = numbers[numbers.length - 1];
       return {
@@ -106,358 +54,147 @@
       };
     }
 
-    return {
-      name: value,
-      num: "",
-      total: ""
-    };
+    return { name: value, num: "", total: "" };
   }
-
-
-  function recordKey(rec) {
-
-    const s =
-      setCode(rec.s);
-
-    const n =
-      number(rec.num);
-
-    if (s && n)
-      return `${s}|${n}`;
-
-    return `${text(rec.n)}|${n}`;
-  }
-
 
   function cardSetCode(card) {
+    if (card?.set?.id) return setCode(card.set.id);
 
-    if (card?.set?.id)
-      return setCode(card.set.id);
-
-
-    /*
-     * En los resultados resumidos de TCGdex
-     * a veces no viene set.id.
-     *
-     * El ID suele ser:
-     *
-     * M2a-044
-     * DPt3-Sl-001
-     *
-     * Quitamos el localId del final.
-     */
-    const id =
-      String(card?.id || "");
-
-    const local =
-      String(card?.localId || "");
-
+    const id = String(card?.id || "");
+    const local = String(card?.localId || "");
     if (id && local) {
-
-      const escaped =
-        local.replace(
-          /[.*+?^${}()|[\]\\]/g,
-          "\\$&"
-        );
-
-      const rx =
-        new RegExp(
-          `[-_]${escaped}$`,
-          "i"
-        );
-
-      const stripped =
-        id.replace(rx, "");
-
-      if (stripped !== id)
-        return setCode(stripped);
+      const escaped = local.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      const stripped = id.replace(new RegExp(`[-_]${escaped}$`, "i"), "");
+      if (stripped !== id) return setCode(stripped);
     }
-
     return "";
   }
 
-
   function cardKey(card) {
-
-    const s =
-      cardSetCode(card);
-
-    const n =
-      number(card?.localId);
-
-    if (s && n)
-      return `${s}|${n}`;
-
+    const s = cardSetCode(card);
+    const n = number(card?.localId);
+    if (s && n) return `${s}|${n}`;
     return `${text(card?.name)}|${n}`;
   }
-
 
   function directImage(url) {
     return String(url || "").trim();
   }
 
-
   function toCard(rec) {
-
     return {
-      id:
-        `pokexjp:${rec.jid}`,
-
-      name:
-        rec.n || "Carta japonesa",
-
-      localId:
-        rec.num || "",
-
-      image:
-        directImage(rec.img),
-
-      rarity:
-        rec.r || "",
-
-      category:
-        rec.ct || "",
-
-      hp:
-        rec.hp || null,
-
-      types:
-        Array.isArray(rec.t)
-          ? rec.t
-          : [],
-
+      id: `pokexjp:${rec.jid}`,
+      name: rec.n || "Carta japonesa",
+      localId: rec.num || "",
+      image: directImage(rec.img),
+      rarity: rec.r || "",
+      category: rec.ct || "",
+      hp: rec.hp || null,
+      types: Array.isArray(rec.t) ? rec.t : [],
       pricing: {},
-
       set: {
-        id:
-          rec.s || "",
-
-        name:
-          rec.sf ||
-          rec.s ||
-          "Set japonés",
-
-        series:
-          rec.sr ||
-          "Pokémon Japón"
+        id: rec.s || "",
+        name: rec.sf || rec.s || "Set japonés",
+        series: rec.sr || "Pokémon Japón"
       },
-
-      _pokexJP:
-        true,
-
-      _pokexJPData:
-        rec
+      _pokexJP: true,
+      _pokexJPData: rec
     };
   }
 
-
   async function search(raw) {
-
-    const data =
-      await load();
-
-    const parsed =
-      parseQuery(raw);
-
-    const wantedName =
-      text(parsed.name);
-
-    const wantedNum =
-      parsed.num;
-
-
+    const data = await load();
+    const parsed = parseQuery(raw);
+    const wantedName = text(parsed.name);
+    const wantedNum = parsed.num;
     const matches = [];
 
-
     for (const rec of data) {
+      if (wantedNum && number(rec.num) !== wantedNum) continue;
 
-      if (wantedNum) {
-
-        if (
-          number(rec.num) !==
-          wantedNum
-        ) {
-          continue;
-        }
-      }
-
-
-      /*
-       * El nombre debe contener el texto
-       * traducido.
-       *
-       * ピカチュウ también encuentra:
-       * なみのりピカチュウ
-       * そらをとぶピカチュウ
-       * ピカチュウex
-       */
-      const searchable = text([
-        rec.n,
-        rec.s,
-        rec.sf,
-        rec.sr
-      ].filter(Boolean).join(" "));
-
-      if (wantedName && !searchable.includes(wantedName)) {
-        continue;
-      }
-
-
-      matches.push(
-        toCard(rec)
-      );
+      const searchable = text([rec.n, rec.s, rec.sf, rec.sr].filter(Boolean).join(" "));
+      if (wantedName && !searchable.includes(wantedName)) continue;
+      matches.push(toCard(rec));
     }
-
 
     return matches;
   }
 
-
   function merge(primary, extra) {
-
     const result = [];
-    const primaryPositions =
-      new Map();
+    const primaryPositions = new Map();
     const matchedPrimary = new Set();
     const seenExtra = new Set();
 
-
     function addPrimaryPosition(key, position) {
-
-      if (!primaryPositions.has(key)) {
-        primaryPositions.set(key, []);
-      }
-
+      if (!primaryPositions.has(key)) primaryPositions.set(key, []);
       primaryPositions.get(key).push(position);
     }
 
-
     function extraSignature(card) {
-
       return [
         cardKey(card),
         text(card?.name),
         text(card?.rarity),
-        directImage(card?.image)
+        directImage(card?.image),
+        String(card?._pokexJPData?.jid ?? "")
       ].join("|");
     }
 
-
-    /*
-     * TCGdex continúa teniendo prioridad.
-     */
     for (const card of primary || []) {
-
-      const key =
-        cardKey(card);
-
-      addPrimaryPosition(
-        key,
-        result.length
-      );
-
+      const key = cardKey(card);
+      addPrimaryPosition(key, result.length);
       result.push(card);
     }
 
-
     for (const extraCard of extra || []) {
-
-      const key =
-        cardKey(extraCard);
-      const signature =
-        extraSignature(extraCard);
-
-
-      if (seenExtra.has(signature)) {
-        continue;
-      }
-
+      const key = cardKey(extraCard);
+      const signature = extraSignature(extraCard);
+      if (seenExtra.has(signature)) continue;
       seenExtra.add(signature);
 
-
-      const candidates =
-        primaryPositions.get(key) || [];
-
-      let pos = candidates.find(
-        candidate =>
-          !matchedPrimary.has(candidate) &&
-          text(result[candidate]?.name) ===
-            text(extraCard?.name)
+      const candidates = primaryPositions.get(key) || [];
+      const pos = candidates.find(candidate =>
+        !matchedPrimary.has(candidate) &&
+        text(result[candidate]?.name) === text(extraCard?.name)
       );
 
       if (pos != null) {
-
-        /*
-         * La carta ya existe en TCGdex.
-         * Aprovechamos la base nueva para
-         * rellenar huecos.
-         */
-        const existing =
-          result[pos];
-
+        const existing = result[pos];
         matchedPrimary.add(pos);
 
-
-        if (
-          !existing.image &&
-          extraCard.image
-        ) {
-          existing.image =
-            extraCard.image;
-
-          existing._pokexImageSource =
-            "PokEX JP";
+        if (!existing.image && extraCard.image) {
+          existing.image = extraCard.image;
+          existing._pokexImageSource = "PokEX JP";
         }
-
-
-        if (
-          !existing.rarity &&
-          extraCard.rarity
-        ) {
-          existing.rarity =
-            extraCard.rarity;
-        }
-
-
+        if (!existing.rarity && extraCard.rarity) existing.rarity = extraCard.rarity;
         continue;
       }
 
-
-      result.push(
-        extraCard
-      );
+      result.push(extraCard);
     }
-
 
     return result;
   }
 
-
-  async function getCard(id) {
-
-    await load();
-
-    const jid =
-      String(id || "")
-        .replace(
-          /^pokexjp:/,
-          ""
-        );
-
-    const rec =
-      byId.get(jid);
-
-    return rec
-      ? toCard(rec)
-      : null;
+  function coverage(primary) {
+    if (!catalog) return null;
+    const extra = catalog.map(toCard);
+    const merged = merge(primary || [], extra);
+    return {
+      primary: Array.isArray(primary) ? primary.length : 0,
+      extra: catalog.length,
+      total: merged.length,
+      additional: Math.max(0, merged.length - (Array.isArray(primary) ? primary.length : 0))
+    };
   }
 
+  async function getCard(id) {
+    await load();
+    const jid = String(id || "").replace(/^pokexjp:/, "");
+    const rec = byId.get(jid);
+    return rec ? toCard(rec) : null;
+  }
 
-  window.PokEXJP = {
-    load,
-    search,
-    merge,
-    getCard
-  };
-
+  window.PokEXJP = { load, search, merge, coverage, getCard };
 })();
