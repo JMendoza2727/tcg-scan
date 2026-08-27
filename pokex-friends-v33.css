@@ -15,6 +15,20 @@ body.f33-modal-open {
   overscroll-behavior: none;
 }
 
+.f33-launch,
+.f33-tabs button,
+.f33-actions button,
+.f33-primary,
+.f33-soft,
+.f33-danger,
+.f33-close {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
+}
+
 .f33-launch {
   width: 100%;
   min-height: 62px;
@@ -30,7 +44,6 @@ body.f33-modal-open {
   box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 12px 28px rgba(0,0,0,.14);
   color: var(--f33-text);
   text-align: left;
-  -webkit-tap-highlight-color: transparent;
 }
 
 .f33-launch-icon {
@@ -270,6 +283,14 @@ body.f33-modal-open {
   font-weight: 850;
 }
 
+.f33-actions button:disabled,
+.f33-primary:disabled,
+.f33-soft:disabled,
+.f33-danger:disabled {
+  opacity: .55;
+  cursor: default;
+}
+
 .f33-primary {
   border: 1px solid rgba(255,216,61,.45);
   background: linear-gradient(180deg, #ffe36b, #f4c923);
@@ -328,6 +349,14 @@ body.f33-modal-open {
 .f33-state strong { color: #f1f5ff; }
 .f33-empty p,
 .f33-state p { max-width: 330px; margin: 0; font-size: 12px; line-height: 1.45; }
+
+.f33-message {
+  margin-bottom: 10px;
+  padding: 11px 12px;
+  color: #ffd5da;
+  font-size: 11px;
+  line-height: 1.4;
+}
 
 .f33-loading {
   padding: 24px 8px;
