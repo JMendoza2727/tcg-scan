@@ -540,6 +540,12 @@ button:active:not(:disabled) {
   flex: 1 1 auto;
 }
 
+.pokedex-header > .pokedex-update-wrap {
+  flex: 0 0 auto;
+  width: clamp(118px, 34vw, 160px);
+  align-items: stretch;
+}
+
 .pokedex-header strong,
 .pokedex-header span {
   overflow: hidden;
@@ -618,6 +624,12 @@ button:active:not(:disabled) {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.pokex-brand-mark[hidden],
+#netBadge[hidden],
+.pokex-v31-hidden-feature {
+  display: none !important;
 }
 
 .v23-overlay {
