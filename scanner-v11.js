@@ -653,9 +653,25 @@
     const cameraButton =
       badge();
 
+    /*
+     * v3.2: orden explícita de suspensión.
+     * Conserva modelos, Worker y catálogo en memoria,
+     * pero detiene cámara, RAF e inferencia.
+     */
+    try {
+      frame.contentWindow?.postMessage(
+        {
+          type: "pokex-scanner-pause",
+          reason: "overlay-closed"
+        },
+        window.location.origin
+      );
+    } catch (_) {}
+
 
     /*
-     * Solo detenemos la cámara física.
+     * Mantenemos también el clic como compatibilidad
+     * con versiones antiguas del iframe.
      *
      * La IA, modelos y catálogo
      * permanecen cargados.
