@@ -9,7 +9,7 @@
   const POSITIVE_TTL = 180 * 24 * 60 * 60 * 1000;
   const NEGATIVE_TTL = 7 * 24 * 60 * 60 * 1000;
   const REQUEST_TIMEOUT = 4500;
-  const CACHE_SCHEMA = "v242";
+  const CACHE_SCHEMA = "v32-cross-language";
   const inFlight = new Map();
   const memoryCache = new Map();
   const externalCardCache = new Map();
@@ -322,21 +322,28 @@
       };
     }
 
-    const primary =
-      await resolveLanguage(
-        requestedLanguage,
-        "exact"
+    const fallbackOrder = {
+      es: ["es", "en", "ja"],
+      en: ["en", "es", "ja"],
+      ja: ["ja", "en", "es"]
+    };
+
+    const languages =
+      fallbackOrder[requestedLanguage] ||
+      [requestedLanguage, "en", "es", "ja"];
+
+    for (const imageLanguage of [...new Set(languages)]) {
+      const result = await resolveLanguage(
+        imageLanguage,
+        imageLanguage === requestedLanguage
+          ? "exact"
+          : "translated"
       );
 
-    if (primary) return primary;
+      if (result) return result;
+    }
 
-    if (requestedLanguage === "en")
-      return null;
-
-    return await resolveLanguage(
-      "en",
-      "translated"
-    );
+    return null;
   }
 
   async function loadNames() {
@@ -531,6 +538,7 @@
     hydrate,
     applyResult,
     findExactExternalCard,
-    isImageCompatible
+    isImageCompatible,
+    imageLanguage
   };
 })();
