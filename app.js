@@ -647,52 +647,20 @@ function getTCGPlayerVariants(
    ========================================================== */
 
 function getPreferredPokEXPrice(
-  card
+  card,
+  language = card?._pokexLanguage || langEl?.value || "es"
 ) {
+
+  const normalizedLanguage =
+    ["es", "en", "ja"].includes(language)
+      ? language
+      : "es";
 
   const cm =
     card?.pricing?.cardmarket ||
     {};
 
 
-  /*
-   * CARDMARKET sigue siendo
-   * nuestra fuente principal.
-   */
-  if (
-    typeof cm.trend === "number" &&
-    Number.isFinite(cm.trend)
-  ) {
-
-    return {
-      source:
-        "Cardmarket",
-
-      currency:
-        "EUR",
-
-      value:
-        cm.trend,
-
-      updated:
-        cm.updated || null,
-
-      variantKey:
-        null,
-
-      variantLabel:
-        null,
-
-      data:
-        cm
-    };
-  }
-
-
-  /*
-   * Si Cardmarket no tiene precio,
-   * probamos TCGplayer.
-   */
   const tcg =
     card?.pricing?.tcgplayer ||
     {};
@@ -702,39 +670,57 @@ function getPreferredPokEXPrice(
     getTCGPlayerVariants(tcg);
 
 
-  if (!variants.length) {
-    return null;
+  /*
+   * TCGplayer representa el mercado
+   * principalmente inglés/estadounidense.
+   * No lo usamos para valorar cartas ES/JA.
+   */
+  if (
+    normalizedLanguage === "en" &&
+    variants.length
+  ) {
+    const chosen = variants[0];
+
+    return {
+      source: "TCGplayer",
+      scope: "Mercado inglés/EE. UU.",
+      language: "en",
+      currency: "USD",
+      value: chosen.value,
+      updated: tcg.updated || null,
+      variantKey: chosen.key,
+      variantLabel: chosen.label,
+      data: chosen.data,
+      variants
+    };
   }
 
+  /*
+   * Cardmarket es mercado europeo y puede
+   * mezclar idiomas. Es la referencia más
+   * apropiada disponible para ES/JA, pero la
+   * interfaz lo etiqueta sin fingir que es un
+   * precio exclusivamente español o japonés.
+   */
+  if (
+    normalizedLanguage !== "en" &&
+    typeof cm.trend === "number" &&
+    Number.isFinite(cm.trend)
+  ) {
+    return {
+      source: "Cardmarket",
+      scope: "Mercado europeo · idiomas mezclados",
+      language: normalizedLanguage,
+      currency: "EUR",
+      value: cm.trend,
+      updated: cm.updated || null,
+      variantKey: null,
+      variantLabel: null,
+      data: cm
+    };
+  }
 
-  const chosen =
-    variants[0];
-
-
-  return {
-    source:
-      "TCGplayer",
-
-    currency:
-      "USD",
-
-    value:
-      chosen.value,
-
-    updated:
-      tcg.updated || null,
-
-    variantKey:
-      chosen.key,
-
-    variantLabel:
-      chosen.label,
-
-    data:
-      chosen.data,
-
-    variants
-  };
+  return null;
 }
 
 
@@ -746,11 +732,12 @@ function getPreferredPokEXPrice(
  * si fueran euros.
  */
 async function getStoredPokEXPrice(
-  card
+  card,
+  language = card?._pokexLanguage || langEl?.value || "es"
 ) {
 
   const price =
-    getPreferredPokEXPrice(card);
+    getPreferredPokEXPrice(card, language);
 
 
   if (!price)
@@ -1350,6 +1337,85 @@ function resetContent() {
   moreBtn.classList.add("hidden");
 }
 
+const tileImageQueue = [];
+let activeTileImageJobs = 0;
+
+function addTileImageBadge(button, card) {
+  button.querySelector(".pokex-tile-image-language")?.remove();
+
+  if (card?._pokexResolvedImage?.kind !== "translated") return;
+
+  const badge = document.createElement("span");
+  badge.className = "pokex-tile-image-language";
+  badge.textContent =
+    `Imagen ${String(card._pokexResolvedImage.language || "?").toUpperCase()}`;
+  button.appendChild(badge);
+}
+
+async function runTileImageQueue() {
+  if (activeTileImageJobs >= 2 || !tileImageQueue.length) return;
+
+  const job = tileImageQueue.shift();
+  activeTileImageJobs += 1;
+
+  try {
+    if (!job.button.isConnected || job.card.image) return;
+
+    const result = await window.PokEXImageResolver?.resolve(
+      job.card,
+      job.language
+    );
+
+    const applied = result?.image &&
+      window.PokEXImageResolver?.applyResult?.(job.card, result);
+
+    if (!applied || !job.button.isConnected) return;
+
+    const placeholder = job.button.querySelector(".placeholder");
+    if (!placeholder) return;
+
+    const img = document.createElement("img");
+    img.src = imageUrl(job.card.image, "low");
+    img.loading = "lazy";
+    img.decoding = "async";
+    img.width = 245;
+    img.height = 342;
+    img.alt = job.card.name || "Carta";
+    img.addEventListener("error", () => {
+      const replacement = document.createElement("div");
+      replacement.className = "placeholder";
+      replacement.textContent = "Sin imagen";
+      img.replaceWith(replacement);
+    }, { once: true });
+
+    placeholder.replaceWith(img);
+    addTileImageBadge(job.button, job.card);
+  } catch (_) {
+  } finally {
+    activeTileImageJobs -= 1;
+    runTileImageQueue();
+  }
+
+  runTileImageQueue();
+}
+
+function queueTileImage(button, card, language) {
+  tileImageQueue.push({ button, card, language });
+  runTileImageQueue();
+}
+
+const tileImageObserver =
+  "IntersectionObserver" in window
+    ? new IntersectionObserver(entries => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          tileImageObserver.unobserve(entry.target);
+          const job = entry.target._pokexImageJob;
+          if (job) queueTileImage(entry.target, job.card, job.language);
+        }
+      }, { rootMargin: "180px" })
+    : null;
+
 function renderTile(card, target=cardsEl) {
   const button = document.createElement("button");
   button.type = "button";
@@ -1374,11 +1440,21 @@ function renderTile(card, target=cardsEl) {
       img.replaceWith(ph);
     };
     button.appendChild(img);
+    addTileImageBadge(button, card);
   } else {
     const ph = document.createElement("div");
     ph.className = "placeholder";
     ph.textContent = "Sin imagen";
     button.appendChild(ph);
+
+    const language = langEl.value || "es";
+    button._pokexImageJob = { card, language };
+
+    if (tileImageObserver) {
+      tileImageObserver.observe(button);
+    } else {
+      queueTileImage(button, card, language);
+    }
   }
 
   const name = document.createElement("strong");
@@ -1533,6 +1609,8 @@ async function openCard(id) {
           "No se pudo cargar la carta japonesa."
         );
 
+      card._pokexLanguage = "ja";
+
       await completeMissingImage(card, "ja");
       await completeMissingPrice(card, "ja");
 
@@ -1566,6 +1644,8 @@ async function openCard(id) {
     const r = await fetch(`${API}/${langEl.value}/cards/${encodeURIComponent(id)}`);
     if (!r.ok) throw new Error("No se pudo cargar la carta.");
     const card = await r.json();
+    const cardLanguage = langEl.value;
+    card._pokexLanguage = cardLanguage;
 
     if (
       langEl.value === "en" &&
@@ -1576,8 +1656,8 @@ async function openCard(id) {
         .applyOne(card);
     }
 
-    await completeMissingImage(card, langEl.value);
-    await completeMissingPrice(card, langEl.value);
+    await completeMissingImage(card, cardLanguage);
+    await completeMissingPrice(card, cardLanguage);
 
     setProgress(false);
     preview.classList.add("hidden");
@@ -1609,7 +1689,7 @@ async function completeMissingImage(card, language) {
 
 async function completeMissingPrice(card, language) {
   if (
-    getPreferredPokEXPrice(card) ||
+    getPreferredPokEXPrice(card, language) ||
     !window.PokEXPriceResolver?.resolve
   ) {
     return;
@@ -1627,6 +1707,11 @@ async function completeMissingPrice(card, language) {
 
 async function renderDetail(card) {
 
+  const detailLanguage =
+    card?._pokexLanguage ||
+    langEl.value ||
+    "es";
+
   const cm =
     card.pricing?.cardmarket || {};
 
@@ -1634,7 +1719,32 @@ async function renderDetail(card) {
     card.pricing?.tcgplayer || {};
 
   const preferred =
-    getPreferredPokEXPrice(card);
+    getPreferredPokEXPrice(
+      card,
+      detailLanguage
+    );
+
+  const storedPreferred =
+    preferred
+      ? await getStoredPokEXPrice(
+          card,
+          detailLanguage
+        )
+      : null;
+
+  const priceHistory =
+    storedPreferred?.currency === "EUR"
+      ? await window.PokEXPriceResolver
+          ?.recordHistory?.(
+            card,
+            detailLanguage,
+            storedPreferred
+          )
+      : await window.PokEXPriceResolver
+          ?.readHistory?.(
+            card,
+            detailLanguage
+          );
 
 
   resultBox.innerHTML = "";
@@ -1797,6 +1907,45 @@ async function renderDetail(card) {
     right.appendChild(p);
   }
 
+  const facts = [
+    ["Categoría", card.category],
+    ["PS", card.hp],
+    ["Tipo", Array.isArray(card.types) ? card.types.join(" · ") : null],
+    ["Fase", card.stage],
+    ["Evoluciona de", card.evolveFrom],
+    ["Ilustrador", card.illustrator],
+    ["Regulación", card.regulationMark],
+    ["ID de expansión", card.set?.id],
+    ["Ataques", Array.isArray(card.attacks) ? card.attacks.length : null],
+    ["Habilidades", Array.isArray(card.abilities) ? card.abilities.length : null],
+    [
+      "Legalidad",
+      card.legal
+        ? [
+            card.legal.standard ? "Estándar" : null,
+            card.legal.expanded ? "Expandido" : null
+          ].filter(Boolean).join(" · ") || "No legal"
+        : null
+    ]
+  ].filter(([, value]) => value !== null && value !== undefined && value !== "");
+
+  if (facts.length) {
+    const factsGrid = document.createElement("div");
+    factsGrid.className = "pokex-card-facts";
+
+    for (const [label, value] of facts) {
+      const fact = document.createElement("div");
+      const factLabel = document.createElement("span");
+      const factValue = document.createElement("strong");
+      factLabel.textContent = label;
+      factValue.textContent = String(value);
+      fact.append(factLabel, factValue);
+      factsGrid.appendChild(fact);
+    }
+
+    right.appendChild(factsGrid);
+  }
+
 
   const gridPrices =
     document.createElement(
@@ -1874,8 +2023,8 @@ async function renderDetail(card) {
 
     sourceText =
       date
-        ? `${sourceName} · actualizado ${date}`
-        : sourceName;
+        ? `${sourceName} · ${preferred.scope} · actualizado ${date}`
+        : `${sourceName} · ${preferred.scope}`;
   }
 
 
@@ -1997,7 +2146,7 @@ async function renderDetail(card) {
 
     sourceText =
       `${card._pokexExternalPrice ? "Estimación externa · " : ""}` +
-      `TCGplayer · ${preferred.variantLabel}`;
+      `TCGplayer · ${preferred.scope} · ${preferred.variantLabel}`;
   }
 
 
@@ -2039,6 +2188,36 @@ async function renderDetail(card) {
     sourceText =
       "Sin precio disponible " +
       "para esta carta.";
+  }
+
+  if (
+    storedPreferred?.currency === "EUR"
+  ) {
+    prices = [
+      [
+        "Precio actual",
+        moneyCurrency(storedPreferred.value, "EUR"),
+        true
+      ],
+      [
+        "Mín. registrado",
+        moneyCurrency(priceHistory?.min, "EUR"),
+        false
+      ],
+      [
+        "Máx. registrado",
+        moneyCurrency(priceHistory?.max, "EUR"),
+        false
+      ],
+      [
+        "Observaciones",
+        String(priceHistory?.count || 1),
+        false
+      ]
+    ];
+
+    sourceText +=
+      " · Histórico registrado por PokEX desde v3.2";
   }
 
 
@@ -2096,7 +2275,7 @@ async function renderDetail(card) {
   );
 
 
-  if (card._pokexExternalPrice) {
+  if (preferred) {
     const priceNote =
       document.createElement(
         "p"
@@ -2106,7 +2285,9 @@ async function renderDetail(card) {
       "pokex-price-note";
 
     priceNote.textContent =
-      "Precio orientativo externo. Puede variar según estado, idioma y acabado.";
+      preferred.source === "TCGplayer"
+        ? "Referencia del mercado inglés. Puede variar según estado y acabado."
+        : "Cardmarket agrega el mercado europeo y puede mezclar idiomas; no es un precio exclusivamente español.";
 
     right.appendChild(
       priceNote
