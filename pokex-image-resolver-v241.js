@@ -12,6 +12,7 @@
   const FALLBACK_LANGUAGES = ["en", "es", "fr", "de", "it", "pt", "ja"];
   const inFlight = new Map();
   const memoryCache = new Map();
+  const externalCardCache = new Map();
 
   let dbPromise = null;
   let namesPromise = null;
@@ -155,7 +156,7 @@
     try {
       const response = await fetch(url, {
         signal: controller.signal,
-        cache: "force-cache",
+        cache: "default",
         headers: { Accept: "application/json" }
       });
 
@@ -250,43 +251,73 @@
       .replace(/"/g, "\\\"");
   }
 
+  async function findExactExternalCard(card, lang, pokemonMatch = null) {
+    const id = String(card?.id || "");
+    if (!id || id.startsWith("pokexjp:")) return null;
+
+    const key = `${lang || "unknown"}:${id}`;
+    if (externalCardCache.has(key)) return externalCardCache.get(key);
+
+    const task = (async () => {
+      const direct = await fetchJson(
+        `${POKEMON_TCG_API}/${encodeURIComponent(id)}`
+      );
+
+      if (
+        direct?.data &&
+        normalize(direct.data.id) === normalize(id) &&
+        (
+          !card.localId ||
+          normalizeNumber(direct.data.number) === normalizeNumber(card.localId)
+        )
+      ) {
+        return direct.data;
+      }
+
+      const match = pokemonMatch || await identifyPokemon(card, lang);
+      if (!card.localId) return null;
+
+      const englishCardName = match
+        ? replacePokemonName(card.name, match)
+        : (lang === "en" ? String(card.name || "").trim() : "");
+      if (!englishCardName) return null;
+
+      const query = `name:"${lucenePhrase(englishCardName)}" number:${lucenePhrase(card.localId)}`;
+      const params = new URLSearchParams({ q: query, pageSize: "12" });
+      const response = await fetchJson(`${POKEMON_TCG_API}?${params}`);
+      const candidates = Array.isArray(response?.data) ? response.data : [];
+      const wantedName = normalize(englishCardName);
+      const wantedNumber = normalizeNumber(card.localId);
+      const wantedCardId = normalize(card.id);
+      const wantedSetId = normalize(card?.set?.id);
+      const wantedSetName = normalize(card?.set?.name);
+
+      const exact = candidates.filter(candidate =>
+        normalize(candidate?.name) === wantedName &&
+        normalizeNumber(candidate?.number) === wantedNumber &&
+        (
+          (wantedCardId && normalize(candidate?.id) === wantedCardId) ||
+          (wantedSetId && normalize(candidate?.set?.id) === wantedSetId) ||
+          (wantedSetName && normalize(candidate?.set?.name) === wantedSetName)
+        )
+      );
+
+      return exact.length === 1 ? exact[0] : null;
+    })();
+
+    externalCardCache.set(key, task);
+    return task;
+  }
+
   async function resolveFromPokemonTCG(card, lang, pokemonMatch) {
-    if (!pokemonMatch || !card?.localId) return null;
+    const exact = await findExactExternalCard(card, lang, pokemonMatch);
+    if (!exact?.images) return null;
 
-    const englishCardName = replacePokemonName(card.name, pokemonMatch);
-    const query = `name:"${lucenePhrase(englishCardName)}" number:${lucenePhrase(card.localId)}`;
-    const params = new URLSearchParams({
-      q: query,
-      pageSize: "12",
-      select: "id,name,number,set,images"
-    });
-
-    const response = await fetchJson(`${POKEMON_TCG_API}?${params}`);
-    const candidates = Array.isArray(response?.data) ? response.data : [];
-    const wantedName = normalize(englishCardName);
-    const wantedNumber = normalizeNumber(card.localId);
-
-    let exact = candidates.filter(candidate =>
-      normalize(candidate?.name) === wantedName &&
-      normalizeNumber(candidate?.number) === wantedNumber &&
-      (candidate?.images?.large || candidate?.images?.small)
-    );
-
-    const wantedCardId = normalize(card?.id);
-    const wantedSetId = normalize(card?.set?.id);
-    const wantedSetName = normalize(card?.set?.name);
-    const byIdentity = exact.filter(candidate =>
-      (wantedCardId && normalize(candidate?.id) === wantedCardId) ||
-      (wantedSetId && normalize(candidate?.set?.id) === wantedSetId) ||
-      (wantedSetName && normalize(candidate?.set?.name) === wantedSetName)
-    );
-
-    exact = byIdentity;
-
-    if (exact.length !== 1) return null;
+    const image = exact.images.large || exact.images.small;
+    if (!image) return null;
 
     return {
-      image: exact[0].images.large || exact[0].images.small,
+      image,
       kind: "exact",
       source: "Pokémon TCG API",
       language: "en",
@@ -340,5 +371,10 @@
     return task;
   }
 
-  window.PokEXImageResolver = { resolve, hydrate, applyResult };
+  window.PokEXImageResolver = {
+    resolve,
+    hydrate,
+    applyResult,
+    findExactExternalCard
+  };
 })();
