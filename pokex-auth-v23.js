@@ -31,7 +31,7 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-const CURRENT_VERSION = "2.4.0";
+const CURRENT_VERSION = "3.0";
 const SEEN_KEY = "pokex_seen_version";
 
 const cfg =
@@ -2565,7 +2565,7 @@ function installHomeButtons() {
       type="button"
       class="pokex-account-btn"
       id="v23AccountButton">
-      <span aria-hidden="true">👤</span>
+      <span class="pokex-account-avatar" aria-hidden="true">👤</span>
       <span>Cuenta</span>
     </button>
   `
@@ -2577,6 +2577,12 @@ function installHomeButtons() {
     )
     .onclick =
       () => openAccount();
+
+  window.dispatchEvent(
+    new CustomEvent(
+      "pokex:account-button-ready"
+    )
+  );
 }
 
 function hideBackupTab() {
@@ -2893,5 +2899,5 @@ if (!configured) {
 }
 
 console.log(
-  "✅ PokEX v2.4.0 · Cuenta cargada"
+  "✅ PokEX v3.0 · Cuenta cargada"
 );
