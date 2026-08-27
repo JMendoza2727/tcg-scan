@@ -151,7 +151,7 @@ function findLogout(){
 function ensureAccountUI(){
   clearTimeout(injectTimer);
   injectTimer=setTimeout(async()=>{
-    if(injecting || !overlay || overlay.classList.contains("hidden") || !user) return;
+    if(injecting || !overlay || !user) return;
     injecting=true;
     try{
       removePersistentSyncMessage();
@@ -164,9 +164,6 @@ function ensureAccountUI(){
       if(!overlay.querySelector(".v231-settings")){
         buildFallbackSettings(findLogout());
       }
-
-      // El módulo Techno detecta automáticamente .v231-setting-line.
-      window.dispatchEvent(new Event("resize"));
     }finally{
       injecting=false;
     }
@@ -182,7 +179,7 @@ function attachOverlay(node){
   overlay.addEventListener("click",discardTemporarySyncMessage,false);
 
   overlayObserver=new MutationObserver(()=>ensureAccountUI());
-  overlayObserver.observe(overlay,{childList:true,subtree:true});
+  overlayObserver.observe(overlay,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});
   ensureAccountUI();
 }
 
