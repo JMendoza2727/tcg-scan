@@ -1,0 +1,74 @@
+.v23-close{
+  display:grid !important;
+  place-items:center !important;
+  padding:0 !important;
+  line-height:1 !important;
+  text-align:center !important;
+}
+
+.v23-sync.is-synced .v23-dot{
+  background:#34d399 !important;
+  box-shadow:0 0 0 3px rgba(52,211,153,.12),0 0 12px rgba(52,211,153,.32);
+}
+
+.v23-sync.is-syncing .v23-dot,
+.v23-sync.is-pending .v23-dot{
+  background:#facc15 !important;
+  box-shadow:0 0 0 3px rgba(250,204,21,.10),0 0 10px rgba(250,204,21,.22);
+}
+
+.v33-music-line{
+  align-items:center !important;
+}
+
+.v33-music-actions{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.v33-techno-btn{
+  width:auto !important;
+  min-height:42px;
+  margin:0 !important;
+  padding:9px 13px !important;
+  border:1px solid rgba(96,165,250,.38) !important;
+  border-radius:13px !important;
+  background:rgba(37,99,235,.16) !important;
+  color:#dbeafe !important;
+  font:inherit;
+  font-weight:850 !important;
+  cursor:pointer;
+}
+
+.v33-techno-btn.active{
+  border-color:rgba(250,204,21,.58) !important;
+  background:rgba(250,204,21,.14) !important;
+  color:#fde047 !important;
+  box-shadow:0 0 18px rgba(250,204,21,.08);
+}
+
+.v33-music-actions .v231-music-btn{
+  width:auto !important;
+  margin:0 !important;
+}
+
+@media(max-width:430px){
+  .v33-music-line{
+    align-items:flex-start !important;
+    gap:12px !important;
+  }
+
+  .v33-music-actions{
+    max-width:58%;
+  }
+
+  .v33-techno-btn,
+  .v33-music-actions .v231-music-btn{
+    min-height:40px;
+    padding:8px 11px !important;
+    font-size:14px !important;
+  }
+}
