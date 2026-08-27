@@ -7,20 +7,20 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="PokEX">
-  <link rel="manifest" href="./manifest.webmanifest?v=3319">
+  <link rel="manifest" href="./manifest.webmanifest?v=3316">
   <link rel="apple-touch-icon" href="./icon-192.png">
-  <link rel="stylesheet" href="./styles.css?v=3319">
+  <link rel="stylesheet" href="./styles.css?v=3316">
   <title>PokEX 3.3</title>
 
-  <link rel="stylesheet" href="./pokedex-v1.css?v=3319">
-  <link rel="stylesheet" href="./scanner-v11.css?v=3319">
-  <link rel="stylesheet" href="./pokex-bg.css?v=3319">
-  <link rel="stylesheet" href="./pokex-v22.css?v=3319">
-  <link rel="stylesheet" href="./pokex-auth-v23.css?v=3319">
-  <link rel="stylesheet" href="./pokex-mobile-v231.css?v=3319">
-  <link rel="stylesheet" href="./pokex-final-v24.css?v=3319">
-  <link rel="stylesheet" href="./pokex-polish-v321.css?v=3319">
-  <link rel="stylesheet" href="./pokex-friends-v33.css?v=3319">
+  <link rel="stylesheet" href="./pokedex-v1.css?v=3316">
+  <link rel="stylesheet" href="./scanner-v11.css?v=3316">
+  <link rel="stylesheet" href="./pokex-bg.css?v=3316">
+  <link rel="stylesheet" href="./pokex-v22.css?v=3316">
+  <link rel="stylesheet" href="./pokex-auth-v23.css?v=3316">
+  <link rel="stylesheet" href="./pokex-mobile-v231.css?v=3316">
+  <link rel="stylesheet" href="./pokex-final-v24.css?v=3316">
+  <link rel="stylesheet" href="./pokex-polish-v321.css?v=3316">
+  <link rel="stylesheet" href="./pokex-friends-v33.css?v=3316">
   <style>
     .f33-launch-copy small[data-subtitle] { font-size: 0 !important; }
     .f33-launch-copy small[data-subtitle]::after {
@@ -30,65 +30,19 @@
 
     .pokex-search-compact {
       display: grid !important;
-      grid-template-columns: 74px minmax(0, 1fr) 108px !important;
+      grid-template-columns: 64px minmax(0, 1fr) 108px !important;
       gap: 0 10px !important;
       align-items: stretch;
     }
 
-    .pokex-lang-picker {
-      position: relative;
-      min-width: 74px;
-      min-height: 52px;
-    }
-
-    .pokex-lang-button {
-      display: flex;
-      width: 74px;
-      min-width: 74px;
-      height: 52px;
-      min-height: 52px;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      border: 1px solid rgba(166, 191, 239, .17) !important;
-      border-right: 0 !important;
+    .pokex-search-compact #lang {
+      width: 64px !important;
+      min-width: 64px !important;
+      padding: 0 20px 0 10px !important;
       border-radius: 15px 0 0 15px !important;
-      padding: 0 !important;
-      background: #08152d !important;
-      box-shadow: none !important;
-      color: #f7f9ff !important;
-      transform: none !important;
-    }
-
-    .pokex-lang-button:active {
-      transform: none !important;
-      background: #0b1b38 !important;
-    }
-
-    .pokex-lang-flag {
-      display: block;
-      font-size: 28px;
-      line-height: 1;
-    }
-
-    .pokex-lang-chevron {
-      margin-top: -2px;
-      color: #aebbd2;
-      font-size: 14px;
-      font-weight: 900;
-      line-height: 1;
-    }
-
-    .pokex-lang-native {
-      position: absolute !important;
-      width: 1px !important;
-      height: 1px !important;
-      margin: -1px !important;
-      overflow: hidden !important;
-      clip: rect(0 0 0 0) !important;
-      clip-path: inset(50%) !important;
-      opacity: 0 !important;
-      pointer-events: none !important;
+      border-right: 0 !important;
+      font-size: 20px !important;
+      background-color: #08152d !important;
     }
 
     .pokex-search-compact #query {
@@ -99,14 +53,13 @@
 
     @media (max-width: 390px) {
       .pokex-search-compact {
-        grid-template-columns: 72px minmax(0, 1fr) 94px !important;
+        grid-template-columns: 60px minmax(0, 1fr) 94px !important;
       }
-      .pokex-lang-button {
-        width: 72px;
-        min-width: 72px;
-      }
-      .pokex-lang-flag {
-        font-size: 27px;
+      .pokex-search-compact #lang {
+        width: 60px !important;
+        min-width: 60px !important;
+        padding-right: 18px !important;
+        font-size: 19px !important;
       }
     }
   </style>
@@ -128,17 +81,11 @@
     <section class="panel">
       <label class="label" for="query">Busca una carta</label>
       <div class="searchRow pokex-search-compact">
-        <div class="pokex-lang-picker">
-          <button id="pokexLangButton" class="pokex-lang-button" type="button" aria-label="Cambiar idioma de la carta">
-            <span class="pokex-lang-flag" id="pokexLangFlag" aria-hidden="true">🇪🇸</span>
-            <span class="pokex-lang-chevron" aria-hidden="true">⌄</span>
-          </button>
-          <select id="lang" class="pokex-lang-native" aria-hidden="true" tabindex="-1">
-            <option value="es" selected>🇪🇸</option>
-            <option value="en">🇬🇧</option>
-            <option value="ja">🇯🇵</option>
-          </select>
-        </div>
+        <select id="lang" aria-label="Idioma de la carta">
+          <option value="es" selected>🇪🇸</option>
+          <option value="en">🇬🇧</option>
+          <option value="ja">🇯🇵</option>
+        </select>
         <input id="query" type="search" autocomplete="off" placeholder="Buscar" disabled>
         <button id="searchBtn" disabled>Buscar</button>
       </div>
@@ -183,69 +130,28 @@
     </section>
   </main>
 
-  <script src="./jp-extra-v21.js?v=3319"></script>
-  <script src="./en-images-v21.js?v=3319"></script>
-  <script src="./pokex-image-resolver-v241.js?v=3319"></script>
-  <script src="./pokex-price-resolver-v30.js?v=3319"></script>
-  <script src="./app.js?v=3319"></script>
-  <script src="./pokedex-v1.js?v=3319"></script>
-  <script src="./scanner-v11.js?v=3319"></script>
-  <script src="./pokex-clean-v1.js?v=3319"></script>
-  <script src="./pokex-language-v1.js?v=3319"></script>
-  <script src="./pokex-bg.js?v=3319"></script>
-  <script src="./pokex-v22.js?v=3319"></script>
-  <script src="./pokex-firebase-config.js?v=3319"></script>
-  <script type="module" src="./pokex-auth-v23.js?v=3319"></script>
-  <script type="module" src="./pokex-mobile-v231.js?v=3319"></script>
-  <script type="module" src="./pokex-friends-v33.js?v=3319"></script>
+  <script src="./jp-extra-v21.js?v=3316"></script>
+  <script src="./en-images-v21.js?v=3316"></script>
+  <script src="./pokex-image-resolver-v241.js?v=3316"></script>
+  <script src="./pokex-price-resolver-v30.js?v=3316"></script>
+  <script src="./app.js?v=3316"></script>
+  <script src="./pokedex-v1.js?v=3316"></script>
+  <script src="./scanner-v11.js?v=3316"></script>
+  <script src="./pokex-clean-v1.js?v=3316"></script>
+  <script src="./pokex-language-v1.js?v=3316"></script>
+  <script src="./pokex-bg.js?v=3316"></script>
+  <script src="./pokex-v22.js?v=3316"></script>
+  <script src="./pokex-firebase-config.js?v=3316"></script>
+  <script type="module" src="./pokex-auth-v23.js?v=3316"></script>
+  <script type="module" src="./pokex-mobile-v231.js?v=3316"></script>
+  <script type="module" src="./pokex-friends-v33.js?v=3316"></script>
   <script>
     (() => {
       const query = document.getElementById("query");
       const lang = document.getElementById("lang");
-      const flag = document.getElementById("pokexLangFlag");
-      const langButton = document.getElementById("pokexLangButton");
-      const catalogStatusNode = document.getElementById("catalogStatus");
-      const languageFlags = { es: "🇪🇸", en: "🇬🇧", ja: "🇯🇵" };
-      const languageOrder = ["es", "en", "ja"];
-      const languageCounts = { es: "15.320", en: "23.546", ja: "24.962" };
       const forceSearchPlaceholder = () => { if (query) query.placeholder = "Buscar"; };
-      const refreshFlag = () => { if (flag && lang) flag.textContent = languageFlags[lang.value] || "🌐"; };
-
-      const resetLanguageStateWithoutLoading = () => {
-        try {
-          if (typeof resetContent === "function") resetContent();
-          if (typeof catalog !== "undefined") catalog = [];
-          if (typeof applySetCatalog === "function") applySetCatalog(null, []);
-        } catch (_) {}
-
-        if (query) query.disabled = false;
-        const searchButton = document.getElementById("searchBtn");
-        if (searchButton) searchButton.disabled = false;
-        forceSearchPlaceholder();
-        refreshFlag();
-
-        if (catalogStatusNode && lang) {
-          const total = languageCounts[lang.value];
-          catalogStatusNode.textContent = total
-            ? `${total} cartas · se preparará al buscar.`
-            : "El catálogo se preparará al buscar.";
-        }
-      };
-
       forceSearchPlaceholder();
-      refreshFlag();
-
-      lang?.addEventListener("change", () => {
-        forceSearchPlaceholder();
-        refreshFlag();
-      });
-
-      langButton?.addEventListener("click", () => {
-        if (!lang) return;
-        const index = Math.max(0, languageOrder.indexOf(lang.value));
-        lang.value = languageOrder[(index + 1) % languageOrder.length];
-        resetLanguageStateWithoutLoading();
-      });
+      lang?.addEventListener("change", forceSearchPlaceholder);
 
       const applyReleaseNotes = () => {
         const box = document.querySelector(".v23-changes");
