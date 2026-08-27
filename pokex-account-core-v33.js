@@ -179,7 +179,7 @@ function attachOverlay(node){
   overlay.addEventListener("click",discardTemporarySyncMessage,false);
 
   overlayObserver=new MutationObserver(()=>ensureAccountUI());
-  overlayObserver.observe(overlay,{childList:true,subtree:true,attributes:true,attributeFilter:["class"]});
+  overlayObserver.observe(overlay,{childList:true,subtree:true});
   ensureAccountUI();
 }
 
