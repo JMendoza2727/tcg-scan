@@ -22,7 +22,7 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-const VERSION = "3.0";
+const VERSION = "3.1";
 
 const config =
   window.POKEX_FIREBASE_CONFIG || null;
@@ -36,17 +36,27 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 const avatarChoices = [
-  "⚡",
-  "🔥",
-  "💧",
-  "🌿",
-  "🌙",
-  "⭐",
-  "🎴",
+  "😎",
+  "🤠",
+  "🥷",
+  "🧙",
+  "🦸",
+  "🧑‍🚀",
+  "🤖",
   "👻",
-  "🐉",
-  "🧠"
+  "🧑‍🎤",
+  "🧑‍💻"
 ];
+
+const DEFAULT_AVATAR = "😎";
+
+function selectedAvatar(profile = currentProfile){
+  return avatarChoices.includes(
+    profile?.avatar
+  )
+    ? profile.avatar
+    : DEFAULT_AVATAR;
+}
 
 let currentUser = null;
 let currentProfile = null;
@@ -101,10 +111,7 @@ function updateHomeAccountAvatar(){
     return;
   }
 
-  avatar.textContent =
-    currentUser
-      ? currentProfile?.avatar || "⚡"
-      : "👤";
+  avatar.textContent = "👤";
 }
 
 async function loadProfile(uid){
@@ -132,7 +139,7 @@ async function loadAvatarForUsername(username){
     lower(username);
 
   if(!key){
-    return "⚡";
+    return DEFAULT_AVATAR;
   }
 
   if(avatarCache.has(key)){
@@ -149,8 +156,8 @@ async function loadAvatarForUsername(username){
       );
 
     if(snap.empty){
-      avatarCache.set(key,"⚡");
-      return "⚡";
+      avatarCache.set(key,DEFAULT_AVATAR);
+      return DEFAULT_AVATAR;
     }
 
     const users =
@@ -164,14 +171,14 @@ async function loadAvatarForUsername(username){
     );
 
     const avatar =
-      users[0]?.avatar || "⚡";
+      selectedAvatar(users[0]);
 
     avatarCache.set(key,avatar);
 
     return avatar;
 
   }catch{
-    return "⚡";
+    return DEFAULT_AVATAR;
   }
 }
 
@@ -689,7 +696,10 @@ function refreshMusicButtons(){
 }
 
 async function saveAvatar(avatar){
-  if(!currentUser){
+  if(
+    !currentUser ||
+    !avatarChoices.includes(avatar)
+  ){
     return;
   }
 
@@ -714,6 +724,14 @@ async function saveAvatar(avatar){
   }
 
   avatarCache.clear();
+
+  document
+    .querySelectorAll(
+      ".v23-user .v231-avatar"
+    )
+    .forEach(el=>{
+      el.textContent = avatar;
+    });
 
   updateHomeAccountAvatar();
   polishAll();
@@ -770,8 +788,7 @@ function injectAccountSettings(){
         "v231-avatar";
 
       avatar.textContent =
-        currentProfile?.avatar
-        || "⚡";
+        selectedAvatar();
 
       userEl.prepend(avatar);
     }
@@ -802,8 +819,7 @@ function injectAccountSettings(){
           <button
             class="v231-avatar-option ${
               a === (
-                currentProfile?.avatar
-                || "⚡"
+                selectedAvatar()
               )
                 ? "active"
                 : ""
