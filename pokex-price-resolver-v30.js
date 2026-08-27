@@ -6,13 +6,14 @@
   const DB_VERSION = 1;
   const POSITIVE_TTL = 24 * 60 * 60 * 1000;
   const NEGATIVE_TTL = 24 * 60 * 60 * 1000;
+  const CACHE_SCHEMA = "v31-language";
   const inFlight = new Map();
   const memoryCache = new Map();
 
   let dbPromise = null;
 
   function cacheKey(card, lang) {
-    return `${lang || "unknown"}:${String(card?.id || "")}`;
+    return `${CACHE_SCHEMA}:${lang || "unknown"}:${String(card?.id || "")}`;
   }
 
   function finite(value) {
@@ -210,7 +211,17 @@
   async function resolve(card, lang = "es") {
     if (!card?.id || String(card.id).startsWith("pokexjp:")) return null;
 
-    const key = cacheKey(card, lang);
+    const requestedLanguage =
+      String(lang || "es")
+        .toLocaleLowerCase();
+
+    if (requestedLanguage !== "en")
+      return null;
+
+    const key = cacheKey(
+      card,
+      requestedLanguage
+    );
     if (inFlight.has(key)) return inFlight.get(key);
 
     const task = (async () => {
@@ -228,7 +239,10 @@
       const findExact = window.PokEXImageResolver?.findExactExternalCard;
       if (typeof findExact !== "function") return null;
 
-      const externalCard = await findExact(card, lang);
+      const externalCard = await findExact(
+        card,
+        requestedLanguage
+      );
       const mapped = mapExternalCard(externalCard);
       const result = mapped
         ? { ...mapped, resolvedAt: Date.now() }
