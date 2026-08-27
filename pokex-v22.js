@@ -426,6 +426,18 @@ async function importBackup(file,replace){
     }
   }
 
+  window.dispatchEvent(
+    new CustomEvent(
+      "pokex:collection-changed",
+      {
+        detail:{
+          full:true,
+          changedAt:Date.now()
+        }
+      }
+    )
+  );
+
   alert("✅ Backup importado.");
   location.reload();
 }
