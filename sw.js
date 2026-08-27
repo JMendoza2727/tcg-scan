@@ -1,4 +1,4 @@
-const VERSION = "3001";
+const VERSION = "3010";
 const APP_CACHE = `pokex-app-${VERSION}`;
 const DATA_CACHE = `pokex-data-${VERSION}`;
 const SCANNER_CACHE = "pokex-scanner-v11";
@@ -6,30 +6,31 @@ const SCANNER_CACHE = "pokex-scanner-v11";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./manifest.webmanifest?v=3001",
+  "./manifest.webmanifest?v=3010",
   "./icon-192.png",
   "./icon-512.png",
-  "./styles.css?v=3001",
-  "./pokedex-v1.css?v=3001",
-  "./scanner-v11.css?v=3001",
-  "./pokex-bg.css?v=3001",
-  "./pokex-v22.css?v=3001",
-  "./pokex-auth-v23.css?v=3001",
-  "./pokex-mobile-v231.css?v=3001",
-  "./pokex-final-v24.css?v=3001",
-  "./jp-extra-v21.js?v=3001",
-  "./en-images-v21.js?v=3001",
-  "./pokex-image-resolver-v241.js?v=3001",
-  "./app.js?v=3001",
-  "./pokedex-v1.js?v=3001",
-  "./scanner-v11.js?v=3001",
-  "./pokex-clean-v1.js?v=3001",
-  "./pokex-language-v1.js?v=3001",
-  "./pokex-bg.js?v=3001",
-  "./pokex-v22.js?v=3001",
-  "./pokex-firebase-config.js?v=3001",
-  "./pokex-auth-v23.js?v=3001",
-  "./pokex-mobile-v231.js?v=3001"
+  "./styles.css?v=3010",
+  "./pokedex-v1.css?v=3010",
+  "./scanner-v11.css?v=3010",
+  "./pokex-bg.css?v=3010",
+  "./pokex-v22.css?v=3010",
+  "./pokex-auth-v23.css?v=3010",
+  "./pokex-mobile-v231.css?v=3010",
+  "./pokex-final-v24.css?v=3010",
+  "./jp-extra-v21.js?v=3010",
+  "./en-images-v21.js?v=3010",
+  "./pokex-image-resolver-v241.js?v=3010",
+  "./pokex-price-resolver-v30.js?v=3010",
+  "./app.js?v=3010",
+  "./pokedex-v1.js?v=3010",
+  "./scanner-v11.js?v=3010",
+  "./pokex-clean-v1.js?v=3010",
+  "./pokex-language-v1.js?v=3010",
+  "./pokex-bg.js?v=3010",
+  "./pokex-v22.js?v=3010",
+  "./pokex-firebase-config.js?v=3010",
+  "./pokex-auth-v23.js?v=3010",
+  "./pokex-mobile-v231.js?v=3010"
 ];
 
 self.addEventListener("install", event => {
