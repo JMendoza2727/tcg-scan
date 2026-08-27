@@ -16,6 +16,7 @@ html {
   background: var(--pokex-bg) !important;
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
+  touch-action: pan-x pan-y;
 }
 
 body {
@@ -26,6 +27,7 @@ body {
   color: var(--pokex-text);
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+  touch-action: pan-x pan-y;
 }
 
 body.pokedex-open::before,
@@ -173,6 +175,18 @@ button {
   color: var(--pokex-text);
   font-size: 14px;
   font-weight: 850;
+}
+
+.pokex-account-avatar {
+  display: inline-grid;
+  width: 31px;
+  height: 31px;
+  flex: 0 0 31px;
+  place-items: center;
+  border: 1px solid rgba(255, 216, 61, .22);
+  border-radius: 50%;
+  background: #172d50;
+  font-size: 18px;
 }
 
 #pokedexCount {
@@ -339,6 +353,17 @@ button:active:not(:disabled) {
   font-size: 12px;
   line-height: 1.4;
   text-align: center;
+}
+
+.pokex-price-note {
+  margin: 10px 0 0;
+  padding: 9px 11px;
+  border: 1px solid rgba(255, 216, 61, .16);
+  border-radius: 12px;
+  background: rgba(255, 216, 61, .055);
+  color: #c9d3e7;
+  font-size: 11px;
+  line-height: 1.4;
 }
 
 .pokex-detail-placeholder {
