@@ -20,8 +20,8 @@
     reducedMotion
       ? 0
       : mobile
-        ? 6
-        : 12;
+        ? 8
+        : 14;
 
   for (let i = 0; i < particleCount; i++) {
     const p = document.createElement("div");
