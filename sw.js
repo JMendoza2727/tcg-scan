@@ -1,4 +1,4 @@
-const VERSION = "3200";
+const VERSION = "3210";
 const APP_CACHE = `pokex-app-${VERSION}`;
 const DATA_CACHE = `pokex-data-${VERSION}`;
 const SCANNER_CACHE = "pokex-scanner-v12";
@@ -6,37 +6,36 @@ const SCANNER_CACHE = "pokex-scanner-v12";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./manifest.webmanifest?v=3200",
+  "./manifest.webmanifest?v=3210",
   "./icon-192.png",
   "./icon-512.png",
-  "./styles.css?v=3200",
-  "./pokedex-v1.css?v=3200",
-  "./scanner-v11.css?v=3200",
-  "./pokex-bg.css?v=3200",
-  "./pokex-v22.css?v=3200",
-  "./pokex-auth-v23.css?v=3200",
-  "./pokex-mobile-v231.css?v=3200",
-  "./pokex-final-v24.css?v=3200",
-  "./jp-extra-v21.js?v=3200",
-  "./en-images-v21.js?v=3200",
-  "./pokex-image-resolver-v241.js?v=3200",
-  "./pokex-price-resolver-v30.js?v=3200",
-  "./app.js?v=3200",
-  "./pokedex-v1.js?v=3200",
-  "./scanner-v11.js?v=3200",
-  "./pokex-clean-v1.js?v=3200",
-  "./pokex-language-v1.js?v=3200",
-  "./pokex-bg.js?v=3200",
-  "./pokex-v22.js?v=3200",
-  "./pokex-firebase-config.js?v=3200",
-  "./pokex-auth-v23.js?v=3200",
-  "./pokex-mobile-v231.js?v=3200"
+  "./styles.css?v=3210",
+  "./pokedex-v1.css?v=3210",
+  "./scanner-v11.css?v=3210",
+  "./pokex-bg.css?v=3210",
+  "./pokex-v22.css?v=3210",
+  "./pokex-auth-v23.css?v=3210",
+  "./pokex-mobile-v231.css?v=3210",
+  "./pokex-final-v24.css?v=3210",
+  "./pokex-polish-v321.css?v=3210",
+  "./jp-extra-v21.js?v=3210",
+  "./en-images-v21.js?v=3210",
+  "./pokex-image-resolver-v241.js?v=3210",
+  "./pokex-price-resolver-v30.js?v=3210",
+  "./app.js?v=3210",
+  "./pokedex-v1.js?v=3210",
+  "./scanner-v11.js?v=3210",
+  "./pokex-clean-v1.js?v=3210",
+  "./pokex-language-v1.js?v=3210",
+  "./pokex-bg.js?v=3210",
+  "./pokex-v22.js?v=3210",
+  "./pokex-firebase-config.js?v=3210",
+  "./pokex-auth-v23.js?v=3210",
+  "./pokex-mobile-v231.js?v=3210"
 ];
 
 self.addEventListener("install", event => {
-  event.waitUntil(
-    caches.open(APP_CACHE).then(cache => cache.addAll(APP_SHELL))
-  );
+  event.waitUntil(caches.open(APP_CACHE).then(cache => cache.addAll(APP_SHELL)));
   self.skipWaiting();
 });
 
@@ -66,20 +65,12 @@ async function networkFirst(request) {
   try {
     const freshRequest = new Request(request, { cache: "no-cache" });
     const response = await fetch(freshRequest);
-
-    if (response.ok) {
-      await cache.put(request, response.clone());
-    }
-
+    if (response.ok) await cache.put(request, response.clone());
     return response;
   } catch (_) {
     const cached = await cache.match(request);
     if (cached) return cached;
-
-    if (request.mode === "navigate") {
-      return cache.match("./index.html");
-    }
-
+    if (request.mode === "navigate") return cache.match("./index.html");
     throw _;
   }
 }
@@ -90,9 +81,7 @@ async function cacheFirst(request, cacheName = DATA_CACHE) {
   if (cached) return cached;
 
   const response = await fetch(request);
-  if (response.status === 200) {
-    await cache.put(request, response.clone());
-  }
+  if (response.status === 200) await cache.put(request, response.clone());
   return response;
 }
 
@@ -110,11 +99,7 @@ self.addEventListener("fetch", event => {
       url.pathname.includes("/scanner/sounds/") ||
       /\.(?:wasm|onnx|bin|f16)$/i.test(url.pathname);
 
-    event.respondWith(
-      stableScannerAsset
-        ? cacheFirst(request, SCANNER_CACHE)
-        : networkFirst(request)
-    );
+    event.respondWith(stableScannerAsset ? cacheFirst(request, SCANNER_CACHE) : networkFirst(request));
     return;
   }
 
