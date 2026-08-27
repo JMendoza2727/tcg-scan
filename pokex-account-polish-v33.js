@@ -13,27 +13,37 @@
   let nextTime = 0;
   const voices = new Set();
 
-  const STEP = 0.125;
-  const LOOKAHEAD = 360;
-  const AHEAD = 0.85;
+  // 150 BPM aprox: semicorchea = 0,1 s.
+  const STEP = 0.10;
+  const LOOKAHEAD = 340;
+  const AHEAD = 0.80;
 
   const notes = {
-    A2:110.00,C3:130.81,D3:146.83,E3:164.81,F3:174.61,G3:196.00,A3:220.00,C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392.00,A4:440.00,C5:523.25,D5:587.33,E5:659.25,F5:698.46,G5:783.99,A5:880.00
+    A2:110.00,B2:123.47,C3:130.81,D3:146.83,E3:164.81,F3:174.61,G3:196.00,A3:220.00,B3:246.94,
+    C4:261.63,D4:293.66,E4:329.63,F4:349.23,G4:392.00,A4:440.00,B4:493.88,
+    C5:523.25,D5:587.33,E5:659.25,F5:698.46,G5:783.99,A5:880.00,B5:987.77,
+    C6:1046.50,D6:1174.66,E6:1318.51
   };
 
+  // Melodía original PokEX: trance/makina 2000, larga y con subida.
   const lead = [
-    "A4",null,"C5","D5","E5",null,"D5","C5",
-    "A4",null,"E5",null,"G5","E5","D5",null,
-    "F4","A4","C5",null,"D5","C5","A4",null,
-    "G4",null,"D5","E5","D5","A4","G4",null
+    "E5",null,"E5","G5", "A5",null,"G5","E5",
+    "D5",null,"E5","G5", "B5","A5","G5",null,
+    "E5",null,"G5","A5", "B5",null,"A5","G5",
+    "E5","G5","A5","B5", "A5","G5","E5",null,
+
+    "A5",null,"B5","C6", "B5","A5","G5","E5",
+    "G5",null,"A5","B5", "D6","C6","B5",null,
+    "E6",null,"D6","C6", "B5","A5","G5","A5",
+    "B5","A5","G5","E5", "G5","A5","B5",null
   ];
 
-  const bass = ["A2","F3","C3","G3"];
+  const bassRoots = ["A2","F3","C3","G3"];
   const arp = [
-    ["A3","C4","E4","C4"],
-    ["F3","A3","C4","A3"],
-    ["C3","E3","G3","E3"],
-    ["G3","A3","D4","A3"]
+    ["A3","C4","E4","A4"],
+    ["F3","A3","C4","F4"],
+    ["C3","E3","G3","C4"],
+    ["G3","B3","D4","G4"]
   ];
 
   const mode = () => localStorage.getItem(MODE_KEY) || "original";
@@ -46,7 +56,7 @@
 
   function setLevel(){
     if(!gain || !ctx) return;
-    gain.gain.setTargetAtTime(0.14 * (volume()/100), ctx.currentTime, 0.05);
+    gain.gain.setTargetAtTime(0.13 * (volume()/100), ctx.currentTime, 0.05);
   }
 
   function tone(freq, duration, when, type="square", level=.08, detune=0){
@@ -58,47 +68,73 @@
     osc.frequency.setValueAtTime(freq,t);
     osc.detune.setValueAtTime(detune,t);
     g.gain.setValueAtTime(.0001,t);
-    g.gain.linearRampToValueAtTime(level,t+.008);
+    g.gain.linearRampToValueAtTime(level,t+.006);
+    g.gain.exponentialRampToValueAtTime(Math.max(.0001,level*.45),t+duration*.58);
     g.gain.exponentialRampToValueAtTime(.0001,t+duration);
     osc.connect(g);
     g.connect(gain);
     osc.start(t);
-    osc.stop(t+duration+.025);
+    osc.stop(t+duration+.02);
     voices.add(osc);
     osc.addEventListener("ended",()=>voices.delete(osc),{once:true});
   }
 
+  function kick(when){
+    tone(62,.070,when,"sine",.090);
+    tone(118,.030,when,"triangle",.035);
+  }
+
   function tick(when){
     const s = step % lead.length;
-    const section = Math.floor(s/8)%4;
-    const beat = s%4;
+    const barStep = s % 16;
+    const section = Math.floor(s/16)%4;
+    const sixteenth = s%4;
     const n = lead[s];
 
+    // Lead ancho, brillante y menos robótico.
     if(n){
-      tone(notes[n],.105,when,"square",.075);
-      tone(notes[n],.09,when+.004,"triangle",.026,7);
+      tone(notes[n],.135,when,"square",.060);
+      tone(notes[n],.115,when+.004,"triangle",.026,7);
     }
 
-    const an = arp[section][beat];
-    tone(notes[an],.085,when+.012,"triangle",.032);
+    // Arpegio constante de fondo.
+    const chord = arp[section];
+    const an = chord[sixteenth];
+    tone(notes[an],.072,when+.010,"triangle",.030);
 
-    if(s%4===0){
-      tone(notes[bass[section]],.22,when,"sawtooth",.085);
-      tone(58,.055,when,"sine",.055);
+    // Bombo a negras: patrón makina claro.
+    if(barStep%4===0){
+      kick(when);
     }
-    if(s%2===1){
-      tone(2400,.018,when,"square",.008);
+
+    // Bajo a contratiempo, separado del kick.
+    if(barStep%4===2){
+      tone(notes[bassRoots[section]],.145,when+.008,"sawtooth",.060);
     }
-    if(s%8===6){
-      tone(1200,.025,when,"square",.014);
+
+    // Hi-hat muy ligero para sensación de velocidad.
+    if(barStep%2===1){
+      tone(3100,.012,when+.004,"square",.0055);
     }
+
+    // Stab cada medio compás para dar empuje.
+    if(barStep===6 || barStep===14){
+      const stab = section===0 ? "E5" : section===1 ? "C5" : section===2 ? "G5" : "D5";
+      tone(notes[stab],.055,when,"square",.018);
+    }
+
+    // Mini subida antes de cada bloque de 16 pasos.
+    if(barStep===15){
+      tone(notes.B5,.035,when,"square",.012);
+    }
+
     step++;
   }
 
   function schedule(){
     if(!ctx || ctx.state !== "running" || mode() !== "techno" || !technoEnabled()) return;
     const now = ctx.currentTime;
-    if(!nextTime || nextTime < now-STEP) nextTime = now+.035;
+    if(!nextTime || nextTime < now-STEP) nextTime = now+.03;
     while(nextTime < now+AHEAD){
       tick(nextTime);
       nextTime += STEP;
@@ -112,13 +148,13 @@
       filter = ctx.createBiquadFilter();
       compressor = ctx.createDynamicsCompressor();
       filter.type = "lowpass";
-      filter.frequency.value = 4400;
-      filter.Q.value = .7;
-      compressor.threshold.value = -20;
+      filter.frequency.value = 5000;
+      filter.Q.value = .75;
+      compressor.threshold.value = -21;
       compressor.knee.value = 12;
       compressor.ratio.value = 3;
       compressor.attack.value = .008;
-      compressor.release.value = .18;
+      compressor.release.value = .16;
       gain.connect(filter);
       filter.connect(compressor);
       compressor.connect(ctx.destination);
@@ -131,7 +167,7 @@
     if(mode() !== "techno" || !technoEnabled() || document.hidden || scannerOpen()) return;
     await ensureContext();
     if(!timer){
-      nextTime = ctx.currentTime+.035;
+      nextTime = ctx.currentTime+.03;
       schedule();
       timer = setInterval(schedule,LOOKAHEAD);
     }
@@ -153,6 +189,7 @@
     localStorage.setItem(MODE_KEY,"techno");
     localStorage.setItem(TECHNO_KEY,"1");
     localStorage.setItem(ORIGINAL_KEY,"0");
+    step = 0;
     try{ await window.PokEXMobile231?.stopMusic?.(); }catch{}
     try{ await startTechno(); }catch{}
     refreshUI();
@@ -174,6 +211,7 @@
       await stopTechno();
     }else{
       localStorage.setItem(TECHNO_KEY,"1");
+      step = 0;
       await startTechno();
     }
     refreshUI();
@@ -230,7 +268,7 @@
 
       const subtitle = line.querySelector(".v23-muted");
       if(subtitle){
-        const wanted = mode()==="techno" ? "Techno chiptune original · v3.3" : "Chiptune original · v3.3";
+        const wanted = mode()==="techno" ? "Techno makina original · v3.3" : "Chiptune original · v3.3";
         if(subtitle.textContent.trim() !== wanted) subtitle.textContent = wanted;
       }
     });
@@ -266,9 +304,7 @@
   observer.observe(document.documentElement,{childList:true,subtree:true,characterData:true});
 
   document.addEventListener("input",e=>{
-    if(e.target?.classList?.contains("v231-volume")){
-      setLevel();
-    }
+    if(e.target?.classList?.contains("v231-volume")) setLevel();
   },true);
 
   document.addEventListener("visibilitychange",async()=>{
