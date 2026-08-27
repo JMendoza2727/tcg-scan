@@ -20,6 +20,7 @@ service cloud.firestore {
 
     function friendWith(uid) {
       return signedIn()
+        && !blockedEither(uid, request.auth.uid)
         && exists(
           /databases/$(database)/documents/friendLinks/$(uid + "__" + request.auth.uid)
         );
@@ -89,7 +90,8 @@ service cloud.firestore {
       allow update:
         if signedIn()
         && resource.data.uid == request.auth.uid
-        && request.resource.data.uid == request.auth.uid;
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.usernameLower == usernameLower;
 
       allow delete:
         if signedIn()
