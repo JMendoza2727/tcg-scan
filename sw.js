@@ -1,12 +1,12 @@
-const VERSION = "3329";
+const VERSION = "3331";
 const APP_CACHE = `pokex-app-${VERSION}`;
 const DATA_CACHE = `pokex-data-${VERSION}`;
 const SCANNER_CACHE = "pokex-scanner-v12";
 
 const APP_SHELL = [
-  "./","./index.html","./manifest.webmanifest?v=3329","./icon-192.png","./icon-512.png","./styles.css?v=3329",
-  "./pokedex-v1.css?v=3329","./scanner-v11.css?v=3329","./pokex-bg.css?v=3329","./pokex-v22.css?v=3329","./pokex-auth-v23.css?v=3329","./pokex-mobile-v231.css?v=3329","./pokex-final-v24.css?v=3329","./pokex-polish-v321.css?v=3329","./pokex-friends-v33.css?v=3329","./pokex-account-polish-v33.css?v=3329","./pokex-ui-fix-v33.css?v=3329",
-  "./jp-extra-v21.js?v=3329","./en-images-v21.js?v=3329","./pokex-image-resolver-v241.js?v=3329","./pokex-price-resolver-v30.js?v=3329","./app.js?v=3329","./pokedex-v1.js?v=3329","./scanner-v11.js?v=3329","./pokex-clean-v1.js?v=3329","./pokex-language-v1.js?v=3329","./pokex-bg.js?v=3329","./pokex-v22.js?v=3329","./pokex-release-v33.js?v=3329","./pokex-firebase-config.js?v=3329","./pokex-auth-v23.js?v=3329","./pokex-mobile-v231.js?v=3329","./pokex-friends-v33.js?v=3329","./pokex-friends-fix-v33.js?v=3329","./pokex-account-polish-v33.js?v=3329"
+  "./","./index.html","./manifest.webmanifest?v=3331","./icon-192.png","./icon-512.png","./styles.css?v=3331",
+  "./pokedex-v1.css?v=3331","./scanner-v11.css?v=3331","./pokex-bg.css?v=3331","./pokex-v22.css?v=3331","./pokex-auth-v23.css?v=3331","./pokex-mobile-v231.css?v=3331","./pokex-final-v24.css?v=3331","./pokex-polish-v321.css?v=3331","./pokex-friends-v33.css?v=3331","./pokex-account-polish-v33.css?v=3331","./pokex-ui-fix-v33.css?v=3331",
+  "./jp-extra-v21.js?v=3331","./en-images-v21.js?v=3331","./pokex-image-resolver-v241.js?v=3331","./pokex-price-resolver-v30.js?v=3331","./app.js?v=3331","./pokedex-v1.js?v=3331","./scanner-v11.js?v=3331","./pokex-clean-v1.js?v=3331","./pokex-language-v1.js?v=3331","./pokex-bg.js?v=3331","./pokex-v22.js?v=3331","./pokex-release-v33.js?v=3331","./pokex-firebase-config.js?v=3331","./pokex-auth-v23.js?v=3331","./pokex-mobile-v231.js?v=3331","./pokex-friends-v33.js?v=3331","./pokex-friends-fix-v33.js?v=3331","./pokex-account-polish-v33.js?v=3331","./pokex-account-stable-v33.js?v=3331"
 ];
 
 self.addEventListener("install",event=>{event.waitUntil(caches.open(APP_CACHE).then(cache=>cache.addAll(APP_SHELL)));self.skipWaiting();});
