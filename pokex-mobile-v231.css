@@ -47,6 +47,18 @@
   vertical-align:middle;
 }
 
+.v23-user{
+  display:flex;
+  align-items:center;
+  min-width:0;
+}
+
+.v23-user > span:last-child{
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+
 .v231-avatar-picker{
   display:grid;
   grid-template-columns:repeat(5,1fr);
@@ -426,4 +438,3 @@
 #v23-friends-home{
   display:none !important;
 }
-
