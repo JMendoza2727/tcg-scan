@@ -198,10 +198,25 @@ async function relationship(otherUid) {
 async function findUser(raw) {
   const username = normalizeUsername(raw);
   if (username.length < 3) throw new Error("Escribe al menos 3 caracteres del @usuario exacto.");
-  const snap = await getDoc(doc(db, "usernames", username));
-  if (!snap.exists()) return null;
-  const uid = snap.data()?.uid;
-  return !uid || uid === user?.uid ? null : profile(uid);
+
+  const directorySnap = await getDoc(doc(db, "usernames", username));
+  if (directorySnap.exists()) {
+    const uid = directorySnap.data()?.uid;
+    if (!uid || uid === user?.uid) return null;
+    const indexedProfile = await profile(uid);
+    if (indexedProfile) return indexedProfile;
+  }
+
+  const fallbackSnap = await getDocs(
+    query(
+      collection(db, "users"),
+      where("usernameLower", "==", username)
+    )
+  );
+
+  return fallbackSnap.docs
+    .map(item => ({ uid: item.id, ...item.data() }))
+    .find(item => item.uid !== user?.uid) || null;
 }
 
 async function send(profileData) {
