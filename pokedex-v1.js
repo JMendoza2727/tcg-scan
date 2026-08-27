@@ -221,6 +221,10 @@
 
     item.quantity += 1;
 
+    const changedAt = Date.now();
+    item.collectionUpdatedAt =
+      changedAt;
+
 
     if (
       pricing &&
@@ -315,7 +319,8 @@
     notifyCollectionChanged({
       key,
       item,
-      deleted: false
+      deleted: false,
+      changedAt
     });
 
     return item;
@@ -333,6 +338,10 @@
 
     existing.quantity -= 1;
 
+    const changedAt = Date.now();
+    existing.collectionUpdatedAt =
+      changedAt;
+
     if (existing.quantity <= 0) {
       await deleteCard(key);
       await refreshCounter();
@@ -340,7 +349,8 @@
       notifyCollectionChanged({
         key,
         item: null,
-        deleted: true
+        deleted: true,
+        changedAt
       });
 
       return null;
@@ -352,7 +362,8 @@
     notifyCollectionChanged({
       key,
       item: existing,
-      deleted: false
+      deleted: false,
+      changedAt
     });
 
     return existing;
@@ -495,11 +506,16 @@
         </span>
       </div>
 
-      <button id="updatePokedex"
-              class="pokedex-update-btn"
-              type="button">
-        ⟳ Actualizar
-      </button>
+      <div class="pokedex-update-wrap">
+        <button id="updatePokedex"
+                class="pokedex-update-btn"
+                type="button">
+          ⟳ Actualizar
+        </button>
+        <small class="pokedex-update-help">
+          Actualiza imágenes y precios de tu colección
+        </small>
+      </div>
 
     </div>
 
@@ -1627,7 +1643,8 @@
     );
 
     notifyCollectionChanged({
-      full: true
+      full: true,
+      changedAt: Date.now()
     });
 
 
