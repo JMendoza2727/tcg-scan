@@ -25,6 +25,29 @@ service cloud.firestore {
         );
     }
 
+    function acceptedRequestAfter(a, b) {
+      return
+        (
+          existsAfter(
+            /databases/$(database)/documents/friendRequests/$(a + "__" + b)
+          )
+          &&
+          getAfter(
+            /databases/$(database)/documents/friendRequests/$(a + "__" + b)
+          ).data.status == "accepted"
+        )
+        ||
+        (
+          existsAfter(
+            /databases/$(database)/documents/friendRequests/$(b + "__" + a)
+          )
+          &&
+          getAfter(
+            /databases/$(database)/documents/friendRequests/$(b + "__" + a)
+          ).data.status == "accepted"
+        );
+    }
+
     match /users/{uid} {
       allow read: if signedIn();
 
@@ -54,6 +77,12 @@ service cloud.firestore {
 
       allow create:
         if signedIn()
+        && request.resource.data.keys().hasOnly([
+          "uid",
+          "username",
+          "usernameLower",
+          "createdAt"
+        ])
         && request.resource.data.uid == request.auth.uid
         && request.resource.data.usernameLower == usernameLower;
 
@@ -78,6 +107,12 @@ service cloud.firestore {
 
       allow create:
         if signedIn()
+        && request.resource.data.keys().hasOnly([
+          "fromUid",
+          "toUid",
+          "status",
+          "createdAt"
+        ])
         && request.resource.data.fromUid == request.auth.uid
         && request.resource.data.toUid != request.auth.uid
         && request.resource.data.status == "pending"
@@ -96,7 +131,11 @@ service cloud.firestore {
         && resource.data.status == "pending"
         && request.resource.data.fromUid == resource.data.fromUid
         && request.resource.data.toUid == resource.data.toUid
-        && request.resource.data.status == "accepted";
+        && request.resource.data.status == "accepted"
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          "status",
+          "acceptedAt"
+        ]);
 
       allow delete:
         if signedIn()
@@ -118,6 +157,11 @@ service cloud.firestore {
 
       allow create:
         if signedIn()
+        && request.resource.data.keys().hasOnly([
+          "ownerUid",
+          "friendUid",
+          "createdAt"
+        ])
         && request.resource.data.ownerUid != request.resource.data.friendUid
         && (
           request.auth.uid == request.resource.data.ownerUid
@@ -127,7 +171,15 @@ service cloud.firestore {
         && linkId ==
           request.resource.data.ownerUid
           + "__"
-          + request.resource.data.friendUid;
+          + request.resource.data.friendUid
+        && !blockedEither(
+          request.resource.data.ownerUid,
+          request.resource.data.friendUid
+        )
+        && acceptedRequestAfter(
+          request.resource.data.ownerUid,
+          request.resource.data.friendUid
+        );
 
       allow update: if false;
 
@@ -147,6 +199,11 @@ service cloud.firestore {
 
       allow create:
         if signedIn()
+        && request.resource.data.keys().hasOnly([
+          "blockerUid",
+          "blockedUid",
+          "createdAt"
+        ])
         && request.resource.data.blockerUid == request.auth.uid
         && request.resource.data.blockedUid != request.auth.uid
         && blockId ==
