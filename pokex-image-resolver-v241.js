@@ -63,7 +63,11 @@
     lang,
     kind = "exact"
   ) {
-    if (!image || kind === "reference")
+    if (
+      !image ||
+      kind === "reference" ||
+      kind === "translated"
+    )
       return true;
 
     const detected =
@@ -129,7 +133,10 @@
   function applyResult(card, result) {
     if (!card || !result?.image) return false;
 
-    if (result.kind === "exact") {
+    if (
+      result.kind === "exact" ||
+      result.kind === "translated"
+    ) {
       if (
         result.cardId &&
         normalize(result.cardId) !==
@@ -148,9 +155,31 @@
       }
 
       if (
+        result.setId &&
+        card.set?.id &&
+        normalize(result.setId) !==
+          normalize(card.set.id)
+      ) {
+        return false;
+      }
+
+      if (
+        result.kind === "exact" &&
         result.requestedLanguage &&
         result.language !==
           result.requestedLanguage
+      ) {
+        return false;
+      }
+
+      if (
+        result.kind === "translated" &&
+        (
+          !result.requestedLanguage ||
+          !result.language ||
+          result.language ===
+            result.requestedLanguage
+        )
       ) {
         return false;
       }
@@ -168,7 +197,10 @@
 
     card._pokexResolvedImage = result;
 
-    if (result.kind === "exact") {
+    if (
+      result.kind === "exact" ||
+      result.kind === "translated"
+    ) {
       card.image = result.image;
       card._pokexImageSource = result.source;
     } else {
@@ -246,35 +278,65 @@
       String(lang || "es")
         .toLocaleLowerCase();
 
-    const url =
-      `${TCGDEX_API}/${requestedLanguage}/cards/` +
-      encodeURIComponent(id);
-
-    const data = await fetchJson(url);
-
-    if (
-      !data?.image ||
-      normalize(data.id) !== normalize(id) ||
-      (
-        card.localId &&
-        normalizeNumber(data.localId) !==
-          normalizeNumber(card.localId)
-      )
+    async function resolveLanguage(
+      imageLanguage,
+      kind
     ) {
-      return null;
+      const url =
+        `${TCGDEX_API}/${imageLanguage}/cards/` +
+        encodeURIComponent(id);
+
+      const data = await fetchJson(url);
+
+      if (
+        !data?.image ||
+        normalize(data.id) !== normalize(id) ||
+        (
+          card.localId &&
+          normalizeNumber(data.localId) !==
+            normalizeNumber(card.localId)
+        ) ||
+        (
+          card.set?.id &&
+          data.set?.id &&
+          normalize(data.set.id) !==
+            normalize(card.set.id)
+        )
+      ) {
+        return null;
+      }
+
+      return {
+        image: data.image,
+        kind,
+        source: "TCGdex",
+        language: imageLanguage,
+        requestedLanguage,
+        cardId: data.id,
+        localId: data.localId,
+        setId: data.set?.id || null,
+        label:
+          kind === "translated"
+            ? `Misma carta · imagen ${imageLanguage.toUpperCase()}`
+            : `Carta exacta · imagen ${imageLanguage.toUpperCase()}`
+      };
     }
 
-    return {
-      image: data.image,
-      kind: "exact",
-      source: "TCGdex",
-      language: requestedLanguage,
-      requestedLanguage,
-      cardId: data.id,
-      localId: data.localId,
-      setId: data.set?.id || null,
-      label: `Carta exacta · imagen ${requestedLanguage.toUpperCase()}`
-    };
+    const primary =
+      await resolveLanguage(
+        requestedLanguage,
+        "exact"
+      );
+
+    if (primary) return primary;
+
+    if (requestedLanguage === "en")
+      return null;
+
+    return await resolveLanguage(
+      "en",
+      "translated"
+    );
   }
 
   async function loadNames() {
@@ -393,8 +455,6 @@
   }
 
   async function resolveFromPokemonTCG(card, lang, pokemonMatch) {
-    if (lang !== "en") return null;
-
     const exact = await findExactExternalCard(card, lang, pokemonMatch);
     if (!exact?.images) return null;
 
@@ -403,14 +463,20 @@
 
     return {
       image,
-      kind: "exact",
+      kind:
+        lang === "en"
+          ? "exact"
+          : "translated",
       source: "Pokémon TCG API",
       language: "en",
-      requestedLanguage: "en",
+      requestedLanguage: lang,
       cardId: exact.id,
       localId: exact.number,
       setId: exact.set?.id || null,
-      label: "Carta exacta · imagen alternativa"
+      label:
+        lang === "en"
+          ? "Carta exacta · imagen alternativa"
+          : "Misma carta · imagen EN"
     };
   }
 
