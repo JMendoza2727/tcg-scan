@@ -7,20 +7,20 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="PokEX">
-  <link rel="manifest" href="./manifest.webmanifest?v=3320">
+  <link rel="manifest" href="./manifest.webmanifest?v=3321">
   <link rel="apple-touch-icon" href="./icon-192.png">
-  <link rel="stylesheet" href="./styles.css?v=3320">
+  <link rel="stylesheet" href="./styles.css?v=3321">
   <title>PokEX 3.3</title>
 
-  <link rel="stylesheet" href="./pokedex-v1.css?v=3320">
-  <link rel="stylesheet" href="./scanner-v11.css?v=3320">
-  <link rel="stylesheet" href="./pokex-bg.css?v=3320">
-  <link rel="stylesheet" href="./pokex-v22.css?v=3320">
-  <link rel="stylesheet" href="./pokex-auth-v23.css?v=3320">
-  <link rel="stylesheet" href="./pokex-mobile-v231.css?v=3320">
-  <link rel="stylesheet" href="./pokex-final-v24.css?v=3320">
-  <link rel="stylesheet" href="./pokex-polish-v321.css?v=3320">
-  <link rel="stylesheet" href="./pokex-friends-v33.css?v=3320">
+  <link rel="stylesheet" href="./pokedex-v1.css?v=3321">
+  <link rel="stylesheet" href="./scanner-v11.css?v=3321">
+  <link rel="stylesheet" href="./pokex-bg.css?v=3321">
+  <link rel="stylesheet" href="./pokex-v22.css?v=3321">
+  <link rel="stylesheet" href="./pokex-auth-v23.css?v=3321">
+  <link rel="stylesheet" href="./pokex-mobile-v231.css?v=3321">
+  <link rel="stylesheet" href="./pokex-final-v24.css?v=3321">
+  <link rel="stylesheet" href="./pokex-polish-v321.css?v=3321">
+  <link rel="stylesheet" href="./pokex-friends-v33.css?v=3321">
   <style>
     .f33-launch-copy small[data-subtitle] {
       font-size: 0 !important;
@@ -28,6 +28,40 @@
     .f33-launch-copy small[data-subtitle]::after {
       content: "Conecta con otros entrenadores";
       font-size: 11px;
+    }
+
+    .pokex-search-compact {
+      display: grid !important;
+      grid-template-columns: 86px minmax(0, 1fr) 108px !important;
+      gap: 10px !important;
+      align-items: stretch;
+    }
+
+    .pokex-search-compact #lang {
+      width: 86px !important;
+      min-width: 86px !important;
+      min-height: 52px !important;
+      margin: 0 !important;
+      padding-left: 14px !important;
+      font-size: 22px !important;
+      border-radius: 15px !important;
+    }
+
+    .pokex-search-compact #query,
+    .pokex-search-compact #searchBtn {
+      margin: 0 !important;
+    }
+
+    @media (max-width: 390px) {
+      .pokex-search-compact {
+        grid-template-columns: 82px minmax(0, 1fr) 94px !important;
+        gap: 8px !important;
+      }
+      .pokex-search-compact #lang {
+        width: 82px !important;
+        min-width: 82px !important;
+        font-size: 21px !important;
+      }
     }
   </style>
 </head>
@@ -46,21 +80,17 @@
 
   <main class="wrap">
     <section class="panel">
-      <label class="label" for="lang">Idioma de la carta</label>
-      <select id="lang">
-        <option value="es" selected>🇪🇸 Español</option>
-        <option value="en">🇬🇧 English</option>
-        <option value="ja">🇯🇵 日本語</option>
-      </select>
-      <p id="catalogStatus" class="muted">El catálogo se descargará una vez y quedará guardado en el iPhone.</p>
-    </section>
-
-    <section class="panel">
       <label class="label" for="query">Busca una carta</label>
-      <div class="searchRow">
+      <div class="searchRow pokex-search-compact">
+        <select id="lang" aria-label="Idioma de la carta">
+          <option value="es" selected>🇪🇸</option>
+          <option value="en">🇬🇧</option>
+          <option value="ja">🇯🇵</option>
+        </select>
         <input id="query" type="search" autocomplete="off" placeholder="Buscar" disabled>
         <button id="searchBtn" disabled>Buscar</button>
       </div>
+      <p id="catalogStatus" class="muted">El catálogo se descargará una vez y quedará guardado en el iPhone.</p>
       <div id="pokexScanInsideSearch">
         <div class="pokex-or">
           <span></span>
@@ -101,21 +131,21 @@
     </section>
   </main>
 
-  <script src="./jp-extra-v21.js?v=3320"></script>
-  <script src="./en-images-v21.js?v=3320"></script>
-  <script src="./pokex-image-resolver-v241.js?v=3320"></script>
-  <script src="./pokex-price-resolver-v30.js?v=3320"></script>
-  <script src="./app.js?v=3320"></script>
-  <script src="./pokedex-v1.js?v=3320"></script>
-  <script src="./scanner-v11.js?v=3320"></script>
-  <script src="./pokex-clean-v1.js?v=3320"></script>
-  <script src="./pokex-language-v1.js?v=3320"></script>
-  <script src="./pokex-bg.js?v=3320"></script>
-  <script src="./pokex-v22.js?v=3320"></script>
-  <script src="./pokex-firebase-config.js?v=3320"></script>
-  <script type="module" src="./pokex-auth-v23.js?v=3320"></script>
-  <script type="module" src="./pokex-mobile-v231.js?v=3320"></script>
-  <script type="module" src="./pokex-friends-v33.js?v=3320"></script>
+  <script src="./jp-extra-v21.js?v=3321"></script>
+  <script src="./en-images-v21.js?v=3321"></script>
+  <script src="./pokex-image-resolver-v241.js?v=3321"></script>
+  <script src="./pokex-price-resolver-v30.js?v=3321"></script>
+  <script src="./app.js?v=3321"></script>
+  <script src="./pokedex-v1.js?v=3321"></script>
+  <script src="./scanner-v11.js?v=3321"></script>
+  <script src="./pokex-clean-v1.js?v=3321"></script>
+  <script src="./pokex-language-v1.js?v=3321"></script>
+  <script src="./pokex-bg.js?v=3321"></script>
+  <script src="./pokex-v22.js?v=3321"></script>
+  <script src="./pokex-firebase-config.js?v=3321"></script>
+  <script type="module" src="./pokex-auth-v23.js?v=3321"></script>
+  <script type="module" src="./pokex-mobile-v231.js?v=3321"></script>
+  <script type="module" src="./pokex-friends-v33.js?v=3321"></script>
   <script>
     (() => {
       const query = document.getElementById("query");
