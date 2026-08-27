@@ -3,10 +3,11 @@
 
   const DB_NAME = "pokex-price-resolver";
   const STORE_NAME = "entries";
-  const DB_VERSION = 1;
+  const HISTORY_STORE = "history";
+  const DB_VERSION = 2;
   const POSITIVE_TTL = 24 * 60 * 60 * 1000;
   const NEGATIVE_TTL = 24 * 60 * 60 * 1000;
-  const CACHE_SCHEMA = "v31-language";
+  const CACHE_SCHEMA = "v32-language";
   const inFlight = new Map();
   const memoryCache = new Map();
 
@@ -41,6 +42,9 @@
         const db = request.result;
         if (!db.objectStoreNames.contains(STORE_NAME)) {
           db.createObjectStore(STORE_NAME, { keyPath: "key" });
+        }
+        if (!db.objectStoreNames.contains(HISTORY_STORE)) {
+          db.createObjectStore(HISTORY_STORE, { keyPath: "key" });
         }
       };
 
@@ -89,6 +93,107 @@
         transaction.onabort = () => resolve();
       } catch (_) {
         resolve();
+      }
+    });
+  }
+
+  function historyKey(card, lang) {
+    return `${String(lang || "unknown").toLocaleLowerCase()}:` +
+      `${String(card?.id || "")}`;
+  }
+
+  function summarizeHistory(entry) {
+    const samples = Array.isArray(entry?.samples)
+      ? entry.samples.filter(sample => finite(sample?.value) !== null)
+      : [];
+
+    if (!samples.length) return null;
+
+    const values = samples.map(sample => Number(sample.value));
+    const latest = samples[samples.length - 1];
+
+    return {
+      current: Number(latest.value),
+      min: Math.min(...values),
+      max: Math.max(...values),
+      count: samples.length,
+      firstAt: samples[0].at,
+      lastAt: latest.at,
+      currency: latest.currency || "EUR",
+      source: latest.source || null
+    };
+  }
+
+  async function readHistory(card, lang) {
+    if (!card?.id) return null;
+    const db = await openDatabase();
+    if (!db) return null;
+
+    const key = historyKey(card, lang);
+
+    return new Promise(resolve => {
+      try {
+        const transaction = db.transaction(HISTORY_STORE, "readonly");
+        const request = transaction.objectStore(HISTORY_STORE).get(key);
+        request.onsuccess = () => resolve(summarizeHistory(request.result));
+        request.onerror = () => resolve(null);
+      } catch (_) {
+        resolve(null);
+      }
+    });
+  }
+
+  async function recordHistory(card, lang, price) {
+    const value = finite(price?.value);
+    if (!card?.id || value === null || price?.currency !== "EUR") {
+      return readHistory(card, lang);
+    }
+
+    const db = await openDatabase();
+    if (!db) return null;
+
+    const key = historyKey(card, lang);
+
+    return new Promise(resolve => {
+      try {
+        const transaction = db.transaction(HISTORY_STORE, "readwrite");
+        const store = transaction.objectStore(HISTORY_STORE);
+        const request = store.get(key);
+        let savedEntry = null;
+
+        request.onsuccess = () => {
+          const entry = request.result || { key, samples: [] };
+          const samples = Array.isArray(entry.samples) ? entry.samples : [];
+          const sourceUpdated = price.updated || null;
+          const latest = samples[samples.length - 1];
+          const duplicate = latest &&
+            Math.abs(Number(latest.value) - value) < 0.005 &&
+            latest.source === (price.source || null) &&
+            latest.sourceUpdated === sourceUpdated;
+
+          if (!duplicate) {
+            samples.push({
+              value,
+              currency: "EUR",
+              source: price.source || null,
+              variant: price.variantKey || null,
+              sourceUpdated,
+              at: Date.now()
+            });
+          }
+
+          entry.samples = samples.slice(-365);
+          entry.updatedAt = Date.now();
+          savedEntry = entry;
+          store.put(entry);
+        };
+
+        request.onerror = () => resolve(null);
+        transaction.oncomplete = () => resolve(summarizeHistory(savedEntry));
+        transaction.onerror = () => resolve(null);
+        transaction.onabort = () => resolve(null);
+      } catch (_) {
+        resolve(null);
       }
     });
   }
@@ -264,6 +369,8 @@
   window.PokEXPriceResolver = {
     resolve,
     applyResult,
-    mapExternalCard
+    mapExternalCard,
+    recordHistory,
+    readHistory
   };
 })();
