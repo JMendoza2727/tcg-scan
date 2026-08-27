@@ -1,4 +1,4 @@
-const VERSION = "3316";
+const VERSION = "3320";
 const APP_CACHE = `pokex-app-${VERSION}`;
 const DATA_CACHE = `pokex-data-${VERSION}`;
 const SCANNER_CACHE = "pokex-scanner-v12";
@@ -6,34 +6,34 @@ const SCANNER_CACHE = "pokex-scanner-v12";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./manifest.webmanifest?v=3316",
+  "./manifest.webmanifest?v=3320",
   "./icon-192.png",
   "./icon-512.png",
-  "./styles.css?v=3316",
-  "./pokedex-v1.css?v=3316",
-  "./scanner-v11.css?v=3316",
-  "./pokex-bg.css?v=3316",
-  "./pokex-v22.css?v=3316",
-  "./pokex-auth-v23.css?v=3316",
-  "./pokex-mobile-v231.css?v=3316",
-  "./pokex-final-v24.css?v=3316",
-  "./pokex-polish-v321.css?v=3316",
-  "./pokex-friends-v33.css?v=3316",
-  "./jp-extra-v21.js?v=3316",
-  "./en-images-v21.js?v=3316",
-  "./pokex-image-resolver-v241.js?v=3316",
-  "./pokex-price-resolver-v30.js?v=3316",
-  "./app.js?v=3316",
-  "./pokedex-v1.js?v=3316",
-  "./scanner-v11.js?v=3316",
-  "./pokex-clean-v1.js?v=3316",
-  "./pokex-language-v1.js?v=3316",
-  "./pokex-bg.js?v=3316",
-  "./pokex-v22.js?v=3316",
-  "./pokex-firebase-config.js?v=3316",
-  "./pokex-auth-v23.js?v=3316",
-  "./pokex-mobile-v231.js?v=3316",
-  "./pokex-friends-v33.js?v=3316"
+  "./styles.css?v=3320",
+  "./pokedex-v1.css?v=3320",
+  "./scanner-v11.css?v=3320",
+  "./pokex-bg.css?v=3320",
+  "./pokex-v22.css?v=3320",
+  "./pokex-auth-v23.css?v=3320",
+  "./pokex-mobile-v231.css?v=3320",
+  "./pokex-final-v24.css?v=3320",
+  "./pokex-polish-v321.css?v=3320",
+  "./pokex-friends-v33.css?v=3320",
+  "./jp-extra-v21.js?v=3320",
+  "./en-images-v21.js?v=3320",
+  "./pokex-image-resolver-v241.js?v=3320",
+  "./pokex-price-resolver-v30.js?v=3320",
+  "./app.js?v=3320",
+  "./pokedex-v1.js?v=3320",
+  "./scanner-v11.js?v=3320",
+  "./pokex-clean-v1.js?v=3320",
+  "./pokex-language-v1.js?v=3320",
+  "./pokex-bg.js?v=3320",
+  "./pokex-v22.js?v=3320",
+  "./pokex-firebase-config.js?v=3320",
+  "./pokex-auth-v23.js?v=3320",
+  "./pokex-mobile-v231.js?v=3320",
+  "./pokex-friends-v33.js?v=3320"
 ];
 
 self.addEventListener("install", event => {
