@@ -5,7 +5,7 @@
     );
 
   if (version) {
-    version.textContent = "v3.1";
+    version.textContent = "v3.2";
   }
 
   const resultBox =
