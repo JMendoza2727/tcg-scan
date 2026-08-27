@@ -31,8 +31,14 @@ import {
   serverTimestamp
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-const CURRENT_VERSION = "3.0";
+const CURRENT_VERSION = "3.1";
 const SEEN_KEY = "pokex_seen_version";
+const SYNC_QUEUE_KEY = "pokex_sync_queue_v31";
+const ACCOUNT_AVATARS = new Set([
+  "😎", "🤠", "🥷", "🧙", "🦸",
+  "🧑‍🚀", "🤖", "👻", "🧑‍🎤", "🧑‍💻"
+]);
+const DEFAULT_ACCOUNT_AVATAR = "😎";
 
 const cfg =
   window.POKEX_FIREBASE_CONFIG || {};
@@ -53,8 +59,116 @@ let currentProfile = null;
 let initialSyncRunning = false;
 let syncTimer = null;
 let syncNowRunning = false;
-let fullSyncPending = false;
+let dirtySyncRunning = false;
+let fullSyncPending = 0;
+let syncRetryDelay = 5000;
 const dirtyCards = new Map();
+
+function accountAvatar(profile) {
+  return ACCOUNT_AVATARS.has(
+    profile?.avatar
+  )
+    ? profile.avatar
+    : DEFAULT_ACCOUNT_AVATAR;
+}
+
+function pendingChangeTime(change) {
+  return Math.max(
+    1,
+    Number(
+      change?.changedAt ||
+      change?.item?.collectionUpdatedAt ||
+      Date.now()
+    ) || Date.now()
+  );
+}
+
+function hasPendingSync() {
+  return Boolean(
+    fullSyncPending ||
+    dirtyCards.size
+  );
+}
+
+function persistSyncQueue() {
+  try {
+    if (!hasPendingSync()) {
+      localStorage.removeItem(
+        SYNC_QUEUE_KEY
+      );
+      return;
+    }
+
+    localStorage.setItem(
+      SYNC_QUEUE_KEY,
+      JSON.stringify({
+        full:
+          Number(fullSyncPending) || 0,
+        cards:
+          [...dirtyCards.entries()]
+            .map(([key, change]) => ({
+              key,
+              deleted:
+                Boolean(change?.deleted),
+              changedAt:
+                pendingChangeTime(change)
+            }))
+      })
+    );
+  } catch (_) {}
+}
+
+function restoreSyncQueue() {
+  try {
+    const saved = JSON.parse(
+      localStorage.getItem(
+        SYNC_QUEUE_KEY
+      ) || "null"
+    );
+
+    fullSyncPending = Math.max(
+      0,
+      Number(saved?.full) || 0
+    );
+
+    for (const change of saved?.cards || []) {
+      if (!change?.key)
+        continue;
+
+      dirtyCards.set(
+        change.key,
+        {
+          key: change.key,
+          item: null,
+          deleted:
+            Boolean(change.deleted),
+          changedAt:
+            pendingChangeTime(change)
+        }
+      );
+    }
+  } catch (_) {
+    fullSyncPending = 0;
+    dirtyCards.clear();
+  }
+}
+
+function currentSyncText() {
+  if (
+    initialSyncRunning ||
+    syncNowRunning ||
+    dirtySyncRunning
+  ) {
+    return "Sincronizando…";
+  }
+
+  if (hasPendingSync())
+    return "Pendiente de sincronizar";
+
+  return navigator.onLine
+    ? "Sincronizado"
+    : "Sin conexión · datos guardados";
+}
 
 function sleep(ms) {
   return new Promise(
@@ -432,6 +546,16 @@ async function updateStats() {
       0
     );
 
+  const stats = {
+    distinctCount:
+      cards.length,
+    cardsCount,
+    collectionValue:
+      Number(
+        collectionValue.toFixed(2)
+      )
+  };
+
   await setDoc(
     doc(
       db,
@@ -439,16 +563,7 @@ async function updateStats() {
       currentUser.uid
     ),
     {
-      distinctCount:
-        cards.length,
-
-      cardsCount,
-
-      collectionValue:
-        Number(
-          collectionValue
-            .toFixed(2)
-        ),
+      ...stats,
 
       updatedAt:
         serverTimestamp()
@@ -457,6 +572,11 @@ async function updateStats() {
       merge: true
     }
   );
+
+  currentProfile = {
+    ...(currentProfile || {}),
+    ...stats
+  };
 }
 
 async function syncNow() {
@@ -464,12 +584,16 @@ async function syncNow() {
     !configured ||
     !currentUser ||
     initialSyncRunning ||
-    syncNowRunning
+    syncNowRunning ||
+    dirtySyncRunning ||
+    !navigator.onLine
   ) {
     return;
   }
 
   syncNowRunning = true;
+  const pendingFullAtStart =
+    fullSyncPending;
 
   try {
     setSyncText(
@@ -481,6 +605,17 @@ async function syncNow() {
 
     await mirrorRemote(cards);
     await updateStats();
+
+    if (
+      pendingFullAtStart &&
+      fullSyncPending ===
+        pendingFullAtStart
+    ) {
+      fullSyncPending = 0;
+    }
+
+    persistSyncQueue();
+    syncRetryDelay = 5000;
 
     setSyncText(
       "Sincronizado"
@@ -494,18 +629,32 @@ async function syncDirtyCards() {
   if (
     !configured ||
     !currentUser ||
-    !dirtyCards.size
+    !dirtyCards.size ||
+    initialSyncRunning ||
+    syncNowRunning ||
+    dirtySyncRunning ||
+    !navigator.onLine
   ) {
     return;
   }
 
+  dirtySyncRunning = true;
+
   const pending =
     new Map(dirtyCards);
 
-  dirtyCards.clear();
-
   try {
     setSyncText("Sincronizando…");
+
+    const localByKey =
+      new Map(
+        (await localCards())
+          .map(item => [
+            item.key ||
+              `${item.lang}:${item.id}`,
+            item
+          ])
+      );
 
     const entries =
       [...pending.entries()];
@@ -532,16 +681,18 @@ async function syncDirtyCards() {
           docIdForKey(key)
         );
 
-        if (
-          change.deleted ||
-          !change.item
-        ) {
+        const item =
+          change.item ||
+          localByKey.get(key) ||
+          null;
+
+        if (change.deleted || !item) {
           batch.delete(ref);
         } else {
           batch.set(
             ref,
             {
-              ...change.item,
+              ...item,
               key,
               syncedAt: Date.now()
             }
@@ -553,16 +704,29 @@ async function syncDirtyCards() {
     }
 
     await updateStats();
-    setSyncText("Sincronizado");
 
-  } catch (error) {
     for (const [key, change] of pending) {
-      if (!dirtyCards.has(key)) {
-        dirtyCards.set(key, change);
+      const current =
+        dirtyCards.get(key);
+
+      if (
+        current &&
+        pendingChangeTime(current) ===
+          pendingChangeTime(change)
+      ) {
+        dirtyCards.delete(key);
       }
     }
 
+    persistSyncQueue();
+    syncRetryDelay = 5000;
+    setSyncText("Sincronizado");
+
+  } catch (error) {
+    persistSyncQueue();
     throw error;
+  } finally {
+    dirtySyncRunning = false;
   }
 }
 
@@ -575,6 +739,12 @@ async function initialSync() {
   }
 
   initialSyncRunning = true;
+
+  const dirtyAtStart =
+    new Map(dirtyCards);
+
+  const fullAtStart =
+    fullSyncPending;
 
   try {
     setSyncText(
@@ -604,6 +774,22 @@ async function initialSync() {
         card.key ||
         `${card.lang}:${card.id}`;
 
+      const pending =
+        dirtyAtStart.get(key);
+
+      if (fullAtStart)
+        continue;
+
+      if (pending?.deleted)
+        continue;
+
+      if (
+        pending &&
+        merged.has(key)
+      ) {
+        continue;
+      }
+
       merged.set(
         key,
         mergeItem(
@@ -620,17 +806,69 @@ async function initialSync() {
       const item
       of merged.values()
     ) {
+      const key =
+        item.key ||
+        `${item.lang}:${item.id}`;
+
+      const pendingNow =
+        dirtyCards.get(key);
+
+      const pendingAtStart =
+        dirtyAtStart.get(key);
+
+      const changedDuringSync =
+        pendingNow &&
+        (
+          !pendingAtStart ||
+          pendingChangeTime(pendingNow) !==
+            pendingChangeTime(pendingAtStart)
+        );
+
+      const fullChangeDuringSync =
+        fullSyncPending &&
+        fullSyncPending !== fullAtStart;
+
+      if (
+        changedDuringSync ||
+        fullChangeDuringSync
+      ) {
+        continue;
+      }
+
       await saveLocalCard(item);
     }
 
     const finalCards =
-      [...merged.values()];
+      await localCards();
 
     await mirrorRemote(
       finalCards
     );
 
     await updateStats();
+
+    for (const [key, change] of dirtyAtStart) {
+      const current =
+        dirtyCards.get(key);
+
+      if (
+        current &&
+        pendingChangeTime(current) ===
+          pendingChangeTime(change)
+      ) {
+        dirtyCards.delete(key);
+      }
+    }
+
+    if (
+      fullAtStart &&
+      fullSyncPending === fullAtStart
+    ) {
+      fullSyncPending = 0;
+    }
+
+    persistSyncQueue();
+    syncRetryDelay = 5000;
 
     refreshLegacyCollection();
 
@@ -650,22 +888,54 @@ async function initialSync() {
 
   } finally {
     initialSyncRunning = false;
+
+    if (hasPendingSync()) {
+      scheduleSync(null, 1800);
+    }
   }
 }
 
-function scheduleSync(event) {
-  if (!currentUser)
-    return;
-
+function scheduleSync(event, delay = 1600) {
   const detail =
     event?.detail || {};
 
+  let changedAt =
+    pendingChangeTime(detail);
+
   if (detail.full) {
-    fullSyncPending = true;
+    changedAt = Math.max(
+      changedAt,
+      fullSyncPending + 1
+    );
+
+    fullSyncPending = Math.max(
+      fullSyncPending,
+      changedAt
+    );
   } else if (detail.key) {
+    const previous =
+      dirtyCards.get(detail.key);
+
+    if (previous) {
+      changedAt = Math.max(
+        changedAt,
+        pendingChangeTime(previous) + 1
+      );
+    }
+
     dirtyCards.set(
       detail.key,
-      detail
+      {
+        ...detail,
+        changedAt
+      }
+    );
+  }
+
+  if (detail.full || detail.key) {
+    persistSyncQueue();
+    setSyncText(
+      "Pendiente de sincronizar"
     );
   }
 
@@ -673,19 +943,57 @@ function scheduleSync(event) {
     syncTimer
   );
 
+  if (
+    !currentUser ||
+    !navigator.onLine ||
+    !hasPendingSync()
+  ) {
+    return;
+  }
+
   syncTimer =
     setTimeout(
-      () => {
-        const task =
-          fullSyncPending
-            ? syncNow()
-            : syncDirtyCards();
+      async () => {
+        if (
+          initialSyncRunning ||
+          syncNowRunning ||
+          dirtySyncRunning
+        ) {
+          scheduleSync(null, 1800);
+          return;
+        }
 
-        fullSyncPending = false;
+        try {
+          if (fullSyncPending)
+            await syncNow();
+          else
+            await syncDirtyCards();
 
-        task.catch(console.warn);
+          if (hasPendingSync()) {
+            scheduleSync(null, 1600);
+          }
+        } catch (error) {
+          console.warn(
+            "PokEX auto-sync:",
+            error
+          );
+
+          setSyncText(
+            "Pendiente de sincronizar"
+          );
+
+          const retryIn =
+            syncRetryDelay;
+
+          syncRetryDelay = Math.min(
+            syncRetryDelay * 2,
+            60000
+          );
+
+          scheduleSync(null, retryIn);
+        }
       },
-      1600
+      Math.max(0, delay)
     );
 }
 
@@ -825,6 +1133,9 @@ async function createAccount(
             username,
 
             usernameLower,
+
+            avatar:
+              DEFAULT_ACCOUNT_AVATAR,
 
             publicProfile:
               true,
@@ -1292,14 +1603,21 @@ async function renderAccount() {
     <div class="v23-window">
 
       <div class="v23-header">
-        <strong>
-          👤 ${
+        <strong class="v23-user">
+          <span
+            class="v231-avatar"
+            aria-hidden="true">${
+              escapeHTML(
+                accountAvatar(profile)
+              )
+            }</span>
+          <span>${
             escapeHTML(
               profile?.username ||
               currentUser.displayName ||
               "Entrenador"
             )
-          }
+          }</span>
         </strong>
 
         <button
@@ -1321,7 +1639,9 @@ async function renderAccount() {
         <div class="v23-sync">
           <span class="v23-dot"></span>
           <span data-pokex-sync>
-            Sincronizado
+            ${escapeHTML(
+              currentSyncText()
+            )}
           </span>
         </div>
       </div>
@@ -1372,7 +1692,9 @@ async function renderAccount() {
 
       </div>
 
-      <label class="v23-card v23-row">
+      <label
+        class="v23-card v23-row pokex-v31-hidden-feature"
+        hidden>
 
         <span>
           Colección pública
@@ -2796,6 +3118,8 @@ async function maybeShowWelcome() {
 }
 
 function watchLocalChanges() {
+  restoreSyncQueue();
+
   window.addEventListener(
     "pokex:collection-changed",
     scheduleSync
@@ -2805,10 +3129,22 @@ function watchLocalChanges() {
     "online",
     () => {
       if (
-        dirtyCards.size ||
-        fullSyncPending
+        hasPendingSync()
       ) {
-        scheduleSync();
+        scheduleSync(null, 0);
+      }
+    }
+  );
+
+  document.addEventListener(
+    "visibilitychange",
+    () => {
+      if (
+        document.visibilityState ===
+          "visible" &&
+        hasPendingSync()
+      ) {
+        scheduleSync(null, 500);
       }
     }
   );
@@ -2882,6 +3218,10 @@ if (!configured) {
 
       if (user) {
         await initialSync();
+
+        if (hasPendingSync()) {
+          scheduleSync(null, 500);
+        }
       }
 
       await maybeShowWelcome();
@@ -2899,5 +3239,5 @@ if (!configured) {
 }
 
 console.log(
-  "✅ PokEX v3.0 · Cuenta cargada"
+  "✅ PokEX v3.1 · Cuenta cargada"
 );
