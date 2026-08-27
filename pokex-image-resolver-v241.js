@@ -9,7 +9,7 @@
   const POSITIVE_TTL = 180 * 24 * 60 * 60 * 1000;
   const NEGATIVE_TTL = 7 * 24 * 60 * 60 * 1000;
   const REQUEST_TIMEOUT = 4500;
-  const FALLBACK_LANGUAGES = ["en", "es", "fr", "de", "it", "pt", "ja"];
+  const CACHE_SCHEMA = "v242";
   const inFlight = new Map();
   const memoryCache = new Map();
   const externalCardCache = new Map();
@@ -40,7 +40,39 @@
   }
 
   function cacheKey(card, lang) {
-    return `${lang || "unknown"}:${String(card?.id || "")}`;
+    return `${CACHE_SCHEMA}:${lang || "unknown"}:${String(card?.id || "")}`;
+  }
+
+  function imageLanguage(image) {
+    const value = String(image || "");
+
+    if (/images\.pokemontcg\.io\//i.test(value))
+      return "en";
+
+    const tcgdex = value.match(
+      /assets\.tcgdex\.net\/([a-z]{2})(?:\/|$)/i
+    );
+
+    return tcgdex
+      ? tcgdex[1].toLocaleLowerCase()
+      : null;
+  }
+
+  function isImageCompatible(
+    image,
+    lang,
+    kind = "exact"
+  ) {
+    if (!image || kind === "reference")
+      return true;
+
+    const detected =
+      imageLanguage(image);
+
+    return !detected ||
+      !lang ||
+      detected ===
+        String(lang).toLocaleLowerCase();
   }
 
   function openDatabase() {
@@ -96,6 +128,43 @@
 
   function applyResult(card, result) {
     if (!card || !result?.image) return false;
+
+    if (result.kind === "exact") {
+      if (
+        result.cardId &&
+        normalize(result.cardId) !==
+          normalize(card.id)
+      ) {
+        return false;
+      }
+
+      if (
+        result.localId &&
+        card.localId &&
+        normalizeNumber(result.localId) !==
+          normalizeNumber(card.localId)
+      ) {
+        return false;
+      }
+
+      if (
+        result.requestedLanguage &&
+        result.language !==
+          result.requestedLanguage
+      ) {
+        return false;
+      }
+
+      if (
+        !isImageCompatible(
+          result.image,
+          result.requestedLanguage,
+          result.kind
+        )
+      ) {
+        return false;
+      }
+    }
 
     card._pokexResolvedImage = result;
 
@@ -173,24 +242,38 @@
     const id = String(card?.id || "");
     if (!id || id.startsWith("pokexjp:")) return null;
 
-    const languages = FALLBACK_LANGUAGES.filter(item => item !== lang);
-    const responses = await Promise.all(
-      languages.map(async language => {
-        const url = `${TCGDEX_API}/${language}/cards/${encodeURIComponent(id)}`;
-        const data = await fetchJson(url);
-        return data?.image ? { data, language } : null;
-      })
-    );
+    const requestedLanguage =
+      String(lang || "es")
+        .toLocaleLowerCase();
 
-    const match = responses.find(Boolean);
-    if (!match) return null;
+    const url =
+      `${TCGDEX_API}/${requestedLanguage}/cards/` +
+      encodeURIComponent(id);
+
+    const data = await fetchJson(url);
+
+    if (
+      !data?.image ||
+      normalize(data.id) !== normalize(id) ||
+      (
+        card.localId &&
+        normalizeNumber(data.localId) !==
+          normalizeNumber(card.localId)
+      )
+    ) {
+      return null;
+    }
 
     return {
-      image: match.data.image,
+      image: data.image,
       kind: "exact",
       source: "TCGdex",
-      language: match.language,
-      label: `Carta exacta · imagen ${match.language.toUpperCase()}`
+      language: requestedLanguage,
+      requestedLanguage,
+      cardId: data.id,
+      localId: data.localId,
+      setId: data.set?.id || null,
+      label: `Carta exacta · imagen ${requestedLanguage.toUpperCase()}`
     };
   }
 
@@ -310,6 +393,8 @@
   }
 
   async function resolveFromPokemonTCG(card, lang, pokemonMatch) {
+    if (lang !== "en") return null;
+
     const exact = await findExactExternalCard(card, lang, pokemonMatch);
     if (!exact?.images) return null;
 
@@ -321,6 +406,10 @@
       kind: "exact",
       source: "Pokémon TCG API",
       language: "en",
+      requestedLanguage: "en",
+      cardId: exact.id,
+      localId: exact.number,
+      setId: exact.set?.id || null,
       label: "Carta exacta · imagen alternativa"
     };
   }
@@ -375,6 +464,7 @@
     resolve,
     hydrate,
     applyResult,
-    findExactExternalCard
+    findExactExternalCard,
+    isImageCompatible
   };
 })();
