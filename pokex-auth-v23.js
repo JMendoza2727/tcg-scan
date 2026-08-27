@@ -1257,6 +1257,12 @@ function closeOverlay(
     "pokex-modal-open",
     anyOpen
   );
+
+  document.documentElement
+    .classList.toggle(
+      "pokex-modal-open",
+      anyOpen
+    );
 }
 
 function openOverlay(
@@ -1269,6 +1275,11 @@ function openOverlay(
   document.body.classList.add(
     "pokex-modal-open"
   );
+
+  document.documentElement
+    .classList.add(
+      "pokex-modal-open"
+    );
 }
 
 function accountFormHTML(
