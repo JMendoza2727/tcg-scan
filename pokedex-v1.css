@@ -303,6 +303,30 @@ body.pokedex-open {
   -webkit-backdrop-filter: blur(8px);
 }
 
+.pokedex-update-wrap {
+  display: flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  align-items: stretch;
+  width: clamp(118px, 34vw, 160px);
+  margin-left: auto;
+  text-align: center;
+}
+
+.pokedex-update-wrap .pokedex-update-btn {
+  width: 100%;
+  margin-left: 0;
+}
+
+.pokedex-update-help {
+  margin-top: 5px;
+  color: var(--muted);
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 1.2;
+  white-space: normal;
+}
+
 .pokedex-update-btn:hover {
   background: rgba(255,255,255,.13);
 }
@@ -347,5 +371,9 @@ body.pokedex-open {
   .pokedex-update-btn {
     padding: 8px 9px;
     font-size: 12px;
+  }
+
+  .pokedex-update-help {
+    font-size: 8px;
   }
 }
