@@ -7,25 +7,59 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="PokEX">
-  <link rel="manifest" href="./manifest.webmanifest?v=3314">
+  <link rel="manifest" href="./manifest.webmanifest?v=3315">
   <link rel="apple-touch-icon" href="./icon-192.png">
-  <link rel="stylesheet" href="./styles.css?v=3314">
+  <link rel="stylesheet" href="./styles.css?v=3315">
   <title>PokEX 3.3</title>
 
-  <link rel="stylesheet" href="./pokedex-v1.css?v=3314">
-  <link rel="stylesheet" href="./scanner-v11.css?v=3314">
-  <link rel="stylesheet" href="./pokex-bg.css?v=3314">
-  <link rel="stylesheet" href="./pokex-v22.css?v=3314">
-  <link rel="stylesheet" href="./pokex-auth-v23.css?v=3314">
-  <link rel="stylesheet" href="./pokex-mobile-v231.css?v=3314">
-  <link rel="stylesheet" href="./pokex-final-v24.css?v=3314">
-  <link rel="stylesheet" href="./pokex-polish-v321.css?v=3314">
-  <link rel="stylesheet" href="./pokex-friends-v33.css?v=3314">
+  <link rel="stylesheet" href="./pokedex-v1.css?v=3315">
+  <link rel="stylesheet" href="./scanner-v11.css?v=3315">
+  <link rel="stylesheet" href="./pokex-bg.css?v=3315">
+  <link rel="stylesheet" href="./pokex-v22.css?v=3315">
+  <link rel="stylesheet" href="./pokex-auth-v23.css?v=3315">
+  <link rel="stylesheet" href="./pokex-mobile-v231.css?v=3315">
+  <link rel="stylesheet" href="./pokex-final-v24.css?v=3315">
+  <link rel="stylesheet" href="./pokex-polish-v321.css?v=3315">
+  <link rel="stylesheet" href="./pokex-friends-v33.css?v=3315">
   <style>
     .f33-launch-copy small[data-subtitle] { font-size: 0 !important; }
     .f33-launch-copy small[data-subtitle]::after {
       content: "Conecta con otros entrenadores";
       font-size: 11px;
+    }
+
+    .pokex-search-compact {
+      display: grid !important;
+      grid-template-columns: 46px minmax(0, 1fr) 108px !important;
+      gap: 0 10px !important;
+      align-items: stretch;
+    }
+
+    .pokex-search-compact #lang {
+      width: 46px !important;
+      min-width: 46px !important;
+      padding: 0 4px 0 10px !important;
+      border-radius: 15px 0 0 15px !important;
+      border-right: 0 !important;
+      font-size: 18px !important;
+      text-align: center;
+      background-color: #08152d !important;
+    }
+
+    .pokex-search-compact #query {
+      margin-left: -10px;
+      padding-left: 15px;
+      border-radius: 0 15px 15px 0 !important;
+    }
+
+    @media (max-width: 390px) {
+      .pokex-search-compact {
+        grid-template-columns: 44px minmax(0, 1fr) 94px !important;
+      }
+      .pokex-search-compact #lang {
+        width: 44px !important;
+        min-width: 44px !important;
+      }
     }
   </style>
 </head>
@@ -95,21 +129,21 @@
     </section>
   </main>
 
-  <script src="./jp-extra-v21.js?v=3314"></script>
-  <script src="./en-images-v21.js?v=3314"></script>
-  <script src="./pokex-image-resolver-v241.js?v=3314"></script>
-  <script src="./pokex-price-resolver-v30.js?v=3314"></script>
-  <script src="./app.js?v=3314"></script>
-  <script src="./pokedex-v1.js?v=3314"></script>
-  <script src="./scanner-v11.js?v=3314"></script>
-  <script src="./pokex-clean-v1.js?v=3314"></script>
-  <script src="./pokex-language-v1.js?v=3314"></script>
-  <script src="./pokex-bg.js?v=3314"></script>
-  <script src="./pokex-v22.js?v=3314"></script>
-  <script src="./pokex-firebase-config.js?v=3314"></script>
-  <script type="module" src="./pokex-auth-v23.js?v=3314"></script>
-  <script type="module" src="./pokex-mobile-v231.js?v=3314"></script>
-  <script type="module" src="./pokex-friends-v33.js?v=3314"></script>
+  <script src="./jp-extra-v21.js?v=3315"></script>
+  <script src="./en-images-v21.js?v=3315"></script>
+  <script src="./pokex-image-resolver-v241.js?v=3315"></script>
+  <script src="./pokex-price-resolver-v30.js?v=3315"></script>
+  <script src="./app.js?v=3315"></script>
+  <script src="./pokedex-v1.js?v=3315"></script>
+  <script src="./scanner-v11.js?v=3315"></script>
+  <script src="./pokex-clean-v1.js?v=3315"></script>
+  <script src="./pokex-language-v1.js?v=3315"></script>
+  <script src="./pokex-bg.js?v=3315"></script>
+  <script src="./pokex-v22.js?v=3315"></script>
+  <script src="./pokex-firebase-config.js?v=3315"></script>
+  <script type="module" src="./pokex-auth-v23.js?v=3315"></script>
+  <script type="module" src="./pokex-mobile-v231.js?v=3315"></script>
+  <script type="module" src="./pokex-friends-v33.js?v=3315"></script>
   <script>
     (() => {
       const query = document.getElementById("query");
@@ -120,23 +154,18 @@
 
       const applyReleaseNotes = () => {
         const box = document.querySelector(".v23-changes");
+        const welcome = document.querySelector(".v23-welcome h2");
+        if (welcome) welcome.textContent = "PokEX Beta v3.3";
         if (!box || box.dataset.v33Notes === "1") return;
         box.dataset.v33Notes = "1";
         box.innerHTML = `
-          <strong>Novedades desde PokEX 2</strong>
+          <strong>Novedades principales</strong>
           <p>
-            ✨ Interfaz móvil completamente renovada y optimizada para iPhone/PWA<br>
-            ⚡ Mejoras de rendimiento, fluidez, memoria, batería y caché<br>
-            📷 Escáner integrado y optimizado, con mejor transición de cámara<br>
-            🌍 Catálogos ampliados en español, inglés y japonés<br>
-            🔎 Búsqueda inteligente por nombre, número y expansión<br>
-            🖼️ Recuperación y caché de imágenes faltantes entre idiomas sin cambiar los datos de la carta<br>
-            💶 Sistema de precios mejorado por mercado e idioma, con históricos cuando están disponibles<br>
-            🗂️ Mi Pokédex optimizada y sincronización automática de cambios<br>
-            👤 Cuentas PokEX con avatar y personalización<br>
-            🎵 Música chiptune optimizada para iOS y segundo plano<br>
-            👥 Amigos: búsqueda de usuarios, solicitudes, bloqueos y gestión de amistades<br>
-            📱 Inicio más limpio y selector de idioma integrado en el buscador
+            ✨ Nueva interfaz más rápida y optimizada para iPhone<br>
+            🔎 Búsqueda y escáner mejorados con catálogos ES · EN · JP<br>
+            🖼️ Imágenes y precios mejorados sin alterar los datos originales<br>
+            🗂️ Mi Pokédex con sincronización automática<br>
+            👥 Cuentas, personalización y nuevo sistema de Amigos
           </p>`;
       };
 
