@@ -1597,14 +1597,11 @@ async function completeMissingImage(card, language) {
     const result = await window.PokEXImageResolver.resolve(card, language);
     if (!result?.image) return;
 
-    card._pokexResolvedImage = result;
-
-    if (result.kind === "exact") {
-      card.image = result.image;
-      card._pokexImageSource = result.source;
-    } else {
-      card._pokexReferenceImage = result.image;
-    }
+    window.PokEXImageResolver
+      .applyResult?.(
+        card,
+        result
+      );
   } catch (error) {
     console.warn("PokEX image resolver:", error);
   }
@@ -1707,11 +1704,24 @@ async function renderDetail(card) {
           card._pokexJP ? "ja" : langEl.value
         );
 
-        if (result?.image && result.image !== visibleImage) {
-          card._pokexResolvedImage = result;
-          if (result.kind === "exact") card.image = result.image;
-          else card._pokexReferenceImage = result.image;
-          img.src = imageUrl(result.image, "high");
+        const applied =
+          result?.image &&
+          result.image !== visibleImage &&
+          window.PokEXImageResolver
+            ?.applyResult?.(
+              card,
+              result
+            );
+
+        if (applied) {
+          const safeImage =
+            card.image ||
+            card._pokexReferenceImage;
+
+          img.src = imageUrl(
+            safeImage,
+            "high"
+          );
           return;
         }
       } catch (_) {}
