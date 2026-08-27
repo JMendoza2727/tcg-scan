@@ -1136,6 +1136,33 @@
   }
 
 
+  async function completePokedexMissingPrice(
+    card,
+    lang
+  ) {
+
+    if (
+      !card ||
+      window.PokEXPricing
+        ?.getPreferredPrice?.(card) ||
+      !window.PokEXPriceResolver
+        ?.resolve
+    ) {
+      return;
+    }
+
+
+    try {
+      const result =
+        await window.PokEXPriceResolver
+          .resolve(card, lang);
+
+      window.PokEXPriceResolver
+        .applyResult?.(card, result);
+    } catch (_) {}
+  }
+
+
   async function loadFreshPokedexCard(
     item
   ) {
@@ -1172,6 +1199,11 @@
           window.PokEXImageResolver.applyResult?.(card, result);
         } catch (_) {}
       }
+
+      await completePokedexMissingPrice(
+        card,
+        "ja"
+      );
 
       return card;
     }
@@ -1231,6 +1263,12 @@
         window.PokEXImageResolver.applyResult?.(card, result);
       } catch (_) {}
     }
+
+
+    await completePokedexMissingPrice(
+      card,
+      lang
+    );
 
 
     return card;
