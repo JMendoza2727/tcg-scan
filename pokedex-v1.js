@@ -101,22 +101,96 @@
   }
 
 
-  function keyFor(card) {
-    const lang =
-      window.langEl?.value || "en";
+  function selectedLanguage() {
+    const value =
+      document.getElementById("lang")?.value;
 
-    return `${lang}:${card.id}`;
+    return ["es", "en", "ja"].includes(value)
+      ? value
+      : "es";
+  }
+
+  function languageFromImage(image) {
+    if (window.PokEXImageResolver?.imageLanguage) {
+      return window.PokEXImageResolver.imageLanguage(image);
+    }
+
+    const match = String(image || "").match(
+      /assets\.tcgdex\.net\/(es|en|ja)(?:\/|$)/i
+    );
+
+    if (match) return match[1].toLowerCase();
+    if (/images\.pokemontcg\.io\//i.test(String(image || ""))) return "en";
+    return null;
+  }
+
+  function storedLanguage(item) {
+    if (
+      item?.languageVerified === true &&
+      ["es", "en", "ja"].includes(item.lang)
+    ) {
+      return item.lang;
+    }
+
+    if (item?.imageKind !== "translated" && item?.imageKind !== "reference") {
+      const detected = languageFromImage(item?.image);
+      if (detected) return detected;
+    }
+
+    if (/[぀-ヿ㐀-鿿]/u.test(`${item?.name || ""} ${item?.setName || ""}`)) {
+      return "ja";
+    }
+
+    return ["es", "en", "ja"].includes(item?.lang)
+      ? item.lang
+      : null;
+  }
+
+  function keyFor(card, language = selectedLanguage()) {
+    return `${language}:${card.id}`;
+  }
+
+  function normalizedIdentityText(value) {
+    return String(value || "")
+      .normalize("NFKD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLocaleLowerCase()
+      .replace(/[^\p{L}\p{N}]+/gu, " ")
+      .trim();
+  }
+
+  async function findStoredCard(card, language = selectedLanguage()) {
+    const direct = await getCard(keyFor(card, language));
+    if (direct) return direct;
+
+    const items = await getAll();
+    const wantedName = normalizedIdentityText(card?.name);
+    const wantedSet = normalizedIdentityText(card?.set?.name);
+    const wantedNumber = String(card?.localId ?? "");
+
+    return items.find(item =>
+      String(item.id || "") === String(card?.id || "") &&
+      String(item.localId ?? "") === wantedNumber &&
+      normalizedIdentityText(item.name) === wantedName &&
+      normalizedIdentityText(item.setName) === wantedSet &&
+      (
+        item.languageVerified !== true ||
+        storedLanguage(item) === language
+      )
+    ) || null;
   }
 
 
   async function addOne(card) {
 
+    const language = selectedLanguage();
+
     const key =
-      keyFor(card);
+      keyFor(card, language);
 
 
     const existing =
-      await getCard(key);
+      await findStoredCard(card, language);
 
 
     /*
@@ -136,7 +210,7 @@
       window.PokEXPricing
         ?.getStoredPrice
         ? await window.PokEXPricing
-            .getStoredPrice(card)
+            .getStoredPrice(card, language)
         : null;
 
 
@@ -149,8 +223,10 @@
           card.id,
 
         lang:
-          window.langEl?.value ||
-          "en",
+          language,
+
+        languageVerified:
+          true,
 
         name:
           card.name,
@@ -176,8 +252,7 @@
         imageLanguage:
           card._pokexResolvedImage
             ?.language ||
-          window.langEl?.value ||
-          "en",
+          language,
 
         quantity:
           0,
@@ -185,6 +260,9 @@
         addedAt:
           Date.now()
       };
+
+    item.lang = language;
+    item.languageVerified = true;
 
 
     /*
@@ -329,6 +407,29 @@
         item.fxDate =
           null;
       }
+
+      const history =
+        await window.PokEXPriceResolver
+          ?.recordHistory?.(
+            card,
+            language,
+            pricing
+          );
+
+      item.priceHistoryMin =
+        history?.min ??
+        item.priceHistoryMin ??
+        pricing.value;
+
+      item.priceHistoryMax =
+        history?.max ??
+        item.priceHistoryMax ??
+        pricing.value;
+
+      item.priceHistoryCount =
+        history?.count ??
+        item.priceHistoryCount ??
+        1;
     }
 
 
@@ -337,7 +438,7 @@
     await refreshCounter();
 
     notifyCollectionChanged({
-      key,
+      key: item.key,
       item,
       deleted: false,
       changedAt
@@ -348,13 +449,15 @@
 
 
   async function removeOne(card) {
-    const key = keyFor(card);
+    const language = selectedLanguage();
 
     const existing =
-      await getCard(key);
+      await findStoredCard(card, language);
 
     if (!existing)
       return null;
+
+    const key = existing.key;
 
     existing.quantity -= 1;
 
@@ -718,8 +821,16 @@
     if (reload || !viewItems.length) {
       viewItems = await getAll();
 
+      for (const item of viewItems) {
+        const inferred = storedLanguage(item);
+        if (inferred) item.lang = inferred;
+      }
+
       if (window.PokEXImageResolver?.hydrate) {
-        await window.PokEXImageResolver.hydrate(viewItems, "en");
+        await window.PokEXImageResolver.hydrate(
+          viewItems,
+          selectedLanguage()
+        );
       }
     }
 
@@ -935,11 +1046,27 @@
           "pokedex-open"
         );
 
+        let itemLanguage =
+          storedLanguage(item) ||
+          selectedLanguage();
+
+        if (item.languageVerified !== true) {
+          try {
+            const fresh = await loadFreshPokedexCard(item);
+            itemLanguage =
+              fresh?._pokexLanguage ||
+              itemLanguage;
+            item.lang = itemLanguage;
+            item.languageVerified = true;
+            await saveCard(item);
+          } catch (_) {}
+        }
+
         const language =
           document.getElementById("lang");
 
         if (language) {
-          language.value = item.lang;
+          language.value = itemLanguage;
         }
 
         if (
@@ -1000,8 +1127,9 @@
 
 
       const current =
-        await getCard(
-          keyFor(card)
+        await findStoredCard(
+          card,
+          selectedLanguage()
         );
 
 
@@ -1014,8 +1142,9 @@
 
       async function redraw() {
         const item =
-          await getCard(
-            keyFor(card)
+          await findStoredCard(
+            card,
+            selectedLanguage()
           );
 
         controls.innerHTML = `
@@ -1202,7 +1331,7 @@
     if (
       !card ||
       window.PokEXPricing
-        ?.getPreferredPrice?.(card) ||
+        ?.getPreferredPrice?.(card, lang) ||
       !window.PokEXPriceResolver
         ?.resolve
     ) {
@@ -1247,6 +1376,8 @@
       const card = await window.PokEXJP
         .getCard(item.id);
 
+      if (card) card._pokexLanguage = "ja";
+
       if (
         card &&
         !card.image &&
@@ -1267,30 +1398,81 @@
     }
 
 
-    const lang =
-      item.lang || "en";
+    const exactImageLanguage =
+      item.imageKind !== "translated" &&
+      item.imageKind !== "reference"
+        ? languageFromImage(item.image)
+        : null;
 
-    const response =
-      await fetch(
+    const trustedLanguage =
+      item.languageVerified === true
+        ? storedLanguage(item)
+        : exactImageLanguage;
+
+    const languageOrder = trustedLanguage
+      ? [trustedLanguage]
+      : /[぀-ヿ㐀-鿿]/u.test(
+          `${item.name || ""} ${item.setName || ""}`
+        )
+        ? ["ja", "en", "es"]
+        : ["es", "en", "ja"];
+
+    let card = null;
+    let lang = null;
+    let firstIdentityMatch = null;
+
+    for (const candidateLanguage of languageOrder) {
+      const response = await fetch(
         `${POKEDEX_TCGDEX_API}/` +
-        `${encodeURIComponent(lang)}/cards/` +
+        `${encodeURIComponent(candidateLanguage)}/cards/` +
         `${encodeURIComponent(item.id)}`,
-        {
-          cache: "no-store"
-        }
+        { cache: "no-store" }
       );
 
+      if (!response.ok) continue;
 
-    if (!response.ok) {
+      const candidate = await response.json();
 
-      throw new Error(
-        `TCGdex ${response.status}`
-      );
+      try {
+        assertSamePokedexCard(item, candidate);
+      } catch (_) {
+        continue;
+      }
+
+      if (!firstIdentityMatch) {
+        firstIdentityMatch = {
+          card: candidate,
+          lang: candidateLanguage
+        };
+      }
+
+      const sameName =
+        !item.name ||
+        normalizedIdentityText(item.name) ===
+          normalizedIdentityText(candidate.name);
+
+      const sameSet =
+        !item.setName ||
+        normalizedIdentityText(item.setName) ===
+          normalizedIdentityText(candidate.set?.name);
+
+      if (sameName && sameSet) {
+        card = candidate;
+        lang = candidateLanguage;
+        break;
+      }
     }
 
+    if (!card && firstIdentityMatch) {
+      card = firstIdentityMatch.card;
+      lang = firstIdentityMatch.lang;
+    }
 
-    const card =
-      await response.json();
+    if (!card || !lang) {
+      throw new Error("No se encontró la ficha en su idioma");
+    }
+
+    card._pokexLanguage = lang;
 
 
     /*
@@ -1423,7 +1605,6 @@
     let updatedPrices = 0;
     let recoveredImages = 0;
     let changedImages = 0;
-    let metadataChanges = 0;
     let withoutPrice = 0;
     let errors = 0;
 
@@ -1466,6 +1647,14 @@
           card
         );
 
+        const resolvedLanguage =
+          card._pokexLanguage ||
+          storedLanguage(item) ||
+          "es";
+
+        item.lang = resolvedLanguage;
+        item.languageVerified = true;
+
 
         /*
          * --------------------------
@@ -1497,7 +1686,10 @@
 
           pricing =
             await window.PokEXPricing
-              .getStoredPrice(card);
+              .getStoredPrice(
+                card,
+                resolvedLanguage
+              );
         }
 
 
@@ -1542,7 +1734,7 @@
             null;
 
           item.priceLanguage =
-            item.lang;
+            resolvedLanguage;
 
           item.priceExternal =
             Boolean(
@@ -1591,6 +1783,29 @@
             item.fxDate =
               null;
           }
+
+          const history =
+            await window.PokEXPriceResolver
+              ?.recordHistory?.(
+                card,
+                resolvedLanguage,
+                pricing
+              );
+
+          item.priceHistoryMin =
+            history?.min ??
+            item.priceHistoryMin ??
+            newPrice;
+
+          item.priceHistoryMax =
+            history?.max ??
+            item.priceHistoryMax ??
+            newPrice;
+
+          item.priceHistoryCount =
+            history?.count ??
+            item.priceHistoryCount ??
+            1;
 
         } else {
 
@@ -1691,55 +1906,9 @@
 
 
         /*
-         * --------------------------
-         * METADATOS
-         * --------------------------
+         * v3.2: recuperar imagen o precio nunca
+         * reescribe nombre, número, rareza o set.
          */
-
-        const beforeMeta =
-          JSON.stringify([
-            item.name || "",
-            item.localId || "",
-            item.rarity || "",
-            item.setName || ""
-          ]);
-
-
-        item.name =
-          card.name ||
-          item.name ||
-          "";
-
-        item.localId =
-          card.localId ??
-          item.localId ??
-          "";
-
-        item.rarity =
-          card.rarity ||
-          item.rarity ||
-          "";
-
-        item.setName =
-          card.set?.name ||
-          item.setName ||
-          "";
-
-
-        const afterMeta =
-          JSON.stringify([
-            item.name || "",
-            item.localId || "",
-            item.rarity || "",
-            item.setName || ""
-          ]);
-
-
-        if (
-          beforeMeta !== afterMeta
-        ) {
-          metadataChanges += 1;
-        }
 
 
         item.lastCheckedAt =
@@ -1821,13 +1990,6 @@
     if (changedImages) {
       parts.push(
         `${changedImages} imágenes renovadas`
-      );
-    }
-
-
-    if (metadataChanges) {
-      parts.push(
-        `${metadataChanges} fichas actualizadas`
       );
     }
 
