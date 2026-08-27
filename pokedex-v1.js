@@ -626,8 +626,18 @@
         item._pokexReferenceImage ||
         "";
 
+      const compatibleImage =
+        !window.PokEXImageResolver
+          ?.isImageCompatible ||
+        window.PokEXImageResolver
+          .isImageCompatible(
+            storedImage,
+            item.lang,
+            item.imageKind || "exact"
+          );
+
       const image =
-        storedImage
+        storedImage && compatibleImage
           ? (
               /\.(?:jpe?g|png|webp)(?:\?.*)?$/i
                 .test(storedImage)
@@ -1291,6 +1301,63 @@
   }
 
 
+  function normalizedCardNumber(value) {
+    const normalized =
+      String(value ?? "")
+        .normalize("NFKC")
+        .toUpperCase()
+        .replace(/\s+/g, "")
+        .replace(/^#/, "");
+
+    return normalized.replace(
+      /(^|\D)0+(?=\d)/g,
+      "$1"
+    );
+  }
+
+
+  function assertSamePokedexCard(
+    item,
+    card
+  ) {
+    const storedId =
+      String(item?.id || "");
+
+    const freshId =
+      String(card?.id || "");
+
+    if (
+      storedId &&
+      freshId &&
+      storedId !== freshId
+    ) {
+      throw new Error(
+        "La fuente devolvió otra carta"
+      );
+    }
+
+    const storedNumber =
+      normalizedCardNumber(
+        item?.localId
+      );
+
+    const freshNumber =
+      normalizedCardNumber(
+        card?.localId
+      );
+
+    if (
+      storedNumber &&
+      freshNumber &&
+      storedNumber !== freshNumber
+    ) {
+      throw new Error(
+        "El número de carta no coincide"
+      );
+    }
+  }
+
+
   async function updateEntirePokedex() {
 
     const button =
@@ -1361,6 +1428,11 @@
             "Carta no encontrada"
           );
         }
+
+        assertSamePokedexCard(
+          item,
+          card
+        );
 
 
         /*
@@ -1500,10 +1572,38 @@
         const oldImage =
           item.image || "";
 
-        const newImage =
+        const candidateImage =
           card.image ||
           card._pokexReferenceImage ||
           "";
+
+        const candidateKind =
+          card._pokexResolvedImage?.kind ||
+          "exact";
+
+        const oldImageCompatible =
+          !window.PokEXImageResolver
+            ?.isImageCompatible ||
+          window.PokEXImageResolver
+            .isImageCompatible(
+              oldImage,
+              item.lang,
+              item.imageKind || "exact"
+            );
+
+        const newImage =
+          (
+            !window.PokEXImageResolver
+              ?.isImageCompatible ||
+            window.PokEXImageResolver
+              .isImageCompatible(
+                candidateImage,
+                item.lang,
+                candidateKind
+              )
+          )
+            ? candidateImage
+            : "";
 
 
         if (
@@ -1521,8 +1621,14 @@
             newImage;
 
           item.imageKind =
-            card._pokexResolvedImage?.kind ||
-            "exact";
+            candidateKind;
+        } else if (
+          oldImage &&
+          !oldImageCompatible
+        ) {
+          item.image = "";
+          item.imageKind = "exact";
+          changedImages += 1;
         }
 
 
