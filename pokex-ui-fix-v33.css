@@ -34,4 +34,41 @@
   .detailImg{
     width:min(360px,100%) !important;
   }
+
+  /* v3.3: resultados integrados directamente sobre el fondo PokEX */
+  #listBox{
+    background:transparent !important;
+    border:0 !important;
+    box-shadow:none !important;
+    padding:0 !important;
+  }
+
+  #listBox .listHead{
+    margin:18px 2px 12px !important;
+  }
+
+  #cards.cards{
+    gap:10px !important;
+  }
+
+  #cards .cardTile{
+    padding:8px !important;
+    border-radius:18px !important;
+    box-shadow:none !important;
+  }
+
+  #cards .cardTile img,
+  #cards .cardTile .placeholder{
+    display:block !important;
+    width:100% !important;
+    height:auto !important;
+    aspect-ratio:auto !important;
+    object-fit:contain !important;
+    background:transparent !important;
+    border-radius:11px !important;
+  }
+
+  #cards .cardTile strong{
+    margin-top:9px !important;
+  }
 }
