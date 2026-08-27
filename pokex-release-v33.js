@@ -4,7 +4,6 @@
   const LEGACY_SEEN_KEY = "pokex_seen_version";
   const LAST_SYNC_KEY = "pokex_last_successful_sync_v33";
 
-  /* Evita que el modal antiguo de Auth (todavía basado en 3.2) se muestre. */
   try { localStorage.setItem(LEGACY_SEEN_KEY, "3.2"); } catch (_) {}
 
   const releaseChanges = [
@@ -26,6 +25,16 @@
       if (label === "versión vista" || label === "version vista") {
         const strong = stat.querySelector("strong");
         if (strong) strong.textContent = `v${APP_VERSION}`;
+      }
+    });
+  }
+
+  function removeLegacyRelease() {
+    document.querySelectorAll(".v23-overlay").forEach(overlay => {
+      const title = overlay.querySelector("h2")?.textContent?.trim() || "";
+      if (/PokEX\s+Beta\s+v3\.2/i.test(title)) {
+        overlay.remove();
+        try { localStorage.setItem(LEGACY_SEEN_KEY, "3.2"); } catch (_) {}
       }
     });
   }
@@ -78,7 +87,10 @@
   const syncState = new WeakMap();
   function polishSyncRows() {
     document.querySelectorAll(".v23-sync").forEach(row => {
-      const raw = row.textContent.trim().toLowerCase();
+      const textNode = row.querySelector("[data-pokex-sync]");
+      if (!textNode) return;
+
+      const raw = textNode.textContent.trim().toLowerCase();
       const isSyncing = raw.includes("sincronizando");
       const isSynced = raw.includes("sincronizado") && !isSyncing;
       const prev = syncState.get(row) || "";
@@ -93,15 +105,29 @@
           try { localStorage.setItem(LAST_SYNC_KEY, String(Date.now())); } catch (_) {}
         }
         syncState.set(row, "synced");
+
         let last = 0;
         try { last = Number(localStorage.getItem(LAST_SYNC_KEY)) || 0; } catch (_) {}
         const formatted = formatRelativeSync(last);
         const wanted = formatted ? `Sincronizado · ${formatted}` : "Sincronizado";
-        if (row.textContent.trim() !== wanted) row.textContent = wanted;
+        if (textNode.textContent.trim() !== wanted) textNode.textContent = wanted;
       } else {
         syncState.set(row, "other");
       }
     });
+  }
+
+  function restoreAccountPolish() {
+    const accountOpen = [...document.querySelectorAll(".v23-overlay:not(.hidden)")]
+      .some(el => el.querySelector("#v23SyncNow"));
+    if (!accountOpen) return;
+
+    try { window.PokEXMobile231?.polish?.(); } catch (_) {}
+
+    const message = document.getElementById("v23AccountMessage");
+    if (message && /^✅\s*Sincronizado\.?$/i.test(message.textContent.trim())) {
+      message.textContent = "";
+    }
   }
 
   let pokedexTimer = null;
@@ -133,22 +159,32 @@
   const refresh = () => {
     cancelAnimationFrame(raf);
     raf = requestAnimationFrame(() => {
+      removeLegacyRelease();
       applyVersionLabels();
       polishSyncRows();
       polishPokedexStatus();
+      restoreAccountPolish();
     });
   };
 
   const observer = new MutationObserver(refresh);
-  observer.observe(document.documentElement, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ["hidden"] });
+  observer.observe(document.documentElement, {
+    childList: true,
+    subtree: true,
+    characterData: true,
+    attributes: true,
+    attributeFilter: ["hidden", "class"]
+  });
 
   document.addEventListener("DOMContentLoaded", () => {
+    removeLegacyRelease();
     applyVersionLabels();
     polishSyncRows();
     setTimeout(showReleaseIfNeeded, 350);
   }, { once: true });
 
   if (document.readyState !== "loading") {
+    removeLegacyRelease();
     applyVersionLabels();
     polishSyncRows();
     setTimeout(showReleaseIfNeeded, 350);
