@@ -22,7 +22,7 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-const VERSION = "2.4.0";
+const VERSION = "3.0";
 
 const config =
   window.POKEX_FIREBASE_CONFIG || null;
@@ -89,6 +89,22 @@ function lower(v){
   return String(v || "")
     .trim()
     .toLowerCase();
+}
+
+function updateHomeAccountAvatar(){
+  const avatar =
+    document.querySelector(
+      "#v23AccountButton .pokex-account-avatar"
+    );
+
+  if(!avatar){
+    return;
+  }
+
+  avatar.textContent =
+    currentUser
+      ? currentProfile?.avatar || "⚡"
+      : "👤";
 }
 
 async function loadProfile(uid){
@@ -699,6 +715,7 @@ async function saveAvatar(avatar){
 
   avatarCache.clear();
 
+  updateHomeAccountAvatar();
   polishAll();
 }
 
@@ -1320,10 +1337,16 @@ function polishAll(){
       ()=>{
         injectAccountSettings();
         updateVersionDisplay();
+        updateHomeAccountAvatar();
       },
       80
     );
 }
+
+window.addEventListener(
+  "pokex:account-button-ready",
+  updateHomeAccountAvatar
+);
 
 const accountOverlay =
   document.getElementById(
