@@ -173,6 +173,12 @@
           card._pokexResolvedImage?.kind ||
           "exact",
 
+        imageLanguage:
+          card._pokexResolvedImage
+            ?.language ||
+          window.langEl?.value ||
+          "en",
+
         quantity:
           0,
 
@@ -218,6 +224,12 @@
       item.imageKind ||
       "exact";
 
+    item.imageLanguage =
+      card._pokexResolvedImage
+        ?.language ||
+      item.imageLanguage ||
+      item.lang;
+
 
     item.quantity += 1;
 
@@ -248,6 +260,14 @@
 
       item.priceSource =
         pricing.source;
+
+      item.priceLanguage =
+        item.lang;
+
+      item.priceExternal =
+        Boolean(
+          card._pokexExternalPrice
+        );
 
       item.priceVariant =
         pricing.variantLabel ||
@@ -650,6 +670,18 @@
         item.imageKind === "reference" ||
         item._pokexResolvedImage?.kind === "reference";
 
+      const translatedImage =
+        item.imageKind === "translated";
+
+      const imageBadge =
+        referenceImage
+          ? "Referencia"
+          : translatedImage
+            ? `Imagen ${String(
+                item.imageLanguage || "en"
+              ).toUpperCase()}`
+            : "";
+
       div.innerHTML = `
         <div class="pokedex-img-wrap">
           ${
@@ -660,7 +692,7 @@
                       alt="${escapeHTML(item.name || "Carta")}">`
               : `<div class="pokedex-noimg">Sin imagen</div>`
           }
-          ${referenceImage ? `<span class="pokedex-reference">Referencia</span>` : ""}
+          ${imageBadge ? `<span class="pokedex-reference">${escapeHTML(imageBadge)}</span>` : ""}
           <span class="pokedex-qty">x${item.quantity}</span>
         </div>
         <strong>${escapeHTML(item.name || "Carta")}</strong>
@@ -1509,6 +1541,14 @@
             pricing.source ||
             null;
 
+          item.priceLanguage =
+            item.lang;
+
+          item.priceExternal =
+            Boolean(
+              card._pokexExternalPrice
+            );
+
           item.priceVariant =
             pricing.variantLabel ||
             null;
@@ -1581,6 +1621,11 @@
           card._pokexResolvedImage?.kind ||
           "exact";
 
+        const candidateLanguage =
+          card._pokexResolvedImage
+            ?.language ||
+          item.lang;
+
         const oldImageCompatible =
           !window.PokEXImageResolver
             ?.isImageCompatible ||
@@ -1608,12 +1653,20 @@
 
         if (
           newImage &&
-          newImage !== oldImage
+          (
+            newImage !== oldImage ||
+            candidateKind !==
+              item.imageKind ||
+            candidateLanguage !==
+              item.imageLanguage
+          )
         ) {
 
           if (!oldImage) {
             recoveredImages += 1;
-          } else {
+          } else if (
+            newImage !== oldImage
+          ) {
             changedImages += 1;
           }
 
@@ -1622,12 +1675,17 @@
 
           item.imageKind =
             candidateKind;
+
+          item.imageLanguage =
+            candidateLanguage;
         } else if (
           oldImage &&
           !oldImageCompatible
         ) {
           item.image = "";
           item.imageKind = "exact";
+          item.imageLanguage =
+            item.lang;
           changedImages += 1;
         }
 
