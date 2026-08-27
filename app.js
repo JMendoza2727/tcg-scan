@@ -23,6 +23,28 @@ const preview = el("preview");
 const netBadge = el("netBadge");
 const countText = el("countText");
 
+function lockPokEXZoom() {
+  const preventZoom = event => event.preventDefault();
+
+  for (const eventName of [
+    "gesturestart",
+    "gesturechange",
+    "gestureend"
+  ]) {
+    document.addEventListener(eventName, preventZoom, { passive: false });
+  }
+
+  document.addEventListener(
+    "touchmove",
+    event => {
+      if (event.touches?.length > 1) preventZoom(event);
+    },
+    { passive: false }
+  );
+}
+
+lockPokEXZoom();
+
 let catalog = [];
 let setCatalog = [];
 let setCatalogLang = null;
@@ -1512,6 +1534,7 @@ async function openCard(id) {
         );
 
       await completeMissingImage(card, "ja");
+      await completeMissingPrice(card, "ja");
 
       setProgress(false);
 
@@ -1554,10 +1577,11 @@ async function openCard(id) {
     }
 
     await completeMissingImage(card, langEl.value);
+    await completeMissingPrice(card, langEl.value);
 
     setProgress(false);
     preview.classList.add("hidden");
-    renderDetail(card);
+    await renderDetail(card);
   } catch (e) {
     setProgress(false);
     showMessage(e.message, true);
@@ -1583,6 +1607,24 @@ async function completeMissingImage(card, language) {
     }
   } catch (error) {
     console.warn("PokEX image resolver:", error);
+  }
+}
+
+async function completeMissingPrice(card, language) {
+  if (
+    getPreferredPokEXPrice(card) ||
+    !window.PokEXPriceResolver?.resolve
+  ) {
+    return;
+  }
+
+  setProgress(true, "Buscando precio exacto de mercado…", 84);
+
+  try {
+    const result = await window.PokEXPriceResolver.resolve(card, language);
+    window.PokEXPriceResolver.applyResult?.(card, result);
+  } catch (error) {
+    console.warn("PokEX price resolver:", error);
   }
 }
 
@@ -1814,10 +1856,16 @@ async function renderDetail(card) {
       );
 
 
+    const sourceName =
+      card._pokexExternalPrice
+        ? "Estimación externa · Cardmarket"
+        : "Cardmarket";
+
+
     sourceText =
       date
-        ? `Cardmarket · actualizado ${date}`
-        : "Cardmarket";
+        ? `${sourceName} · actualizado ${date}`
+        : sourceName;
   }
 
 
@@ -1938,6 +1986,7 @@ async function renderDetail(card) {
 
 
     sourceText =
+      `${card._pokexExternalPrice ? "Estimación externa · " : ""}` +
       `TCGplayer · ${preferred.variantLabel}`;
   }
 
@@ -2035,6 +2084,24 @@ async function renderDetail(card) {
   right.appendChild(
     updated
   );
+
+
+  if (card._pokexExternalPrice) {
+    const priceNote =
+      document.createElement(
+        "p"
+      );
+
+    priceNote.className =
+      "pokex-price-note";
+
+    priceNote.textContent =
+      "Precio orientativo externo. Puede variar según estado, idioma y acabado.";
+
+    right.appendChild(
+      priceNote
+    );
+  }
 
 
   /*
