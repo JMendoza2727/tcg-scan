@@ -1,4 +1,4 @@
-const VERSION = "3322";
+const VERSION = "3323";
 const APP_CACHE = `pokex-app-${VERSION}`;
 const DATA_CACHE = `pokex-data-${VERSION}`;
 const SCANNER_CACHE = "pokex-scanner-v12";
@@ -6,34 +6,35 @@ const SCANNER_CACHE = "pokex-scanner-v12";
 const APP_SHELL = [
   "./",
   "./index.html",
-  "./manifest.webmanifest?v=3322",
+  "./manifest.webmanifest?v=3323",
   "./icon-192.png",
   "./icon-512.png",
-  "./styles.css?v=3322",
-  "./pokedex-v1.css?v=3322",
-  "./scanner-v11.css?v=3322",
-  "./pokex-bg.css?v=3322",
-  "./pokex-v22.css?v=3322",
-  "./pokex-auth-v23.css?v=3322",
-  "./pokex-mobile-v231.css?v=3322",
-  "./pokex-final-v24.css?v=3322",
-  "./pokex-polish-v321.css?v=3322",
-  "./pokex-friends-v33.css?v=3322",
-  "./jp-extra-v21.js?v=3322",
-  "./en-images-v21.js?v=3322",
-  "./pokex-image-resolver-v241.js?v=3322",
-  "./pokex-price-resolver-v30.js?v=3322",
-  "./app.js?v=3322",
-  "./pokedex-v1.js?v=3322",
-  "./scanner-v11.js?v=3322",
-  "./pokex-clean-v1.js?v=3322",
-  "./pokex-language-v1.js?v=3322",
-  "./pokex-bg.js?v=3322",
-  "./pokex-v22.js?v=3322",
-  "./pokex-firebase-config.js?v=3322",
-  "./pokex-auth-v23.js?v=3322",
-  "./pokex-mobile-v231.js?v=3322",
-  "./pokex-friends-v33.js?v=3322"
+  "./styles.css?v=3323",
+  "./pokedex-v1.css?v=3323",
+  "./scanner-v11.css?v=3323",
+  "./pokex-bg.css?v=3323",
+  "./pokex-v22.css?v=3323",
+  "./pokex-auth-v23.css?v=3323",
+  "./pokex-mobile-v231.css?v=3323",
+  "./pokex-final-v24.css?v=3323",
+  "./pokex-polish-v321.css?v=3323",
+  "./pokex-friends-v33.css?v=3323",
+  "./jp-extra-v21.js?v=3323",
+  "./en-images-v21.js?v=3323",
+  "./pokex-image-resolver-v241.js?v=3323",
+  "./pokex-price-resolver-v30.js?v=3323",
+  "./app.js?v=3323",
+  "./pokedex-v1.js?v=3323",
+  "./scanner-v11.js?v=3323",
+  "./pokex-clean-v1.js?v=3323",
+  "./pokex-language-v1.js?v=3323",
+  "./pokex-bg.js?v=3323",
+  "./pokex-v22.js?v=3323",
+  "./pokex-firebase-config.js?v=3323",
+  "./pokex-auth-v23.js?v=3323",
+  "./pokex-mobile-v231.js?v=3323",
+  "./pokex-friends-v33.js?v=3323",
+  "./pokex-friends-fix-v33.js?v=3323"
 ];
 
 self.addEventListener("install", event => {
