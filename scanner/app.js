@@ -1843,6 +1843,13 @@ function createScannerLoop(
   let workerBusy = false;
   let scanIntervalMs = getScanIntervalMs();
 
+  function stopLoop(reason = "manual") {
+    if (!timer) return;
+    clearInterval(timer);
+    timer = null;
+    recordBootTrace("scan:loop-stopped", { reason });
+  }
+
   scannerWorker.addEventListener("error", (event) => {
     workerBusy = false;
     recordBootTrace("worker:fatal-error", {
@@ -1987,6 +1994,12 @@ function createScannerLoop(
     renderScanList(scans);
     debugLog.info("confirmed scan", confirmed.cardId, `score=${confirmed.score.toFixed(4)}`);
 
+    // v3.2: pause all active hardware/CPU immediately after a match.
+    // The worker and ONNX sessions stay alive so the next scan is instant.
+    camera.flashConfirmed();
+    stopLoop("match-confirmed");
+    camera.stop();
+
     if (window.parent !== window) {
       window.parent.postMessage({
         type: "tcgscan-match",
@@ -1996,7 +2009,6 @@ function createScannerLoop(
       }, window.location.origin);
     }
     setText("camera-badge", `Match ${confirmed.score.toFixed(2)}`);
-    camera.flashConfirmed();
     await audioBus.playScanConfirmed();
     if (scan.name === scan.cardId || !scan.enriched) {
       enricherWorker.postMessage({ type: "enrich", cardId: confirmed.cardId });
@@ -2005,11 +2017,7 @@ function createScannerLoop(
 
   return {
     stop() {
-      if (timer) {
-        clearInterval(timer);
-        timer = null;
-        recordBootTrace("scan:loop-stopped");
-      }
+      stopLoop("external-pause");
     },
     start() {
       if (timer) {
@@ -2332,6 +2340,36 @@ async function boot() {
       loop.stop();
     },
   );
+
+  function suspendScanner(reason = "parent") {
+    loop.stop();
+    camera.stop();
+    camera.badge.textContent = "Camera paused — tap to resume";
+    camera.badge.disabled = false;
+    delete camera.badge.dataset.cameraLive;
+    recordBootTrace("scanner:suspended", { reason });
+  }
+
+  window.addEventListener("message", (event) => {
+    if (
+      event.origin !== window.location.origin ||
+      event.source !== window.parent ||
+      event.data?.type !== "pokex-scanner-pause"
+    ) {
+      return;
+    }
+
+    suspendScanner(event.data.reason || "parent");
+    window.parent.postMessage(
+      { type: "pokex-scanner-paused" },
+      window.location.origin
+    );
+  });
+
+  window.addEventListener("pagehide", () => {
+    suspendScanner("pagehide");
+  });
+
   camera.setReady();
   setupLogDownloadButton(camera);
   setupCaptureButton(camera, captureState);
