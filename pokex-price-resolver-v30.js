@@ -1,16 +1,16 @@
 (() => {
   "use strict";
 
+  const API = "https://api.tcgdex.net/v2";
   const DB_NAME = "pokex-price-resolver";
   const STORE_NAME = "entries";
   const HISTORY_STORE = "history";
   const DB_VERSION = 2;
   const POSITIVE_TTL = 24 * 60 * 60 * 1000;
-  const NEGATIVE_TTL = 24 * 60 * 60 * 1000;
-  const CACHE_SCHEMA = "v32-language";
+  const NEGATIVE_TTL = 6 * 60 * 60 * 1000;
+  const CACHE_SCHEMA = "v321-language";
   const inFlight = new Map();
   const memoryCache = new Map();
-
   let dbPromise = null;
 
   function cacheKey(card, lang) {
@@ -37,17 +37,11 @@
 
     dbPromise = new Promise(resolve => {
       const request = indexedDB.open(DB_NAME, DB_VERSION);
-
       request.onupgradeneeded = () => {
         const db = request.result;
-        if (!db.objectStoreNames.contains(STORE_NAME)) {
-          db.createObjectStore(STORE_NAME, { keyPath: "key" });
-        }
-        if (!db.objectStoreNames.contains(HISTORY_STORE)) {
-          db.createObjectStore(HISTORY_STORE, { keyPath: "key" });
-        }
+        if (!db.objectStoreNames.contains(STORE_NAME)) db.createObjectStore(STORE_NAME, { keyPath: "key" });
+        if (!db.objectStoreNames.contains(HISTORY_STORE)) db.createObjectStore(HISTORY_STORE, { keyPath: "key" });
       };
-
       request.onsuccess = () => resolve(request.result);
       request.onerror = () => resolve(null);
       request.onblocked = () => resolve(null);
@@ -58,14 +52,12 @@
 
   async function readCache(key) {
     if (memoryCache.has(key)) return memoryCache.get(key);
-
     const db = await openDatabase();
     if (!db) return null;
 
     return new Promise(resolve => {
       try {
-        const transaction = db.transaction(STORE_NAME, "readonly");
-        const request = transaction.objectStore(STORE_NAME).get(key);
+        const request = db.transaction(STORE_NAME, "readonly").objectStore(STORE_NAME).get(key);
         request.onsuccess = () => {
           const entry = request.result || null;
           if (entry) memoryCache.set(key, entry);
@@ -80,7 +72,6 @@
 
   async function writeCache(entry) {
     memoryCache.set(entry.key, entry);
-
     const db = await openDatabase();
     if (!db) return;
 
@@ -88,9 +79,9 @@
       try {
         const transaction = db.transaction(STORE_NAME, "readwrite");
         transaction.objectStore(STORE_NAME).put(entry);
-        transaction.oncomplete = () => resolve();
-        transaction.onerror = () => resolve();
-        transaction.onabort = () => resolve();
+        transaction.oncomplete = resolve;
+        transaction.onerror = resolve;
+        transaction.onabort = resolve;
       } catch (_) {
         resolve();
       }
@@ -98,20 +89,17 @@
   }
 
   function historyKey(card, lang) {
-    return `${String(lang || "unknown").toLocaleLowerCase()}:` +
-      `${String(card?.id || "")}`;
+    return `${String(lang || "unknown").toLocaleLowerCase()}:${String(card?.id || "")}`;
   }
 
   function summarizeHistory(entry) {
     const samples = Array.isArray(entry?.samples)
       ? entry.samples.filter(sample => finite(sample?.value) !== null)
       : [];
-
     if (!samples.length) return null;
 
     const values = samples.map(sample => Number(sample.value));
     const latest = samples[samples.length - 1];
-
     return {
       current: Number(latest.value),
       min: Math.min(...values),
@@ -128,13 +116,11 @@
     if (!card?.id) return null;
     const db = await openDatabase();
     if (!db) return null;
-
     const key = historyKey(card, lang);
 
     return new Promise(resolve => {
       try {
-        const transaction = db.transaction(HISTORY_STORE, "readonly");
-        const request = transaction.objectStore(HISTORY_STORE).get(key);
+        const request = db.transaction(HISTORY_STORE, "readonly").objectStore(HISTORY_STORE).get(key);
         request.onsuccess = () => resolve(summarizeHistory(request.result));
         request.onerror = () => resolve(null);
       } catch (_) {
@@ -145,13 +131,10 @@
 
   async function recordHistory(card, lang, price) {
     const value = finite(price?.value);
-    if (!card?.id || value === null || price?.currency !== "EUR") {
-      return readHistory(card, lang);
-    }
+    if (!card?.id || value === null || price?.currency !== "EUR") return readHistory(card, lang);
 
     const db = await openDatabase();
     if (!db) return null;
-
     const key = historyKey(card, lang);
 
     return new Promise(resolve => {
@@ -199,10 +182,7 @@
   }
 
   function normalizeVariantKey(key) {
-    const compact = String(key || "")
-      .replace(/[^a-z0-9]/gi, "")
-      .toLowerCase();
-
+    const compact = String(key || "").replace(/[^a-z0-9]/gi, "").toLowerCase();
     const known = {
       normal: "normal",
       holofoil: "holofoil",
@@ -212,9 +192,7 @@
       unlimitednormal: "unlimited",
       unlimitedholofoil: "unlimited-holofoil"
     };
-
     if (known[compact]) return known[compact];
-
     return String(key || "variant")
       .replace(/([a-z0-9])([A-Z])/g, "$1-$2")
       .replace(/[^a-z0-9]+/gi, "-")
@@ -223,52 +201,46 @@
   }
 
   function mapCardmarket(cardmarket) {
-    const source = cardmarket?.prices;
+    const source = cardmarket?.prices || cardmarket;
     if (!source || typeof source !== "object") return null;
 
     const trend = firstFinite(
+      source.trend,
       source.trendPrice,
       source.averageSellPrice,
+      source.avg,
       source.avg7,
       source.avg30
     );
-
     if (trend === null) return null;
 
     return {
       trend,
-      low: finite(source.lowPrice),
+      low: firstFinite(source.low, source.lowPrice),
       avg1: finite(source.avg1),
       avg7: finite(source.avg7),
       avg30: finite(source.avg30),
-      updated: cardmarket.updatedAt || null
+      updated: cardmarket.updated || cardmarket.updatedAt || null
     };
   }
 
   function mapTCGplayer(tcgplayer) {
-    const source = tcgplayer?.prices;
+    const source = tcgplayer?.prices || tcgplayer;
     if (!source || typeof source !== "object") return null;
 
-    const result = {
-      updated: tcgplayer.updatedAt || null,
-      unit: "USD"
-    };
-
+    const result = { updated: tcgplayer.updated || tcgplayer.updatedAt || null, unit: "USD" };
     let found = false;
 
     for (const [rawKey, values] of Object.entries(source)) {
       if (!values || typeof values !== "object") continue;
-
       const mapped = {
-        lowPrice: finite(values.low),
-        midPrice: finite(values.mid),
-        highPrice: finite(values.high),
-        marketPrice: finite(values.market),
-        directLowPrice: finite(values.directLow)
+        lowPrice: firstFinite(values.lowPrice, values.low),
+        midPrice: firstFinite(values.midPrice, values.mid),
+        highPrice: firstFinite(values.highPrice, values.high),
+        marketPrice: firstFinite(values.marketPrice, values.market),
+        directLowPrice: firstFinite(values.directLowPrice, values.directLow)
       };
-
       if (Object.values(mapped).every(value => value === null)) continue;
-
       result[normalizeVariantKey(rawKey)] = mapped;
       found = true;
     }
@@ -278,10 +250,8 @@
 
   function mapExternalCard(externalCard) {
     if (!externalCard || typeof externalCard !== "object") return null;
-
-    const cardmarket = mapCardmarket(externalCard.cardmarket);
-    const tcgplayer = mapTCGplayer(externalCard.tcgplayer);
-
+    const cardmarket = mapCardmarket(externalCard.cardmarket || externalCard.pricing?.cardmarket);
+    const tcgplayer = mapTCGplayer(externalCard.tcgplayer || externalCard.pricing?.tcgplayer);
     if (!cardmarket && !tcgplayer) return null;
 
     return {
@@ -289,7 +259,7 @@
         ...(cardmarket ? { cardmarket } : {}),
         ...(tcgplayer ? { tcgplayer } : {})
       },
-      source: "Pokémon TCG API",
+      source: externalCard.pricing ? "TCGdex" : "Pokémon TCG API",
       matchedId: String(externalCard.id || ""),
       label: "Estimación externa de mercado"
     };
@@ -297,68 +267,70 @@
 
   function applyResult(card, result) {
     if (!card || !result?.pricing) return false;
-
-    card.pricing = {
-      ...(card.pricing || {}),
-      ...result.pricing
-    };
-
+    card.pricing = { ...(card.pricing || {}), ...result.pricing };
     card._pokexExternalPrice = {
       source: result.source,
       matchedId: result.matchedId,
       label: result.label,
       resolvedAt: result.resolvedAt || Date.now()
     };
-
     return true;
   }
 
-  async function resolve(card, lang = "es") {
-    if (!card?.id || String(card.id).startsWith("pokexjp:")) return null;
+  function exactJapaneseId(card) {
+    const rawId = String(card?.id || "");
+    if (rawId && !rawId.startsWith("pokexjp:")) return rawId;
 
-    const requestedLanguage =
-      String(lang || "es")
-        .toLocaleLowerCase();
+    const setId = String(card?.set?.id || card?._pokexJPData?.s || "").trim();
+    const localId = String(card?.localId || card?._pokexJPData?.num || "").trim();
+    if (!setId || !localId) return "";
+    return `${setId}-${localId}`;
+  }
 
-    if (requestedLanguage !== "en")
+  async function fetchJapaneseExact(card) {
+    const id = exactJapaneseId(card);
+    if (!id) return null;
+
+    try {
+      const response = await fetch(`${API}/ja/cards/${encodeURIComponent(id)}`, { cache: "no-store" });
+      if (!response.ok) return null;
+      const candidate = await response.json();
+      if (String(candidate?.id || "").toLocaleLowerCase() !== id.toLocaleLowerCase()) return null;
+      return candidate;
+    } catch (_) {
       return null;
+    }
+  }
 
-    const key = cacheKey(
-      card,
-      requestedLanguage
-    );
+  async function resolve(card, lang = "es") {
+    if (!card?.id) return null;
+
+    const requestedLanguage = String(lang || "es").toLocaleLowerCase();
+    if (!["en", "ja"].includes(requestedLanguage)) return null;
+
+    const key = cacheKey(card, requestedLanguage);
     if (inFlight.has(key)) return inFlight.get(key);
 
     const task = (async () => {
       const cached = await readCache(key);
       const ttl = cached?.result ? POSITIVE_TTL : NEGATIVE_TTL;
+      if (cached && Date.now() - cached.savedAt < ttl) return cached.result || null;
+      if (navigator.onLine === false) return cached?.result || null;
 
-      if (cached && Date.now() - cached.savedAt < ttl) {
-        return cached.result || null;
+      let externalCard = null;
+
+      if (requestedLanguage === "ja") {
+        externalCard = await fetchJapaneseExact(card);
+      } else {
+        const findExact = window.PokEXImageResolver?.findExactExternalCard;
+        if (typeof findExact === "function") {
+          externalCard = await findExact(card, requestedLanguage);
+        }
       }
 
-      if (navigator.onLine === false) {
-        return cached?.result || null;
-      }
-
-      const findExact = window.PokEXImageResolver?.findExactExternalCard;
-      if (typeof findExact !== "function") return null;
-
-      const externalCard = await findExact(
-        card,
-        requestedLanguage
-      );
       const mapped = mapExternalCard(externalCard);
-      const result = mapped
-        ? { ...mapped, resolvedAt: Date.now() }
-        : null;
-
-      await writeCache({
-        key,
-        savedAt: Date.now(),
-        result
-      });
-
+      const result = mapped ? { ...mapped, resolvedAt: Date.now() } : null;
+      await writeCache({ key, savedAt: Date.now(), result });
       return result;
     })().finally(() => inFlight.delete(key));
 
