@@ -22,7 +22,7 @@ import {
   onSnapshot
 } from "https://www.gstatic.com/firebasejs/12.17.1/firebase-firestore.js";
 
-const VERSION = "3.1";
+const VERSION = "3.2";
 
 const config =
   window.POKEX_FIREBASE_CONFIG || null;
