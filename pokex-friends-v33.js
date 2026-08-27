@@ -71,6 +71,8 @@ async function ensureUserDirectory() {
   }
 
   await setDoc(doc(db, "users", user.uid), {
+    username,
+    usernameLower,
     lastSeenVersion: VERSION,
     updatedAt: Date.now()
   }, { merge: true });
@@ -181,17 +183,22 @@ async function requests(field) {
 }
 
 async function relationship(otherUid) {
-  const [friend, outgoing, incoming, blocked] = await Promise.all([
-    getDoc(doc(db, "friendLinks", rid(user.uid, otherUid))),
-    getDoc(doc(db, "friendRequests", rid(user.uid, otherUid))),
-    getDoc(doc(db, "friendRequests", rid(otherUid, user.uid))),
-    getDoc(doc(db, "blocks", rid(user.uid, otherUid)))
+  if (!user || !otherUid) {
+    return { friend: false, blocked: false, outgoing: false, incoming: false };
+  }
+
+  const [links, outgoingRequests, incomingRequests, myBlocks] = await Promise.all([
+    ownedLinks(),
+    requests("fromUid"),
+    requests("toUid"),
+    blocks()
   ]);
+
   return {
-    friend: friend.exists(),
-    blocked: blocked.exists(),
-    outgoing: outgoing.exists() && outgoing.data()?.status === "pending",
-    incoming: incoming.exists() && incoming.data()?.status === "pending"
+    friend: links.some(item => item.friendUid === otherUid),
+    blocked: myBlocks.some(item => item.blockedUid === otherUid),
+    outgoing: outgoingRequests.some(item => item.toUid === otherUid),
+    incoming: incomingRequests.some(item => item.fromUid === otherUid)
   };
 }
 
@@ -214,7 +221,19 @@ async function findUser(raw) {
     )
   );
 
-  return fallbackSnap.docs
+  const normalizedMatch = fallbackSnap.docs
+    .map(item => ({ uid: item.id, ...item.data() }))
+    .find(item => item.uid !== user?.uid);
+  if (normalizedMatch) return normalizedMatch;
+
+  const legacySnap = await getDocs(
+    query(
+      collection(db, "users"),
+      where("username", "==", String(raw || "").trim().replace(/^@+/, ""))
+    )
+  );
+
+  return legacySnap.docs
     .map(item => ({ uid: item.id, ...item.data() }))
     .find(item => item.uid !== user?.uid) || null;
 }
