@@ -3,7 +3,7 @@
   // The embedded scanner reads these same-origin localStorage preferences
   // dynamically before accepting a match.
   const settings = {
-    cv_min_match_score: "0.95",
+    cv_min_match_score: "0.75",
     cv_min_matches: "4",
     cv_scan_interval_ms: "125"
   };
@@ -15,7 +15,7 @@
   } catch (_) {}
 
   window.PokEXScannerQuality = Object.freeze({
-    minMatchScore: 0.95,
+    minMatchScore: 0.75,
     minMatches: 4,
     scanIntervalMs: 125
   });
