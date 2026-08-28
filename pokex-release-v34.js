@@ -1,13 +1,13 @@
 (() => {
   const VERSION = "3.4";
-  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3412";
+  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3416";
   const KEY = `pokex_seen_release_v34_${BUILD}`;
 
   const changes = [
+    "📷 Escáner ajustado para reconocer cartas con más equilibrio entre rapidez y precisión.",
     "🏆 Rankings y colecciones de amigos integrados.",
     "👤 Cuenta y personalización más consistentes.",
     "🔄 Nuevo botón para comprobar actualizaciones desde el inicio.",
-    "🧹 Limpieza de módulos antiguos y caché unificada.",
     "⚙️ Mejoras internas de estabilidad sin cambiar tu colección."
   ];
 
