@@ -13,7 +13,9 @@
   }
 
   function pokedexOpen() {
-    return document.body.classList.contains("pokedex-open") || !!document.querySelector(".pokedex-overlay");
+    const overlay = document.querySelector(".pokedex-overlay");
+    return document.body.classList.contains("pokedex-open") ||
+      !!(overlay && !overlay.classList.contains("hidden"));
   }
 
   function ensureBackButton() {
