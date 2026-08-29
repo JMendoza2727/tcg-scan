@@ -12,6 +12,10 @@
     return resultVisible || listVisible;
   }
 
+  function pokedexOpen() {
+    return document.body.classList.contains("pokedex-open") || !!document.querySelector(".pokedex-overlay");
+  }
+
   function ensureBackButton() {
     let button = $("pokexMainBack");
     if (button) return button;
@@ -31,7 +35,7 @@
 
   function updateBackButton() {
     const button = ensureBackButton();
-    const visible = mainViewActive();
+    const visible = mainViewActive() && !pokedexOpen();
     button.hidden = !visible;
     document.body.classList.toggle("pokex-back-visible", visible);
   }
@@ -119,8 +123,6 @@
 
     controls.dataset.pokexCompactMoved = "1";
     controls.classList.add("pokedex-card-controls-compact");
-
-    // Es el MISMO nodo creado por Mi Pokédex: solo cambia de posición.
     title.insertAdjacentElement("afterend", controls);
   }
 
