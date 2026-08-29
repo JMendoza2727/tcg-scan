@@ -31,7 +31,9 @@
 
   function updateBackButton() {
     const button = ensureBackButton();
-    button.hidden = !mainViewActive();
+    const visible = mainViewActive();
+    button.hidden = !visible;
+    document.body.classList.toggle("pokex-back-visible", visible);
   }
 
   function snapshotSearchBeforeCard() {
@@ -127,12 +129,17 @@
     const style = document.createElement("style");
     style.id = "pokexCardFlowStyles";
     style.textContent = `
+      body.pokex-back-visible .top .pokex-brand{
+        visibility:hidden!important;
+        opacity:0!important;
+        pointer-events:none!important;
+      }
       .pokex-main-back{
         position:fixed;z-index:2147482000;
-        top:calc(env(safe-area-inset-top,0px) + 10px);left:12px;
-        min-height:38px;padding:7px 12px;border-radius:13px;
+        top:calc(env(safe-area-inset-top,0px) + 22px);left:24px;
+        min-height:40px;padding:8px 13px;border-radius:13px;
         border:1px solid rgba(126,157,214,.32);
-        background:rgba(10,26,55,.94);color:#fff;
+        background:rgba(10,26,55,.96);color:#fff;
         box-shadow:0 8px 24px rgba(0,0,0,.22);
         font:800 14px/1 system-ui,-apple-system,sans-serif;
         backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)
@@ -163,7 +170,7 @@
         width:auto!important;padding:8px 12px!important
       }
       @media(max-width:420px){
-        .pokex-main-back{top:calc(env(safe-area-inset-top,0px) + 8px);left:8px}
+        .pokex-main-back{top:calc(env(safe-area-inset-top,0px) + 18px);left:20px}
         #resultBox .pokedex-card-controls-compact{gap:6px!important}
         #resultBox .pokedex-card-controls-compact button,
         #resultBox .pokedex-card-controls-compact .owned-card{font-size:12px!important;padding:7px 9px!important}
