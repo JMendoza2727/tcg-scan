@@ -19,6 +19,15 @@
     } catch (_) {}
   }
 
+  function cleanScannerLabel(raw) {
+    return String(raw || "")
+      .normalize("NFKC")
+      .replace(/[\[(]\s*(?:non[\s-]?holo|non[\s-]?holofoil|reverse[\s-]?holo(?:foil)?|holo(?:foil)?|normal|regular|unlimited|1st[\s-]?edition|first[\s-]?edition|pre[\s-]?release|prerelease|staff)\s*[\])]/gi, " ")
+      .replace(/\b(?:non[\s-]?holo|non[\s-]?holofoil|reverse[\s-]?holo(?:foil)?|holofoil|normal|regular|unlimited|pre[\s-]?release|prerelease|staff)\b/gi, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+  }
+
   function clearPreviousResult() {
     try {
       resetContent();
@@ -67,8 +76,9 @@
     clearPreviousResult();
     closeScannerOverlay();
 
+    const cleanDetectedName = cleanScannerLabel(data.cardName || "Carta");
     const score = Math.round(Number(data.score) * 1000) / 10;
-    showMessage(`✅ ${data.cardName || "Carta"} detectada con ${score}%`);
+    showMessage(`✅ ${cleanDetectedName || "Carta"} detectada con ${score}%`);
 
     const selectedLanguage =
       document.getElementById("lang")?.value || "es";
@@ -96,17 +106,21 @@
       }
     } catch (_) {}
 
-    const parsed = parseCardQuery(product?.name || data.cardName || "");
-    const englishName = parsed.name || String(data.cardName || "").trim();
+    const sourceText = cleanScannerLabel(product?.name || data.cardName || "");
+    const parsed = parseCardQuery(sourceText);
+    const englishName = cleanScannerLabel(parsed.name || cleanDetectedName);
     const number = normalizedNumber(product?.number || parsed.number);
 
     let selectedName = englishName;
     if (selectedLanguage !== "en") {
       try {
         selectedName = await translatePokemonQueryV21(englishName, selectedLanguage);
-        selectedName = parseCardQuery(selectedName).name || selectedName;
+        selectedName = cleanScannerLabel(parseCardQuery(selectedName).name || selectedName);
       } catch (_) {}
     }
+
+    // El buscador visible del escaneo siempre queda limpio: Nombre + número.
+    queryEl.value = `${selectedName} ${number}`.trim();
 
     const searches = [];
     searches.push([selectedLanguage, selectedName]);
@@ -147,9 +161,6 @@
       renderNext();
       moreBtn.classList.add("hidden");
 
-      // Si falta el mapa exacto del catálogo del escáner, PokEX aprende la
-      // edición que el usuario elija. En siguientes escaneos del mismo cardId
-      // abrirá directamente esa carta en lugar de volver a listar ediciones.
       const tiles = [...cardsEl.querySelectorAll(".cardTile")];
       tiles.forEach((tile, index) => {
         const candidate = matches[index];
@@ -161,12 +172,9 @@
       return;
     }
 
-    queryEl.value = `${selectedName} ${number}`.trim();
     await doSearch();
   }
 
-  // Captura el resultado antes del handler histórico de app.js. Así evitamos
-  // que dos rutas distintas rendericen a la vez la ficha y los candidatos.
   window.addEventListener("message", event => {
     if (event.origin !== window.location.origin) return;
     if (event.data?.type !== "tcgscan-match") return;

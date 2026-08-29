@@ -118,6 +118,7 @@
     controls.dataset.pokexCompactMoved = "1";
     controls.classList.add("pokedex-card-controls-compact");
 
+    // Es el MISMO nodo creado por Mi Pokédex: solo cambia de posición.
     title.insertAdjacentElement("afterend", controls);
   }
 
