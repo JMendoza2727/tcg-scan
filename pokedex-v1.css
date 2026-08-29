@@ -26,12 +26,13 @@
   background: #070b18;
   overflow-y: auto;
   padding-top: env(safe-area-inset-top);
+  isolation: isolate;
 }
 
 .pokedex-header {
   position: sticky;
   top: 0;
-  z-index: 5;
+  z-index: 100;
 
   display: flex;
   align-items: center;
@@ -39,10 +40,11 @@
 
   padding: 12px 16px;
 
-  background: rgba(7,11,24,.92);
-  backdrop-filter: blur(18px);
+  /* Fondo sólido: las cartas no se transparentan al pasar por debajo. */
+  background: #070b18;
 
   border-bottom: 1px solid var(--line);
+  box-shadow: 0 8px 18px rgba(7,11,24,.22);
 }
 
 .pokedex-header > div {
@@ -75,6 +77,8 @@
 }
 
 .pokedex-content {
+  position: relative;
+  z-index: 1;
   padding: 16px 16px
     calc(30px + env(safe-area-inset-bottom));
 }
