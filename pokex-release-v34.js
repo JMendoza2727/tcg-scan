@@ -1,13 +1,13 @@
 (() => {
   const VERSION = "3.4";
-  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3418";
+  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3419";
   const KEY = `pokex_seen_release_v34_${BUILD}`;
 
   const changes = [
+    "📚 Corregido definitivamente el solapamiento de cartas sobre la cabecera de Mi Pokédex.",
+    "↩️ El botón Atrás ya no tapa el título de PokEX.",
     "🃏 Añadir o quitar cartas desde la parte superior de la ficha.",
-    "↩️ Nuevo botón Atrás que conserva la búsqueda y la posición anterior.",
     "📷 El escáner limpia etiquetas como Non Holo, Holo o Staff y busca con nombre + número.",
-    "📚 Cabecera de Mi Pokédex corregida al hacer scroll.",
     "👥 Perfil y colección de amigos con mejor espaciado y acabado visual."
   ];
 
