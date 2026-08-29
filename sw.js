@@ -1,12 +1,12 @@
-const VERSION = "3417";
+const VERSION = "3418";
 const APP_CACHE = `pokex-app-${VERSION}`;
 const DATA_CACHE = `pokex-data-${VERSION}`;
 const SCANNER_CACHE = "pokex-scanner-v12";
 
 const APP_SHELL = [
-  "./","./index.html","./manifest.webmanifest?v=3417","./icon-192.png","./icon-512.png","./styles.css?v=3417",
-  "./pokedex-v1.css?v=3417","./scanner-v11.css?v=3417","./pokex-bg.css?v=3417","./pokex-v22.css?v=3417","./pokex-auth-v23.css?v=3417","./pokex-mobile-v231.css?v=3417","./pokex-final-v24.css?v=3417","./pokex-polish-v321.css?v=3417","./pokex-friends-v33.css?v=3417","./pokex-account-polish-v33.css?v=3417","./pokex-ui-fix-v33.css?v=3417","./pokex-social-v34.css?v=3417",
-  "./jp-extra-v21.js?v=3417","./en-images-v21.js?v=3417","./pokex-image-resolver-v241.js?v=3417","./pokex-price-resolver-v30.js?v=3417","./pokex-scanner-result-fix-v34.js?v=3417","./app.js?v=3417","./pokedex-v1.js?v=3417","./pokex-scanner-quality-v34.js?v=3417","./scanner-v11.js?v=3417","./pokex-clean-v1.js?v=3417","./pokex-language-v1.js?v=3417","./pokex-bg.js?v=3417","./pokex-v22.js?v=3417","./pokex-shell-v34.js?v=3417","./pokex-release-v34.js?v=3417","./pokex-firebase-config.js?v=3417","./pokex-auth-v23.js?v=3417","./pokex-mobile-v231.js?v=3417","./pokex-friends-v33.js?v=3417","./pokex-friends-fix-v33.js?v=3417","./pokex-account-polish-v33.js?v=3417","./pokex-account-core-v33.js?v=3417","./pokex-social-v34.js?v=3417","./pokex-card-language-v34.js?v=3417"
+  "./","./index.html","./manifest.webmanifest?v=3418","./icon-192.png","./icon-512.png","./styles.css?v=3418",
+  "./pokedex-v1.css?v=3418","./scanner-v11.css?v=3418","./pokex-bg.css?v=3418","./pokex-v22.css?v=3418","./pokex-auth-v23.css?v=3418","./pokex-mobile-v231.css?v=3418","./pokex-final-v24.css?v=3418","./pokex-polish-v321.css?v=3418","./pokex-friends-v33.css?v=3418","./pokex-account-polish-v33.css?v=3418","./pokex-ui-fix-v33.css?v=3418","./pokex-social-v34.css?v=3418",
+  "./jp-extra-v21.js?v=3418","./en-images-v21.js?v=3418","./pokex-image-resolver-v241.js?v=3418","./pokex-price-resolver-v30.js?v=3418","./pokex-scanner-result-fix-v34.js?v=3418","./app.js?v=3418","./pokedex-v1.js?v=3418","./pokex-card-flow-v34.js?v=3418","./pokex-scanner-quality-v34.js?v=3418","./scanner-v11.js?v=3418","./pokex-clean-v1.js?v=3418","./pokex-language-v1.js?v=3418","./pokex-bg.js?v=3418","./pokex-v22.js?v=3418","./pokex-shell-v34.js?v=3418","./pokex-release-v34.js?v=3418","./pokex-firebase-config.js?v=3418","./pokex-auth-v23.js?v=3418","./pokex-mobile-v231.js?v=3418","./pokex-friends-v33.js?v=3418","./pokex-friends-fix-v33.js?v=3418","./pokex-account-polish-v33.js?v=3418","./pokex-account-core-v33.js?v=3418","./pokex-social-v34.js?v=3418","./pokex-card-language-v34.js?v=3418"
 ];
 
 self.addEventListener("install",event=>{event.waitUntil(caches.open(APP_CACHE).then(cache=>cache.addAll(APP_SHELL)));self.skipWaiting();});
