@@ -1,14 +1,14 @@
 (() => {
   const VERSION = "3.4";
-  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3421";
+  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3422";
   const KEY = `pokex_seen_release_v34_${BUILD}`;
 
   const changes = [
+    "⚡ El escáner confirma la carta con menos esperas manteniendo el umbral de confianza.",
     "📚 Mi Pokédex separa ahora cabecera y zona de scroll para evitar solapamientos.",
     "↩️ Recuperado el botón Atrás fuera de Mi Pokédex; dentro se mantiene solo la flecha propia.",
     "🃏 Añadir o quitar cartas desde la parte superior de la ficha.",
-    "📷 El escáner limpia etiquetas como Non Holo, Holo o Staff y busca con nombre + número.",
-    "👥 Perfil y colección de amigos con mejor espaciado y acabado visual."
+    "📷 El escáner limpia etiquetas como Non Holo, Holo o Staff y busca con nombre + número."
   ];
 
   function applyVersion(){
