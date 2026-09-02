@@ -1,14 +1,14 @@
 (() => {
   const VERSION = "3.4";
-  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3422";
+  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3423";
   const KEY = `pokex_seen_release_v34_${BUILD}`;
 
   const changes = [
+    "🖼️ Si una imagen española de TCGdex falla, PokEX usa automáticamente la imagen inglesa de esa misma carta sin cambiar sus datos.",
     "⚡ El escáner confirma la carta con menos esperas manteniendo el umbral de confianza.",
     "📚 Mi Pokédex separa ahora cabecera y zona de scroll para evitar solapamientos.",
     "↩️ Recuperado el botón Atrás fuera de Mi Pokédex; dentro se mantiene solo la flecha propia.",
-    "🃏 Añadir o quitar cartas desde la parte superior de la ficha.",
-    "📷 El escáner limpia etiquetas como Non Holo, Holo o Staff y busca con nombre + número."
+    "🃏 Añadir o quitar cartas desde la parte superior de la ficha."
   ];
 
   function applyVersion(){
