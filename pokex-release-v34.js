@@ -1,13 +1,13 @@
 (() => {
   const VERSION = "3.4";
-  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3428";
+  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3429";
   const KEY = `pokex_seen_release_v34_${BUILD}`;
 
   const changes = [
-    "🛠️ La pantalla de propuestas ya no tapa las últimas cartas con los botones inferiores.",
-    "📭 Activos, Recibidos e Historial muestran mensajes claros cuando están vacíos.",
-    "⚠️ Si los intercambios no pueden cargarse, PokEX muestra un error en vez de quedarse en Cargando…",
-    "🔄 Se mantiene el flujo de propuestas, aceptar, rechazar y contraoferta.",
+    "🔄 Restaurados los botones de intercambio en las cartas de la colección de amigos.",
+    "🧠 PokEX carga ahora la colección del amigo antes de añadir las acciones de intercambio, también al reabrir o cambiar de perfil.",
+    "🛠️ La pantalla de propuestas mantiene separados el listado y los botones inferiores.",
+    "📭 Activos, Recibidos e Historial muestran estados vacíos claros.",
     "🤝 Las cartas siguen moviéndose solo después de la confirmación física de ambos."
   ];
 
