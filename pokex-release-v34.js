@@ -1,14 +1,14 @@
 (() => {
   const VERSION = "3.4";
-  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3424";
+  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3425";
   const KEY = `pokex_seen_release_v34_${BUILD}`;
 
   const changes = [
-    "🔎 Las colecciones de amigos ya se pueden filtrar por todas, repetidas o cartas que te faltan.",
+    "↕️ Añadido Rareza ↑ además de Rareza ↓ en los filtros de colección.",
+    "🔎 Las colecciones de amigos se pueden filtrar por todas, repetidas o cartas que te faltan.",
     "↕️ Ordena la colección por precio, nombre o rareza.",
     "🖼️ Si una imagen española de TCGdex falla, PokEX usa automáticamente la imagen inglesa de esa misma carta sin cambiar sus datos.",
-    "⚡ El escáner confirma la carta con menos esperas manteniendo el umbral de confianza.",
-    "📚 Mi Pokédex mantiene cabecera y colección separadas para evitar solapamientos."
+    "⚡ El escáner confirma la carta con menos esperas manteniendo el umbral de confianza."
   ];
 
   function applyVersion(){
