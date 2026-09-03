@@ -1,13 +1,13 @@
 (() => {
   const VERSION = "3.4";
-  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3430";
+  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3431";
   const KEY = `pokex_seen_release_v34_${BUILD}`;
 
   const changes = [
-    "🧩 Rehecha la colección de amigos para que un único módulo controle cartas, filtros e intercambios.",
-    "🔎 Restaurados los filtros Todas, Repetidas, Me faltan y los órdenes por precio, nombre y rareza.",
-    "🔄 Los botones de intercambio forman parte de cada carta y ya no dependen de observadores que se puedan borrar al filtrar.",
-    "🤝 Comparar colecciones y Mis intercambios reciben directamente el amigo correcto.",
+    "🔄 Nuevo botón Intercambios directamente en el inicio de PokEX.",
+    "🔴 El botón muestra en tiempo real cuántos intercambios activos tienes, enviados o recibidos.",
+    "📥 Desde el inicio puedes abrir directamente Activos, Recibidos e Historial sin entrar primero en Amigos.",
+    "🧩 La colección de amigos mantiene filtros y botones de intercambio dentro de un único render estable.",
     "📱 Se mantiene el diseño y la zona segura del iPhone sin tocar el escáner."
   ];
 
