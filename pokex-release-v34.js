@@ -1,14 +1,14 @@
 (() => {
   const VERSION = "3.4";
-  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3427";
+  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3428";
   const KEY = `pokex_seen_release_v34_${BUILD}`;
 
   const changes = [
-    "🔄 Nuevo sistema de intercambios entre amigos: propuesta, aceptar, rechazar y contraoferta.",
-    "🤝 Tras aceptar, ambos deben confirmar que el intercambio físico se ha realizado antes de mover las cartas.",
-    "✨ PokEX compara colecciones y detecta repetidas que le faltan al otro entrenador.",
-    "🔎 Se mantienen los filtros por todas, repetidas, me faltan, precio, nombre y rareza.",
-    "📱 Corregida la cabecera de las colecciones de amigos para respetar la zona segura del iPhone."
+    "🛠️ La pantalla de propuestas ya no tapa las últimas cartas con los botones inferiores.",
+    "📭 Activos, Recibidos e Historial muestran mensajes claros cuando están vacíos.",
+    "⚠️ Si los intercambios no pueden cargarse, PokEX muestra un error en vez de quedarse en Cargando…",
+    "🔄 Se mantiene el flujo de propuestas, aceptar, rechazar y contraoferta.",
+    "🤝 Las cartas siguen moviéndose solo después de la confirmación física de ambos."
   ];
 
   function applyVersion(){
