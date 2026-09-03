@@ -13,6 +13,7 @@ let incomingDocs=[];
 let outgoingDocs=[];
 let unsubscribeIncoming=null;
 let unsubscribeOutgoing=null;
+let homeAnchorObserver=null;
 
 function openTrades(){
   if(!user){
@@ -27,6 +28,10 @@ function openTrades(){
   trades.showTrades("active");
 }
 
+function setText(el,value){
+  if(el && el.textContent!==value) el.textContent=value;
+}
+
 function recalculateActiveCount(){
   const map=new Map();
   [...incomingDocs,...outgoingDocs].forEach(item=>map.set(item.id,item));
@@ -35,23 +40,29 @@ function recalculateActiveCount(){
 }
 
 function refreshBadges(){
+  const label=activeCount>9?"9+":String(activeCount);
   document.querySelectorAll("[data-trade-count]").forEach(el=>{
-    el.hidden=activeCount<1;
-    el.textContent=activeCount>9?"9+":String(activeCount);
+    const hidden=activeCount<1;
+    if(el.hidden!==hidden) el.hidden=hidden;
+    if(!hidden) setText(el,label);
   });
+
   const subtitle=document.querySelector("[data-trades-subtitle]");
   if(subtitle){
-    subtitle.textContent=activeCount
+    const value=activeCount
       ? `${activeCount} intercambio${activeCount===1?"":"s"} activo${activeCount===1?"":"s"}`
       : (user?"Activos, recibidos e historial":"Inicia sesión para ver tus intercambios");
+    setText(subtitle,value);
   }
 }
 
 function installHomeLauncher(){
-  if(document.getElementById("pokexTradesHomeButton")){
+  const existing=document.getElementById("pokexTradesHomeButton");
+  if(existing){
     refreshBadges();
     return true;
   }
+
   const friendsButton=document.getElementById("pokexFriendsV33Button");
   if(!friendsButton)return false;
 
@@ -64,6 +75,22 @@ function installHomeLauncher(){
   friendsButton.insertAdjacentElement("afterend",button);
   refreshBadges();
   return true;
+}
+
+function waitForHomeAnchor(){
+  if(installHomeLauncher()){
+    homeAnchorObserver?.disconnect();
+    homeAnchorObserver=null;
+    return;
+  }
+  if(homeAnchorObserver)return;
+
+  homeAnchorObserver=new MutationObserver(()=>{
+    if(!installHomeLauncher())return;
+    homeAnchorObserver?.disconnect();
+    homeAnchorObserver=null;
+  });
+  homeAnchorObserver.observe(document.body,{childList:true,subtree:true});
 }
 
 function installFriendsTab(){
@@ -82,11 +109,6 @@ function installFriendsTab(){
   }
   refreshBadges();
   return true;
-}
-
-function installUI(){
-  installHomeLauncher();
-  installFriendsTab();
 }
 
 function stopTradeListeners(){
@@ -118,17 +140,18 @@ function startTradeListeners(){
   },error=>console.warn("PokEX trade badge outgoing:",error));
 }
 
-const observer=new MutationObserver(()=>queueMicrotask(installUI));
-observer.observe(document.body,{childList:true,subtree:true});
 document.addEventListener("click",event=>{
-  if(event.target.closest("#pokexFriendsV33Button"))setTimeout(installFriendsTab,60);
+  if(event.target.closest("#pokexFriendsV33Button")) setTimeout(installFriendsTab,60);
 },true);
+
+waitForHomeAnchor();
 
 if(auth)onAuthStateChanged(auth,next=>{
   user=next;
-  installUI();
+  waitForHomeAnchor();
+  refreshBadges();
   if(user)startTradeListeners();
   else stopTradeListeners();
-});else installUI();
+});
 
 console.log("✅ PokEX Trades launcher v3.4 cargado");
