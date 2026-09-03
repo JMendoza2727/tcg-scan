@@ -49,6 +49,21 @@ service cloud.firestore {
         );
     }
 
+    function tradeParticipant(data) {
+      return signedIn()
+        && (data.fromUid == request.auth.uid || data.toUid == request.auth.uid);
+    }
+
+    function tradeFriends(data) {
+      return !blockedEither(data.fromUid, data.toUid)
+        && exists(
+          /databases/$(database)/documents/friendLinks/$(data.fromUid + "__" + data.toUid)
+        )
+        && exists(
+          /databases/$(database)/documents/friendLinks/$(data.toUid + "__" + data.fromUid)
+        );
+    }
+
     match /users/{uid} {
       allow read: if signedIn();
 
@@ -218,6 +233,52 @@ service cloud.firestore {
       allow delete:
         if signedIn()
         && resource.data.blockerUid == request.auth.uid;
+    }
+
+    match /tradeOffers/{tradeId} {
+      allow read:
+        if tradeParticipant(resource.data);
+
+      allow create:
+        if signedIn()
+        && request.resource.data.keys().hasOnly([
+          "fromUid",
+          "toUid",
+          "status",
+          "offeredCard",
+          "wantedCard",
+          "parentTradeId",
+          "confirmedBy",
+          "appliedBy",
+          "createdAt",
+          "updatedAt"
+        ])
+        && request.resource.data.fromUid == request.auth.uid
+        && request.resource.data.toUid != request.auth.uid
+        && request.resource.data.status == "pending"
+        && request.resource.data.confirmedBy == {}
+        && request.resource.data.appliedBy == {}
+        && tradeFriends(request.resource.data);
+
+      allow update:
+        if tradeParticipant(resource.data)
+        && tradeFriends(resource.data)
+        && request.resource.data.fromUid == resource.data.fromUid
+        && request.resource.data.toUid == resource.data.toUid
+        && request.resource.data.offeredCard == resource.data.offeredCard
+        && request.resource.data.wantedCard == resource.data.wantedCard
+        && request.resource.data.parentTradeId == resource.data.parentTradeId
+        && request.resource.data.createdAt == resource.data.createdAt
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          "status",
+          "confirmedBy",
+          "appliedBy",
+          "updatedAt",
+          "completedAt"
+        ]);
+
+      allow delete:
+        if false;
     }
   }
 }
