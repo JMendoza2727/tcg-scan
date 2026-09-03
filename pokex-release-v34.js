@@ -1,14 +1,14 @@
 (() => {
   const VERSION = "3.4";
-  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3431";
+  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3432";
   const KEY = `pokex_seen_release_v34_${BUILD}`;
 
   const changes = [
-    "🔄 Nuevo botón Intercambios directamente en el inicio de PokEX.",
-    "🔴 El botón muestra en tiempo real cuántos intercambios activos tienes, enviados o recibidos.",
-    "📥 Desde el inicio puedes abrir directamente Activos, Recibidos e Historial sin entrar primero en Amigos.",
-    "🧩 La colección de amigos mantiene filtros y botones de intercambio dentro de un único render estable.",
-    "📱 Se mantiene el diseño y la zona segura del iPhone sin tocar el escáner."
+    "🛠️ Corregido el bloqueo del inicio provocado por el observador del nuevo botón Intercambios.",
+    "🔄 Intercambios se instala una sola vez y mantiene su contador en tiempo real sin repintar la interfaz continuamente.",
+    "🧹 Limpiado el service worker para que no intente cachear módulos eliminados.",
+    "📥 El acceso directo a Activos, Recibidos e Historial sigue disponible desde el inicio.",
+    "📱 Se fuerza una caché nueva sin tocar el caché pesado del escáner."
   ];
 
   function applyVersion(){
