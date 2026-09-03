@@ -1,14 +1,14 @@
 (() => {
   const VERSION = "3.4";
-  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3426";
+  const BUILD = document.querySelector('meta[name="pokex-build"]')?.content || "3427";
   const KEY = `pokex_seen_release_v34_${BUILD}`;
 
   const changes = [
-    "🛠️ Los filtros de colección de amigos vuelven a aparecer correctamente al cerrar y reabrir un perfil.",
-    "↕️ Añadido Rareza ↑ además de Rareza ↓ en los filtros de colección.",
-    "🔎 Las colecciones de amigos se pueden filtrar por todas, repetidas o cartas que te faltan.",
-    "↕️ Ordena la colección por precio, nombre o rareza.",
-    "🖼️ Si una imagen española de TCGdex falla, PokEX usa automáticamente la imagen inglesa de esa misma carta sin cambiar sus datos."
+    "🔄 Nuevo sistema de intercambios entre amigos: propuesta, aceptar, rechazar y contraoferta.",
+    "🤝 Tras aceptar, ambos deben confirmar que el intercambio físico se ha realizado antes de mover las cartas.",
+    "✨ PokEX compara colecciones y detecta repetidas que le faltan al otro entrenador.",
+    "🔎 Se mantienen los filtros por todas, repetidas, me faltan, precio, nombre y rareza.",
+    "📱 Corregida la cabecera de las colecciones de amigos para respetar la zona segura del iPhone."
   ];
 
   function applyVersion(){
