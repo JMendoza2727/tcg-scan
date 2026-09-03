@@ -24,6 +24,18 @@ const qty = value => Math.max(0, Number(value)||0);
 const nameOf = p => p?.username || p?.displayName || "Entrenador";
 const avatarOf = p => String(p?.avatar || "").trim() || "😎";
 const flagOf = lang => lang === "en" ? "🇬🇧" : lang === "ja" ? "🇯🇵" : "🇪🇸";
+const identity = item => `${String(item?.lang||"").toLowerCase()}|${String(item?.id||"").toLowerCase()}|${String(item?.localId||"").toLowerCase()}|${String(item?.setName||"").toLowerCase()}`;
+const cardKey = item => String(item?.docId || item?.id || `${item?.lang||"es"}_${item?.setId||item?.setName||"set"}_${item?.localId||item?.name||"card"}`).replaceAll("/","_").slice(0,500);
+const rarityRank = value => {
+  const r=String(value||"").toLowerCase();
+  if(/hyper|special illustration|sar|secret/.test(r)) return 9;
+  if(/illustration|art rare|ultra/.test(r)) return 8;
+  if(/double rare|rare holo v|max|ex/.test(r)) return 7;
+  if(/rare/.test(r)) return 6;
+  if(/uncommon/.test(r)) return 3;
+  if(/common/.test(r)) return 2;
+  return 0;
+};
 
 function imageURL(image){
   const value = String(image || "").trim();
@@ -56,6 +68,12 @@ async function isFriend(uid){
   if(!user || !uid || uid === user.uid) return false;
   const snap = await getDoc(doc(db,"friendLinks",rid(user.uid,uid)));
   return snap.exists() && snap.data()?.ownerUid === user.uid && snap.data()?.friendUid === uid;
+}
+
+async function cardsFor(uid){
+  if(!db || !uid) return [];
+  const snap = await getDocs(collection(db,"users",uid,"cards"));
+  return snap.docs.map(d=>({docId:d.id,...d.data()})).filter(item=>qty(item.quantity)>0);
 }
 
 async function friendProfiles(){
@@ -120,7 +138,11 @@ function decorateFriendCards(){
     const uid = source?.dataset.remove || source?.dataset.block || "";
     if(!uid) return;
     let actions = card.querySelector(".f33-actions");
-    if(!actions){ actions=document.createElement("div"); actions.className="f33-actions"; card.appendChild(actions); }
+    if(!actions){
+      actions=document.createElement("div");
+      actions.className="f33-actions";
+      card.appendChild(actions);
+    }
     const view = document.createElement("button");
     view.type="button";
     view.className="f33-soft f34-view";
@@ -161,7 +183,8 @@ async function renderRankings(){
         <button type="button" data-metric="distinct" class="${currentMetric==="distinct"?"active":""}">⭐ Distintas</button>
       </div>
       ${order.length?`<div class="f34-podium">${order.map(p=>{
-        const rank=originalRank(p);return `<article class="f34-podium-card ${rank===1?"first":""}" data-rank-uid="${esc(p.uid)}"><span class="f34-medal">${medalForOriginalRank(rank)}</span><span class="f34-podium-avatar">${esc(avatarOf(p))}</span><strong>@${esc(nameOf(p))}</strong><small>#${rank} en ${esc(metricLabel())}</small><b>${esc(metricDisplay(p))}</b></article>`;
+        const rank=originalRank(p);
+        return `<article class="f34-podium-card ${rank===1?"first":""}" data-rank-uid="${esc(p.uid)}"><span class="f34-medal">${medalForOriginalRank(rank)}</span><span class="f34-podium-avatar">${esc(avatarOf(p))}</span><strong>@${esc(nameOf(p))}</strong><small>#${rank} en ${esc(metricLabel())}</small><b>${esc(metricDisplay(p))}</b></article>`;
       }).join("")}</div>`:""}
       <div class="f34-ranking-list">${sorted.map((p,index)=>`<article class="f34-rank-row ${p.uid===user.uid?"me":"clickable"}" data-rank-uid="${esc(p.uid)}"><span class="f34-position">#${index+1}</span><span class="f34-rank-avatar">${esc(avatarOf(p))}</span><div class="f34-rank-user"><strong>@${esc(nameOf(p))}</strong><small>${p.uid===user.uid?"Tú":"Amigo PokEX"}</small></div><span class="f34-rank-value">${esc(metricDisplay(p))}</span></article>`).join("")}</div>
     `);
@@ -197,32 +220,117 @@ function closeFriendProfile(){
   document.getElementById("pokexFriendProfileV34")?.classList.add("hidden");
 }
 
-async function friendCards(uid){
-  if(!await isFriend(uid)) throw new Error("Esta colección solo está disponible para amigos aceptados.");
-  const snap=await getDocs(collection(db,"users",uid,"cards"));
-  return snap.docs.map(d=>({docId:d.id,...d.data()})).filter(item=>qty(item.quantity)>0);
-}
-
 function cardPrice(item){
   if(Number.isFinite(Number(item?.lastPrice))) return Number(item.lastPrice);
   if(Number.isFinite(Number(item?.lastTrend))) return Number(item.lastTrend);
   return null;
 }
 
-function renderCollectionCards(container,cards,filter=""){
-  const q=String(filter||"").trim().toLowerCase();
-  const filtered=cards.filter(item=>!q || `${item.name||""} ${item.setName||""} ${item.localId||""}`.toLowerCase().includes(q));
-  const grid=container.querySelector("[data-cards]");
-  const count=container.querySelector("[data-visible-count]");
-  if(count) count.textContent=`${filtered.length} carta${filtered.length===1?"":"s"} distintas`;
+function sortedFriendCards(cards,ownCards,state){
+  const mineSet=new Set(ownCards.map(identity));
+  const q=String(state.search||"").trim().toLowerCase();
+  let list=cards.filter(item=>!q || `${item.name||""} ${item.setName||""} ${item.localId||""} ${item.rarity||""}`.toLowerCase().includes(q));
+  if(state.filter==="repeated") list=list.filter(item=>qty(item.quantity)>1);
+  if(state.filter==="missing") list=list.filter(item=>!mineSet.has(identity(item)));
+
+  const sorters={
+    "price-desc":(a,b)=>(cardPrice(b)??-1)-(cardPrice(a)??-1),
+    "price-asc":(a,b)=>(cardPrice(a)??Infinity)-(cardPrice(b)??Infinity),
+    "name-asc":(a,b)=>String(a.name||"").localeCompare(String(b.name||""),"es"),
+    "name-desc":(a,b)=>String(b.name||"").localeCompare(String(a.name||""),"es"),
+    "rarity-desc":(a,b)=>rarityRank(b.rarity)-rarityRank(a.rarity)||String(a.name||"").localeCompare(String(b.name||""),"es"),
+    "rarity-asc":(a,b)=>rarityRank(a.rarity)-rarityRank(b.rarity)||String(a.name||"").localeCompare(String(b.name||""),"es")
+  };
+  return list.slice().sort(sorters[state.sort]||sorters["price-desc"]);
+}
+
+function renderFriendCollection(body,context){
+  const {uid,friendName,cards,ownCards,state}=context;
+  const grid=body.querySelector("[data-cards]");
+  const count=body.querySelector("[data-visible-count]");
   if(!grid) return;
-  if(!filtered.length){grid.innerHTML=`<div class="f34-state" style="grid-column:1/-1"><span>🔎</span><strong>Sin resultados</strong><p>No hay cartas que coincidan con esa búsqueda.</p></div>`;return;}
-  grid.innerHTML=filtered
-    .sort((a,b)=>(cardPrice(b)||0)-(cardPrice(a)||0) || String(a.name||"").localeCompare(String(b.name||"")))
-    .map(item=>{
-      const price=cardPrice(item); const total=price===null?null:price*qty(item.quantity); const src=imageURL(item.image);
-      return `<article class="f34-card"><div class="f34-card-media">${src?`<img loading="lazy" src="${esc(src)}" alt="${esc(item.name||"Carta Pokémon")}">`:`<div class="f34-card-placeholder">🃏</div>`}<span class="f34-lang">${flagOf(item.lang)}</span><span class="f34-qty">×${qty(item.quantity)}</span></div><div class="f34-card-copy"><strong>${esc(item.name||"Carta Pokémon")}</strong><small>${esc(item.setName||"Expansión desconocida")}${item.localId?` · #${esc(item.localId)}`:""}</small><div class="f34-card-price"><span>${price===null?"Sin precio":`${money(price)} c/u`}</span><b>${total===null?"—":money(total)}</b></div></div></article>`;
-    }).join("");
+
+  const mineSet=new Set(ownCards.map(identity));
+  const list=sortedFriendCards(cards,ownCards,state);
+  if(count) count.textContent=`${list.length} carta${list.length===1?"":"s"} distintas`;
+
+  if(!list.length){
+    grid.innerHTML=`<div class="f34-state" style="grid-column:1/-1"><span>🔎</span><strong>Sin resultados</strong><p>No hay cartas para este filtro.</p></div>`;
+    return;
+  }
+
+  grid.innerHTML=list.map(item=>{
+    const p=cardPrice(item);
+    const total=p===null?null:p*qty(item.quantity);
+    const src=imageURL(item.image);
+    const missing=!mineSet.has(identity(item));
+    const key=cardKey(item);
+    return `<article class="f34-card" data-card-key="${esc(key)}">
+      <div class="f34-card-media">
+        ${src?`<img loading="lazy" src="${esc(src)}" alt="${esc(item.name||"Carta Pokémon")}">`:`<div class="f34-card-placeholder">🃏</div>`}
+        <span class="f34-lang">${flagOf(item.lang)}</span>
+        <span class="f34-qty">×${qty(item.quantity)}</span>
+        ${missing?`<span class="f34-missing-badge">Te falta</span>`:""}
+      </div>
+      <div class="f34-card-copy">
+        <strong>${esc(item.name||"Carta Pokémon")}</strong>
+        <small>${esc(item.setName||"Expansión desconocida")}${item.localId?` · #${esc(item.localId)}`:""}</small>
+        ${item.rarity?`<small class="f34-rarity">${esc(item.rarity)}</small>`:""}
+        <div class="f34-card-price"><span>${p===null?"Sin precio":`${p.toFixed(2)} € c/u`}</span><b>${total===null?"—":`${total.toFixed(2)} €`}</b></div>
+      </div>
+      <button type="button" class="tr34-card-trade ${qty(item.quantity)>1?"good":""}" data-trade-card="${esc(key)}">${qty(item.quantity)>1?"🔄 Proponer por esta repetida":"🔄 Proponer intercambio"}</button>
+    </article>`;
+  }).join("");
+
+  grid.querySelectorAll("[data-trade-card]").forEach(button=>{
+    button.addEventListener("click",()=>{
+      const wanted=cards.find(item=>cardKey(item)===button.dataset.tradeCard);
+      if(!wanted) return;
+      const trades=window.PokEXTradesV34;
+      if(!trades?.startProposalFor){
+        alert("El módulo de intercambios todavía no está disponible.");
+        return;
+      }
+      trades.startProposalFor(uid,friendName,wanted);
+    });
+  });
+}
+
+function bindFriendCollection(body,context){
+  const search=body.querySelector(".f34-search");
+  const filter=body.querySelector("[data-filter]");
+  const sort=body.querySelector("[data-sort]");
+
+  search?.addEventListener("input",()=>{
+    context.state.search=search.value;
+    renderFriendCollection(body,context);
+  });
+  filter?.addEventListener("change",()=>{
+    context.state.filter=filter.value;
+    renderFriendCollection(body,context);
+  });
+  sort?.addEventListener("change",()=>{
+    context.state.sort=sort.value;
+    renderFriendCollection(body,context);
+  });
+
+  body.querySelector("[data-trades-inbox]")?.addEventListener("click",()=>{
+    const trades=window.PokEXTradesV34;
+    if(!trades?.showTrades){
+      alert("El módulo de intercambios todavía no está disponible.");
+      return;
+    }
+    trades.showTrades("active");
+  });
+
+  body.querySelector("[data-trades-possible]")?.addEventListener("click",()=>{
+    const trades=window.PokEXTradesV34;
+    if(!trades?.showPossibleFor){
+      alert("El módulo de intercambios todavía no está disponible.");
+      return;
+    }
+    trades.showPossibleFor(context.uid,context.friendName);
+  });
 }
 
 async function openFriendProfile(uid){
@@ -231,26 +339,69 @@ async function openFriendProfile(uid){
   root.classList.remove("hidden");
   const body=root.querySelector("[data-body]");
   body.innerHTML=`<div class="f33-loading">Cargando colección…</div>`;
+
   try{
     const allowed=await isFriend(uid);
     if(!allowed) throw new Error("Ya no sois amigos o no tienes permiso para ver esta colección.");
-    const [p,cards]=await Promise.all([profile(uid,true),friendCards(uid)]);
+
+    const [p,cards,ownCards]=await Promise.all([
+      profile(uid,true),
+      cardsFor(uid),
+      cardsFor(user.uid)
+    ]);
     if(!p) throw new Error("No se pudo cargar el perfil de este entrenador.");
+
+    const friendName=nameOf(p);
     root.querySelector("[data-avatar]").textContent=avatarOf(p);
-    root.querySelector("[data-name]").textContent=`@${nameOf(p)}`;
+    root.querySelector("[data-name]").textContent=`@${friendName}`;
+
     const actualCount=cards.reduce((sum,item)=>sum+qty(item.quantity),0);
     const actualDistinct=cards.length;
     const actualValue=cards.reduce((sum,item)=>sum+(cardPrice(item)||0)*qty(item.quantity),0);
     const cardsCount=Number.isFinite(Number(p.cardsCount))?Number(p.cardsCount):actualCount;
     const distinct=Number.isFinite(Number(p.distinctCount))?Number(p.distinctCount):actualDistinct;
     const value=Number.isFinite(Number(p.collectionValue))?Number(p.collectionValue):actualValue;
+
+    body.dataset.friendUid=uid;
     body.innerHTML=`
-      <div class="f34-profile-stats"><div class="f34-stat"><span>Cartas</span><strong>${cardsCount}</strong></div><div class="f34-stat"><span>Distintas</span><strong>${distinct}</strong></div><div class="f34-stat"><span>Valor</span><strong>${money(value)}</strong></div></div>
+      <div class="f34-profile-stats">
+        <div class="f34-stat"><span>Cartas</span><strong>${cardsCount}</strong></div>
+        <div class="f34-stat"><span>Distintas</span><strong>${distinct}</strong></div>
+        <div class="f34-stat"><span>Valor</span><strong>${money(value)}</strong></div>
+      </div>
+      <button type="button" class="tr34-inbox-btn" data-trades-inbox>🔄 Mis intercambios</button>
       <div class="f34-collection-head"><div><strong>Colección</strong><small data-visible-count>${cards.length} cartas distintas</small></div><small>Solo lectura</small></div>
       <input class="f34-search" type="search" autocomplete="off" placeholder="Buscar en su colección…" aria-label="Buscar en colección de amigo">
+      <div class="f34-collection-filters">
+        <select data-filter aria-label="Filtrar colección">
+          <option value="all">Todas</option>
+          <option value="repeated">Repetidas</option>
+          <option value="missing">Me faltan</option>
+        </select>
+        <select data-sort aria-label="Ordenar colección">
+          <option value="price-desc">Precio ↓</option>
+          <option value="price-asc">Precio ↑</option>
+          <option value="name-asc">Nombre A-Z</option>
+          <option value="name-desc">Nombre Z-A</option>
+          <option value="rarity-desc">Rareza ↓</option>
+          <option value="rarity-asc">Rareza ↑</option>
+        </select>
+      </div>
+      <div class="tr34-summary">
+        <div><strong>Comparar colecciones</strong><small>Busca repetidas que os falten mutuamente y prepara un cambio.</small></div>
+        <button type="button" data-trades-possible>Ver posibles</button>
+      </div>
       <div class="f34-cards" data-cards></div>`;
-    renderCollectionCards(body,cards,"");
-    body.querySelector(".f34-search")?.addEventListener("input",event=>renderCollectionCards(body,cards,event.target.value));
+
+    const context={
+      uid,
+      friendName,
+      cards,
+      ownCards,
+      state:{search:"",filter:"all",sort:"price-desc"}
+    };
+    bindFriendCollection(body,context);
+    renderFriendCollection(body,context);
   }catch(error){
     console.warn("PokEX friend collection v3.4:",error);
     body.innerHTML=`<div class="f34-state"><span>🔒</span><strong>No se puede abrir esta colección</strong><p>${esc(error?.message||"No tienes acceso a esta colección.")}</p></div>`;
